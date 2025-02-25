@@ -1,5 +1,11 @@
-const App = () => {
-  return <></>;
-};
+import React from 'react'
 
-export default App;
+const App = () => {
+  return (
+    <div>
+      <AppRouter />
+    </div>
+  )
+}
+
+export default App
