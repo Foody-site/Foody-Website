@@ -1,2 +1,2 @@
-export { default as testEn } from "../locals/en/test.json";
-export { default as testAr } from "../locals/ar/test.json";
+export { default as testEn } from "../locales/en/test.json";
+export { default as testAr } from "../locales/ar/test.json";
