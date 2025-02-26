@@ -1,16 +1,20 @@
-import React from 'react'
-import Navbar from './Navbar'
-import Footer from './Footer'
-import { Outlet } from 'react-router'
+import Navbar from "./Navbar";
+import Footer from "./Footer";
+import { Navigate, Outlet, useLocation } from "react-router";
 
 const Layout = () => {
-    return (
-        <div>
-            <Navbar />
-            <Outlet />
-            <Footer />
-        </div>
-    )
-}
+  const user = "";
+  const location = useLocation();
 
-export default Layout
+  return user ? (
+    <div>
+      <Navbar />
+      <Outlet />
+      <Footer />
+    </div>
+  ) : (
+    <Navigate to="login" state={{ from: location }} replace />
+  );
+};
+
+export default Layout;
