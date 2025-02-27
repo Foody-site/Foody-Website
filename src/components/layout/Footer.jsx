@@ -29,8 +29,8 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-4 gap-6 text-gray-600 text-sm text-center md:text-left">
-        <div className="flex flex-col gap-2">
+      <div className="w-full max-w-[90%] 2xl:max-w-[85%] flex flex-wrap justify-between gap-10 2xl:gap-20 px-6 md:px-12 2xl:px-20 text-gray-600 text-sm">
+        <div className="flex flex-col gap-2 w-full md:w-auto text-center md:text-left">
           <p>
             عدد المتاجر: <span className="font-semibold">531</span>
           </p>
@@ -39,19 +39,19 @@ const Footer = () => {
           </p>
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 w-full md:w-auto text-center md:text-left">
           <p className="font-semibold">سياسة الاستخدام</p>
           <p className="cursor-pointer hover:text-gray-900">الشروط والأحكام</p>
           <p className="cursor-pointer hover:text-gray-900">إخلاء المسؤولية</p>
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 w-full md:w-auto text-center md:text-left">
           <p className="font-semibold">من نحن</p>
           <p className="cursor-pointer hover:text-gray-900">استطلاع الرأي</p>
           <p className="cursor-pointer hover:text-gray-900">المدونة</p>
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 w-full md:w-auto text-center md:text-left">
           <p className="font-semibold">حسابي</p>
           <p className="cursor-pointer hover:text-gray-900">المفضلة</p>
         </div>
