@@ -1,4 +1,4 @@
-const Input = ({label , type ,className=""}) => {
+const Inputs = ({label , type ,className=""}) => {
   return (
     <>
       <label className="block text-gray-600 text-sm mb-2">
@@ -12,4 +12,4 @@ const Input = ({label , type ,className=""}) => {
   );
 };
 
-export default Input;
+export default Inputs;

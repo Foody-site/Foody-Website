@@ -1,5 +1,5 @@
 import Button from "../shared/Buttons/Button";
-import Input from "../shared/inputs/input";
+import Inputs from "../shared/inputs/Inputs";
 
 const Login = () => {
   return (
@@ -10,11 +10,11 @@ const Login = () => {
         </h2>
 
         <div className="mb-4">
-          <Input label="رقم الجوال/البريد الالكتروني" type="text" />
+          <Inputs label="رقم الجوال/البريد الالكتروني" type="text" />
         </div>
 
         <div className="mb-4">
-          <Input label="كلمة السر"type="password" />
+          <Inputs label="كلمة السر"type="password" />
         </div>
 
         <Button
