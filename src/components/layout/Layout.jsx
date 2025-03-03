@@ -13,7 +13,7 @@ const Layout = () => {
       <Footer />
     </div>
   ) : (
-    <Navigate to="login" state={{ from: location }} replace />
+    <Navigate to="Register" state={{ from: location }} replace />
   );
 };
 

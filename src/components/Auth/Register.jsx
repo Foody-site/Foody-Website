@@ -11,7 +11,7 @@ const Register = () => {
     email: "",
     phone: "",
     password: "",
-    birthdate: "",
+    birthday: "",
   });
 
   const handleChange = (e) => {
@@ -20,9 +20,9 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-   // if (!validateForm()) return; 
-  
+    console.log("Form Data :", formData);
+    // if (!validateForm()) return;
+
     try {
       const res = await axios.post(`${api_url}/auth/register`, formData);
       alert("تم التسجيل بنجاح");
@@ -30,7 +30,7 @@ const Register = () => {
       alert(err.response?.data?.message || "حدث خطأ أثناء التسجيل!");
     }
   };
-  
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       <div className="flex-grow flex justify-center items-center px-4">
@@ -83,8 +83,8 @@ const Register = () => {
                 </p>
                 <div className="md:w-1/2">
                   <Inputs
-                    name="birthdate"
-                    value={formData.birthdate}
+                    name="birthday"
+                    value={formData.birthday}
                     onChange={handleChange}
                     label="تاريخ الميلاد *"
                     type="date"
