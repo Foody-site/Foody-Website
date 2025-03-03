@@ -3,6 +3,7 @@ import Button from "../shared/Buttons/Button";
 import Inputs from "../shared/inputs/Inputs";
 import Footer from "./../layout/Footer";
 import axios from "axios";
+import { api_url } from "../../utils/ApiClient";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -23,7 +24,7 @@ const Register = () => {
    // if (!validateForm()) return; 
   
     try {
-      const res = await axios.post("http://localhost:5000/api/register", formData);
+      const res = await axios.post(`${api_url}/auth/register`, formData);
       alert("تم التسجيل بنجاح");
     } catch (err) {
       alert(err.response?.data?.message || "حدث خطأ أثناء التسجيل!");

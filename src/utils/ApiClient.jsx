@@ -1,1 +1,1 @@
-export const api_url = "";
+export const api_url = "https://foody-api-mmiv.onrender.com/api";
