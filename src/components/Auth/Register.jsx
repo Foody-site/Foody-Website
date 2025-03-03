@@ -2,6 +2,7 @@ import { useState } from "react";
 import Button from "../shared/Buttons/Button";
 import Inputs from "../shared/inputs/Inputs";
 import Footer from "./../layout/Footer";
+import axios from "axios";
 
 const Register = () => {
   const [formData, setFormData] = useState({
