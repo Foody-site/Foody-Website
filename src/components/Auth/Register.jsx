@@ -7,11 +7,12 @@ import { api_url } from "../../utils/ApiClient";
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    name: "",
+    fullName: "",
     email: "",
     phone: "",
     password: "",
     birthday: "",
+    role: "CUSTOMER",
   });
 
   const handleChange = (e) => {
@@ -42,8 +43,8 @@ const Register = () => {
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
               <Inputs
-                name="name"
-                value={formData.name}
+                name="fullName"
+                value={formData.fullName}
                 onChange={handleChange}
                 label="الاسم *"
                 type="text"
