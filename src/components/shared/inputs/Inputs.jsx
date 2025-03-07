@@ -7,7 +7,7 @@ const Inputs = ({ name, label, type, className = "", icon, value, onChange }) =>
 
   return (
     <div className="w-full">
-      <label className="block text-gray-600 text-sm mb-2 text-right">{label}</label>
+      <label className="block text-gray-700 font-medium text-right mb-1">{label}</label>
       <div className="relative">
         <input
           name={name}
@@ -18,14 +18,14 @@ const Inputs = ({ name, label, type, className = "", icon, value, onChange }) =>
         />
         {isPassword ? (
           <span
-            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-700 cursor-pointer"
             onClick={() => setShowPassword(!showPassword)}
           >
             {showPassword ? <MdVisibilityOff size={20} /> : <MdVisibility size={20} />}
           </span>
         ) : (
           icon && (
-            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-700">
               <i className={`fas fa-${icon}`}></i>
             </span>
           )
