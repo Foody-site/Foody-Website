@@ -3,6 +3,7 @@ import Button from "../../components/shared/Buttons/Button";
 import Inputs from "../../components/shared/inputs/Inputs";
 import Footer from "../../components/layout/Footer";
 import { FaCamera } from "react-icons/fa";
+import SelectInput from "../../components/shared/inputs/SelectInput";
 
 const AddChef = () => {
   const [coverImage, setCoverImage] = useState(null);
@@ -24,14 +25,14 @@ const AddChef = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
-      <div className="flex-grow flex justify-center items-center px-4 py-8">
-        <div className="w-full max-w-7xl p-10 border border-gray-300 bg-white rounded-lg shadow-md">
-          <h2 className="text-2xl font-bold text-center text-gray-700 mb-6">
+      <div className="flex-grow flex justify-center items-center px-8 py-8">
+        <div className="w-full max-w-[90rem] p-16 border border-gray-300 bg-white rounded-xl shadow-lg">
+          <h2 className="text-4xl font-bold text-center text-gray-700 mb-10">
             إضافة شيف جديد
           </h2>
 
-          <div className="mb-6 relative">
-            <div className="relative bg-gray-400 h-64 w-full rounded-lg flex justify-center items-center overflow-hidden">
+          <div className="mb-10 relative">
+            <div className="relative bg-gray-400 h-72 w-full rounded-lg flex justify-center items-center overflow-hidden">
               {coverImage && (
                 <img
                   src={coverImage}
@@ -48,12 +49,12 @@ const AddChef = () => {
               />
               <label
                 htmlFor="coverUpload"
-                className="absolute bottom-4 left-4 bg-white px-4 py-2 border rounded-md text-sm flex items-center cursor-pointer"
+                className="absolute bottom-5 left-5 bg-white px-5 py-2 border rounded-md text-sm flex items-center cursor-pointer"
               >
                 <FaCamera className="mr-2" /> إضافة صورة الغلاف
               </label>
             </div>
-            <div className="absolute bottom-0 right-4 w-24 h-24 bg-white rounded-full border flex justify-center items-center overflow-hidden">
+            <div className="absolute bottom-0 right-5 w-32 h-32 bg-white rounded-full border flex justify-center items-center overflow-hidden">
               {profileImage && (
                 <img
                   src={profileImage}
@@ -72,67 +73,71 @@ const AddChef = () => {
                 htmlFor="profileUpload"
                 className="absolute cursor-pointer"
               >
-                <FaCamera className="text-red-500" />
+                <FaCamera className="text-primary-1 text-xl" />
               </label>
             </div>
           </div>
 
-          <form className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <Inputs name="chef_name" label="اسم الشيف *" type="text" />
-              <Inputs
-                name="contact_number"
-                label="رقم التواصل الخاص *"
-                type="text"
+          <form className="space-y-14 mx-auto max-w-full">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-10 text-right">
+              <SelectInput
+                name="specialty"
+                label="أنواع وصفات الطبخ"
+                className="w-full px-6 text-xl py-4"
+                options={[
+                  { value: "italian", label: "إيطالي" },
+                  { value: "french", label: "فرنسي" },
+                  { value: "arabic", label: "عربي" },
+                ]}
               />
               <Inputs
                 name="short_description"
-                label="وصف مختصر *"
+                label="وصف مختصر"
                 type="text"
+                className="w-full px-6 text-xl py-4"
               />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <Inputs name="specialty" label="نوع متخصص الطبخ" type="text" />
-              <Inputs name="country" label="الدولة" type="text" />
-              <Inputs name="city" label="المدينة" type="text" />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <Inputs name="facebook" label="إضافة رابط فيسبوك" type="text" />
-              <Inputs name="x" label="إضافة رابط X" type="text" />
               <Inputs
-                name="instagram"
-                label="إضافة رابط إنستاجرام"
+                name="chef_name"
+                label="اسم الشيف"
                 type="text"
+                className="w-full px-6 text-xl py-4"
               />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <Inputs name="tiktok" label="إضافة رابط تيك توك" type="text" />
-              <Inputs name="youtube" label="إضافة رابط يوتيوب" type="text" />
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-10 text-right">
+              <SelectInput
+                name="city"
+                label="المدينة"
+                className="w-full px-6 text-xl py-4"
+                options={[
+                  { value: "cairo", label: "القاهرة" },
+                  { value: "riyadh", label: "الرياض" },
+                  { value: "dubai", label: "دبي" },
+                ]}
+              />
+              <SelectInput
+                name="country"
+                label="الدولة"
+                className="w-full px-6 text-xl py-4"
+                options={[
+                  { value: "egypt", label: "مصر" },
+                  { value: "ksa", label: "السعودية" },
+                  { value: "uae", label: "الإمارات" },
+                ]}
+              />
               <Inputs
-                name="website"
-                label="إضافة رابط الموقع الشخصي"
+                name="contact_number"
+                label="رقم التواصل الخاص"
                 type="text"
+                className="w-full px-6 text-xl py-4"
               />
             </div>
-            <div className="flex space-x-4 mt-4">
-              <label className="flex items-center">
-                <input type="checkbox" className="mr-2" />
-                رقم التواصل مرئي
-              </label>
-              <label className="flex items-center">
-                <input type="checkbox" className="mr-2" />
-                البريد الإلكتروني
-              </label>
-              <label className="flex items-center">
-                <input type="checkbox" className="mr-2" />
-                رقم الواتساب
-              </label>
-            </div>
-            <div className="flex justify-center mt-4">
+
+            <div className="flex justify-center mt-12">
               <Button
                 type="submit"
                 label="إضافة شيف"
-                className="w-64 bg-primary-1 hover:bg-hover_primary-1 text-white py-2 rounded-md text-lg font-semibold"
+                className="w-64 bg-primary-1 hover:bg-hover_primary-1 text-white py-5 rounded-xl text-xl font-semibold"
               />
             </div>
           </form>
