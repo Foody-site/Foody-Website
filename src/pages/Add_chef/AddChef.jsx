@@ -3,6 +3,7 @@ import Button from "../../components/shared/Buttons/Button";
 import Inputs from "../../components/shared/inputs/Inputs";
 import Footer from "../../components/layout/Footer";
 import { FaCamera } from "react-icons/fa";
+import { RiTwitterXFill } from "react-icons/ri";
 import SelectInput from "../../components/shared/inputs/SelectInput";
 
 const AddChef = () => {
@@ -125,10 +126,38 @@ const AddChef = () => {
                   { value: "uae", label: "الإمارات" },
                 ]}
               />
+              <div>
+                <Inputs
+                  name="contact_number"
+                  label="رقم التواصل الخاص"
+                  type="text"
+                  className="w-full px-6 text-xl py-4"
+                />
+                <p className="text-primary-1 text-sm mt-2">
+                  الرقم لا يتم نشره أو عرضه للمستخدمين و إنما وسيلة للتواصل بين
+                  الموقع والشيف{" "}
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-10 text-right">
               <Inputs
-                name="contact_number"
-                label="رقم التواصل الخاص"
+                name="short_description"
+                label="اضافه رقم"
                 type="text"
+                className="w-full px-6 text-xl py-4"
+              />
+              <Inputs
+                name="short_description"
+                label="اضافه رابط"
+                type="text"
+                className="w-full px-6 text-xl py-4"
+              />
+              <Inputs
+                name="chef_name"
+                label="اضافه رابط"
+                type="text"
+                icon={RiTwitterXFill} 
                 className="w-full px-6 text-xl py-4"
               />
             </div>
