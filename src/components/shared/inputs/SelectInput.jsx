@@ -6,7 +6,7 @@ const SelectInput = ({ name, label, options }) => {
           name={name}
           className="p-2 border border-gray-300 rounded-md bg-white"
         >
-          <option value="">اختر {label}</option>
+          <option value=""> {label}</option>
           {options.map((option, index) => (
             <option key={index} value={option.value}>
               {option.label}

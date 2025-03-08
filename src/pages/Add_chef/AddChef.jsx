@@ -2,8 +2,11 @@ import { useState } from "react";
 import Button from "../../components/shared/Buttons/Button";
 import Inputs from "../../components/shared/inputs/Inputs";
 import Footer from "../../components/layout/Footer";
-import { FaCamera } from "react-icons/fa";
+import { FaCamera, FaSnapchatGhost, FaYoutube, FaTiktok } from "react-icons/fa";
 import { RiTwitterXFill } from "react-icons/ri";
+import { TiSocialFacebook } from "react-icons/ti";
+import { IoLogoWhatsapp } from "react-icons/io";
+import { GrInstagram } from "react-icons/gr";
 import SelectInput from "../../components/shared/inputs/SelectInput";
 
 const AddChef = () => {
@@ -142,22 +145,52 @@ const AddChef = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-10 text-right">
               <Inputs
-                name="short_description"
+                name="Add_Whatsapp"
                 label="اضافه رقم"
                 type="text"
+                Icon={IoLogoWhatsapp}
                 className="w-full px-6 text-xl py-4"
               />
               <Inputs
-                name="short_description"
+                name="Add_Facebook"
                 label="اضافه رابط"
                 type="text"
+                Icon={TiSocialFacebook}
                 className="w-full px-6 text-xl py-4"
               />
               <Inputs
-                name="chef_name"
+                name="Add_Twitter"
                 label="اضافه رابط"
                 type="text"
-                icon={RiTwitterXFill} 
+                Icon={RiTwitterXFill}
+                className="w-full px-6 text-xl py-4"
+              />
+              <Inputs
+                name="Add_Tiktok"
+                label="اضافه رابط"
+                type="text"
+                Icon={FaTiktok}
+                className="w-full px-6 text-xl py-4"
+              />
+              <Inputs
+                name="Add_Youtube"
+                label="اضافه رابط"
+                type="text"
+                Icon={FaYoutube}
+                className="w-full px-6 text-xl py-4"
+              />
+              <Inputs
+                name="Add_Snapchat"
+                label="اضافه رابط"
+                type="text"
+                Icon={FaSnapchatGhost}
+                className="w-full px-6 text-xl py-4"
+              />
+              <Inputs
+                name="Add_Instagram"
+                label="اضافه رابط"
+                type="text"
+                Icon={GrInstagram}
                 className="w-full px-6 text-xl py-4"
               />
             </div>
@@ -166,7 +199,7 @@ const AddChef = () => {
               <Button
                 type="submit"
                 label="إضافة شيف"
-                className="w-64 bg-primary-1 hover:bg-hover_primary-1 text-white py-5 rounded-xl text-xl font-semibold"
+                className="w-auto px-8 bg-primary-1 hover:bg-hover_primary-1 text-white py-5 rounded-xl text-xl font-semibold"
               />
             </div>
           </form>
