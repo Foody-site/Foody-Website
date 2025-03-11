@@ -7,7 +7,7 @@ import PageWrapper from "../common/PageWrapper";
 const Footer = () => {
   return (
     <PageWrapper>
-      <footer className="w-full bg-white flex flex-col items-center justify-center border-t border-gray-200">
+      <footer className="w-full bg-gray-100 flex flex-col items-center justify-center border-t border-gray-200">
         <div className="flex flex-col items-center">
           <img src={Logo} alt="Foody Logo" className="h-10 mb-2" />
           <div className="flex gap-4 mb-4">
