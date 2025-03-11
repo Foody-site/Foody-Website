@@ -7,14 +7,14 @@ import axios from "axios";
 import { api_url } from "../../utils/ApiClient";
 
 const Register = () => {
-  const location = useLocation(); 
+  const location = useLocation();
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
     phone: "",
     password: "",
     birthday: "",
-    role: location.state?.role || "CUSTOMER",   
+    role: location.state?.role,
   });
 
   useEffect(() => {
@@ -107,7 +107,7 @@ const Register = () => {
               <Button
                 type="submit"
                 label="تسجيل حساب جديد"
-                className="w-64 bg-primary-1 hover:bg-hover_primary-1 text-white py-2 rounded-md text-lg font-semibold"
+                className="max-w-[290px] bg-primary-1 hover:bg-hover_primary-1 text-white py-2 rounded-md text-lg font-semibold"
               />
             </div>
           </form>

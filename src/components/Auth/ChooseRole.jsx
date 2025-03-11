@@ -15,13 +15,13 @@ const ChooseRole = () => {
         onClick={() => handleSelectRole("CUSTOMER")}
         className="bg-blue-500 text-white px-6 py-2 rounded-md m-2"
       >
-        مستخدم
+       CUSTOMER
       </button>
       <button
-        onClick={() => handleSelectRole("AGENT")}
+        onClick={() => handleSelectRole("BUSINESS")}
         className="bg-green-500 text-white px-6 py-2 rounded-md m-2"
       >
-        وكيل
+        BUSINESS
       </button>
     </div>
   );
