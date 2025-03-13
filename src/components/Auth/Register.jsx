@@ -33,7 +33,11 @@ const Register = () => {
 
     try {
       const res = await axios.post(`${api_url}/auth/register`, formData);
+      const { accessToken, refreshToken } = res.data;
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
       alert("تم التسجيل بنجاح");
+      window.location.href = "/";
     } catch (err) {
       alert(err.response?.data?.message || "حدث خطأ أثناء التسجيل!");
     }
