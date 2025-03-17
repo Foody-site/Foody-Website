@@ -4,6 +4,7 @@ import Layout from "../components/layout/Layout";
 import Login from "../components/Auth/Login";
 import Register from "../components/Auth/Register";
 import AddChef from "../pages/Add_chef/AddChef";
+import ChooseRole from "../components/Auth/ChooseRole";
 
 const AppRouter = () => {
   return (
@@ -13,8 +14,8 @@ const AppRouter = () => {
       </Route>
       <Route path="/login" element={<Login />} />
       <Route path="/Register" element={<Register />} />
-      <Route path='/AddChef' element={<AddChef/>} />
-
+      <Route path="/ChooseRole" element={<ChooseRole />} />
+      <Route path="/AddChef" element={<AddChef />} />
     </Routes>
   );
 };
