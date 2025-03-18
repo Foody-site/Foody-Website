@@ -2,7 +2,8 @@ import { useState } from "react";
 import Button from "../../components/shared/Buttons/Button";
 import Inputs from "../../components/shared/inputs/Inputs";
 import Footer from "../../components/layout/Footer";
-import { FaCamera, FaSnapchatGhost, FaYoutube, FaTiktok } from "react-icons/fa";
+import {  FaSnapchatGhost, FaYoutube, FaTiktok } from "react-icons/fa";
+import { TbCameraPlus } from "react-icons/tb";
 import { RiTwitterXFill } from "react-icons/ri";
 import { TiSocialFacebook } from "react-icons/ti";
 import { IoLogoWhatsapp } from "react-icons/io";
@@ -30,8 +31,8 @@ const AddChef = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       <div className="flex-grow flex justify-center items-center px-8 py-8">
-        <div className="w-full max-w-[90rem] p-16 border border-gray-300 bg-white rounded-xl shadow-lg">
-          <h2 className="text-4xl font-bold text-center text-gray-700 mb-10">
+        <div className="w-full max-w-[70rem] p-16 bg-gray-100 rounded-xl ">
+          <h2 className="text-3xl font-bold text-center text-gray-700 mb-10">
             إضافة شيف جديد
           </h2>
 
@@ -55,10 +56,11 @@ const AddChef = () => {
                 htmlFor="coverUpload"
                 className="absolute bottom-5 left-5 bg-white px-5 py-2 border rounded-md text-sm flex items-center cursor-pointer"
               >
-                <FaCamera className="mr-2" /> إضافة صورة الغلاف
+                <TbCameraPlus className="text-primary-1 text-2xl mr-2" /> إضافة صورة الغلاف
               </label>
             </div>
-            <div className="absolute bottom-0 right-5 w-32 h-32 bg-white rounded-full border flex justify-center items-center overflow-hidden">
+
+            <div className="absolute -bottom-8 right-5 w-40 h-40 bg-gray-100 rounded-full border flex justify-center items-center shadow-lg">
               {profileImage && (
                 <img
                   src={profileImage}
@@ -75,9 +77,9 @@ const AddChef = () => {
               />
               <label
                 htmlFor="profileUpload"
-                className="absolute cursor-pointer"
+                className="absolute bottom-2 left-2 cursor-pointer p-2 rounded-full shadow-md" 
               >
-                <FaCamera className="text-primary-1 text-xl" />
+                <TbCameraPlus className="text-primary-1 text-2xl " />
               </label>
             </div>
           </div>
@@ -87,7 +89,7 @@ const AddChef = () => {
               <SelectInput
                 name="specialty"
                 label="أنواع وصفات الطبخ"
-                className="w-full px-6 text-xl py-4"
+                className="w-full px-6 text-xl py-4 "
                 options={[
                   { value: "italian", label: "إيطالي" },
                   { value: "french", label: "فرنسي" },
@@ -98,13 +100,13 @@ const AddChef = () => {
                 name="short_description"
                 label="وصف مختصر"
                 type="text"
-                className="w-full px-6 text-xl py-4"
+                className="w-full h-12 px-6 text-xl py-4"
               />
               <Inputs
                 name="chef_name"
                 label="اسم الشيف"
                 type="text"
-                className="w-full px-6 text-xl py-4"
+                className="w-full h-12 px-6 text-xl py-4"
               />
             </div>
 
@@ -134,7 +136,7 @@ const AddChef = () => {
                   name="contact_number"
                   label="رقم التواصل الخاص"
                   type="text"
-                  className="w-full px-6 text-xl py-4"
+                  className="w-full h-12 px-6 text-xl py-4"
                 />
                 <p className="text-primary-1 text-sm mt-2">
                   الرقم لا يتم نشره أو عرضه للمستخدمين و إنما وسيلة للتواصل بين
@@ -146,52 +148,52 @@ const AddChef = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-10 text-right">
               <Inputs
                 name="Add_Whatsapp"
-                label="اضافه رقم"
+                label="اضافه رقم واتس اب"
                 type="text"
                 Icon={IoLogoWhatsapp}
-                className="w-full px-6 text-xl py-4"
+                className="w-full h-12 px-6 text-xl py-4"
               />
               <Inputs
                 name="Add_Facebook"
-                label="اضافه رابط"
+                label="اضافة رابط فيس بوك"
                 type="text"
                 Icon={TiSocialFacebook}
-                className="w-full px-6 text-xl py-4"
+                className="w-full h-12 px-6 text-xl py-4"
               />
               <Inputs
                 name="Add_Twitter"
-                label="اضافه رابط"
+                label="اضافة رابط اكس"
                 type="text"
                 Icon={RiTwitterXFill}
-                className="w-full px-6 text-xl py-4"
+                className="w-full h-12 px-6 text-xl py-4"
               />
               <Inputs
                 name="Add_Tiktok"
-                label="اضافه رابط"
+                label="اضافة رابط تيك توك"
                 type="text"
                 Icon={FaTiktok}
-                className="w-full px-6 text-xl py-4"
+                className="w-full h-12 px-6 text-xl py-4"
               />
               <Inputs
                 name="Add_Youtube"
-                label="اضافه رابط"
+                label="اضافه رابط يوتيوب"
                 type="text"
                 Icon={FaYoutube}
-                className="w-full px-6 text-xl py-4"
+                className="w-full h-12 px-6 text-xl py-4"
               />
               <Inputs
                 name="Add_Snapchat"
-                label="اضافه رابط"
+                label="اضافه رابط سناب شات"
                 type="text"
                 Icon={FaSnapchatGhost}
-                className="w-full px-6 text-xl py-4"
+                className="w-full h-12 px-6 text-xl py-4"
               />
               <Inputs
                 name="Add_Instagram"
-                label="اضافه رابط"
+                label="اضافه رابط انستغرام"
                 type="text"
                 Icon={GrInstagram}
-                className="w-full px-6 text-xl py-4"
+                className="w-full h-12 px-6 text-xl py-4"
               />
             </div>
 
@@ -199,7 +201,7 @@ const AddChef = () => {
               <Button
                 type="submit"
                 label="إضافة شيف"
-                className="w-auto px-8 bg-primary-1 hover:bg-hover_primary-1 text-white py-5 rounded-xl text-xl font-semibold"
+                className="max-w-[350px] bg-primary-1 hover:bg-hover_primary-1 text-white py-2 rounded-md text-lg font-semibold"
               />
             </div>
           </form>
