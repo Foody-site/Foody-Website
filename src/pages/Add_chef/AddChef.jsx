@@ -2,7 +2,7 @@ import { useState } from "react";
 import Button from "../../components/shared/Buttons/Button";
 import Inputs from "../../components/shared/inputs/Inputs";
 import Footer from "../../components/layout/Footer";
-import {  FaSnapchatGhost, FaYoutube, FaTiktok } from "react-icons/fa";
+import { FaSnapchatGhost, FaYoutube, FaTiktok } from "react-icons/fa";
 import { TbCameraPlus } from "react-icons/tb";
 import { RiTwitterXFill } from "react-icons/ri";
 import { TiSocialFacebook } from "react-icons/ti";
@@ -13,18 +13,65 @@ import SelectInput from "../../components/shared/inputs/SelectInput";
 const AddChef = () => {
   const [coverImage, setCoverImage] = useState(null);
   const [profileImage, setProfileImage] = useState(null);
+  const [formData, setFormData] = useState({
+    specialty: "",
+    short_description: "",
+    chef_name: "",
+    city: "",
+    country: "",
+    contact_number: "",
+    Add_Whatsapp: "",
+    Add_Facebook: "",
+    Add_Twitter: "",
+    Add_Tiktok: "",
+    Add_Youtube: "",
+    Add_Snapchat: "",
+    Add_Instagram: "",
+  });
 
   const handleCoverUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setCoverImage(URL.createObjectURL(file));
+      setCoverImage(file);
     }
   };
 
   const handleProfileUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setProfileImage(URL.createObjectURL(file));
+      setProfileImage(file);
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const form = new FormData();
+    Object.keys(formData).forEach((key) => {
+      form.append(key, formData[key]);
+    });
+
+    if (coverImage) form.append("cover_image", coverImage);
+    if (profileImage) form.append("profile_image", profileImage);
+
+    try {
+      const response = await axios.post("/api/chef", form, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error submitting form:", error);
     }
   };
 
@@ -40,7 +87,7 @@ const AddChef = () => {
             <div className="relative bg-gray-400 h-72 w-full rounded-lg flex justify-center items-center overflow-hidden">
               {coverImage && (
                 <img
-                  src={coverImage}
+                  src={URL.createObjectURL(coverImage)}
                   alt="Cover"
                   className="w-full h-full object-cover"
                 />
@@ -56,14 +103,15 @@ const AddChef = () => {
                 htmlFor="coverUpload"
                 className="absolute bottom-5 left-5 bg-white px-5 py-2 border rounded-md text-sm flex items-center cursor-pointer"
               >
-                <TbCameraPlus className="text-primary-1 text-2xl mr-2" /> إضافة صورة الغلاف
+                <TbCameraPlus className="text-primary-1 text-2xl mr-2" /> إضافة
+                صورة الغلاف
               </label>
             </div>
 
             <div className="absolute -bottom-8 right-5 w-40 h-40 bg-gray-100 rounded-full border flex justify-center items-center shadow-lg">
               {profileImage && (
                 <img
-                  src={profileImage}
+                  src={URL.createObjectURL(profileImage)}
                   alt="Profile"
                   className="w-full h-full object-cover rounded-full"
                 />
@@ -77,14 +125,17 @@ const AddChef = () => {
               />
               <label
                 htmlFor="profileUpload"
-                className="absolute bottom-2 left-2 cursor-pointer p-2 rounded-full shadow-md" 
+                className="absolute bottom-2 left-2 cursor-pointer p-2 rounded-full shadow-md"
               >
                 <TbCameraPlus className="text-primary-1 text-2xl " />
               </label>
             </div>
           </div>
 
-          <form className="space-y-14 mx-auto max-w-full">
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-14 mx-auto max-w-full"
+          >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-10 text-right">
               <SelectInput
                 name="specialty"
@@ -95,18 +146,21 @@ const AddChef = () => {
                   { value: "french", label: "فرنسي" },
                   { value: "arabic", label: "عربي" },
                 ]}
+                onChange={handleChange}
               />
               <Inputs
                 name="short_description"
                 label="وصف مختصر"
                 type="text"
                 className="w-full h-12 px-6 text-xl py-4"
+                onChange={handleChange}
               />
               <Inputs
                 name="chef_name"
                 label="اسم الشيف"
                 type="text"
                 className="w-full h-12 px-6 text-xl py-4"
+                onChange={handleChange}
               />
             </div>
 
@@ -120,6 +174,7 @@ const AddChef = () => {
                   { value: "riyadh", label: "الرياض" },
                   { value: "dubai", label: "دبي" },
                 ]}
+                onChange={handleChange}
               />
               <SelectInput
                 name="country"
@@ -130,6 +185,7 @@ const AddChef = () => {
                   { value: "ksa", label: "السعودية" },
                   { value: "uae", label: "الإمارات" },
                 ]}
+                onChange={handleChange}
               />
               <div>
                 <Inputs
@@ -137,6 +193,7 @@ const AddChef = () => {
                   label="رقم التواصل الخاص"
                   type="text"
                   className="w-full h-12 px-6 text-xl py-4"
+                  onChange={handleChange}
                 />
                 <p className="text-primary-1 text-sm mt-2">
                   الرقم لا يتم نشره أو عرضه للمستخدمين و إنما وسيلة للتواصل بين
@@ -152,6 +209,7 @@ const AddChef = () => {
                 type="text"
                 Icon={IoLogoWhatsapp}
                 className="w-full h-12 px-6 text-xl py-4"
+                onChange={handleChange}
               />
               <Inputs
                 name="Add_Facebook"
@@ -159,6 +217,7 @@ const AddChef = () => {
                 type="text"
                 Icon={TiSocialFacebook}
                 className="w-full h-12 px-6 text-xl py-4"
+                onChange={handleChange}
               />
               <Inputs
                 name="Add_Twitter"
@@ -166,6 +225,7 @@ const AddChef = () => {
                 type="text"
                 Icon={RiTwitterXFill}
                 className="w-full h-12 px-6 text-xl py-4"
+                onChange={handleChange}
               />
               <Inputs
                 name="Add_Tiktok"
@@ -173,6 +233,7 @@ const AddChef = () => {
                 type="text"
                 Icon={FaTiktok}
                 className="w-full h-12 px-6 text-xl py-4"
+                onChange={handleChange}
               />
               <Inputs
                 name="Add_Youtube"
@@ -180,6 +241,7 @@ const AddChef = () => {
                 type="text"
                 Icon={FaYoutube}
                 className="w-full h-12 px-6 text-xl py-4"
+                onChange={handleChange}
               />
               <Inputs
                 name="Add_Snapchat"
@@ -187,14 +249,18 @@ const AddChef = () => {
                 type="text"
                 Icon={FaSnapchatGhost}
                 className="w-full h-12 px-6 text-xl py-4"
+                onChange={handleChange}
               />
-              <Inputs
-                name="Add_Instagram"
-                label="اضافه رابط انستغرام"
-                type="text"
-                Icon={GrInstagram}
-                className="w-full h-12 px-6 text-xl py-4"
-              />
+              <div className="md:col-start-3 md:flex md:justify-end">
+                <Inputs
+                  name="Add_Instagram"
+                  label="اضافه رابط انستغرام"
+                  type="text"
+                  Icon={GrInstagram}
+                  className="w-full h-12 px-6 text-xl py-4"
+                  onChange={handleChange}
+                />
+              </div>
             </div>
 
             <div className="flex justify-center mt-12">
