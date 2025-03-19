@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Button from "../../components/shared/Buttons/Button";
 import Inputs from "../../components/shared/inputs/Inputs";
 import Footer from "../../components/layout/Footer";
@@ -9,10 +9,31 @@ import { TiSocialFacebook } from "react-icons/ti";
 import { IoLogoWhatsapp } from "react-icons/io";
 import { GrInstagram } from "react-icons/gr";
 import SelectInput from "../../components/shared/inputs/SelectInput";
+import { api_url } from "../../utils/ApiClient";
+import axios from "axios";
 
 const AddChef = () => {
-  const [coverImage, setCoverImage] = useState(null);
-  const [profileImage, setProfileImage] = useState(null);
+  const [specialties, setSpecialties] = useState([]);
+
+  useEffect(() => {
+    const fetchSpecialties = async () => {
+      try {
+        const response = await axios.get(`${api_url}/chef/recipe/types`);
+        const formattedData = response.data.map((item) => ({
+          value: item.id,
+          label: item.name.ar,
+        }));
+        setSpecialties(formattedData);
+      } catch (error) {
+        console.error("Error fetching specialties:", error);
+      }
+    };
+
+    fetchSpecialties();
+  }, []);
+
+  const [coverPicture, setcoverPicture] = useState(null);
+  const [profilePicture, setprofilePicture] = useState(null);
   const [formData, setFormData] = useState({
     specialty: "",
     short_description: "",
@@ -34,14 +55,14 @@ const AddChef = () => {
   const handleCoverUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setCoverImage(file);
+      setcoverPicture(file);
     }
   };
 
   const handleProfileUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setProfileImage(file);
+      setprofilePicture(file);
     }
   };
 
@@ -49,12 +70,12 @@ const AddChef = () => {
     const { name, value } = e.target;
 
     if (name.startsWith("socialMedia.")) {
-      const socialKey = name.split(".")[1]; 
+      const socialKey = name.split(".")[1];
       setFormData((prev) => ({
         ...prev,
         socialMedia: {
-          ...prev.socialMedia, 
-          [socialKey]: value, 
+          ...prev.socialMedia,
+          [socialKey]: value,
         },
       }));
     } else {
@@ -73,11 +94,11 @@ const AddChef = () => {
       form.append(key, formData[key]);
     });
 
-    if (coverImage) form.append("cover_image", coverImage);
-    if (profileImage) form.append("profile_image", profileImage);
+    if (coverPicture) form.append("cover_image", coverPicture);
+    if (profilePicture) form.append("profile_image", profilePicture);
 
     try {
-      const response = await axios.post("/api/chef", form, {
+      const response = await axios.post(`${api_url}/chef`, form, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -99,9 +120,9 @@ const AddChef = () => {
 
           <div className="mb-10 relative">
             <div className="relative bg-gray-400 h-72 w-full rounded-lg flex justify-center items-center overflow-hidden">
-              {coverImage && (
+              {coverPicture && (
                 <img
-                  src={URL.createObjectURL(coverImage)}
+                  src={URL.createObjectURL(coverPicture)}
                   alt="Cover"
                   className="w-full h-full object-cover"
                 />
@@ -123,9 +144,9 @@ const AddChef = () => {
             </div>
 
             <div className="absolute -bottom-8 right-5 w-40 h-40 bg-gray-100 rounded-full border flex justify-center items-center shadow-lg">
-              {profileImage && (
+              {profilePicture && (
                 <img
-                  src={URL.createObjectURL(profileImage)}
+                  src={URL.createObjectURL(profilePicture)}
                   alt="Profile"
                   className="w-full h-full object-cover rounded-full"
                 />
@@ -155,11 +176,7 @@ const AddChef = () => {
                 name="specialty"
                 label="أنواع وصفات الطبخ"
                 className="w-full px-6 text-xl py-4 "
-                options={[
-                  { value: "italian", label: "إيطالي" },
-                  { value: "french", label: "فرنسي" },
-                  { value: "arabic", label: "عربي" },
-                ]}
+                options={specialties}
                 onChange={handleChange}
               />
               <Inputs
