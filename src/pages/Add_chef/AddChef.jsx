@@ -20,13 +20,15 @@ const AddChef = () => {
     city: "",
     country: "",
     contact_number: "",
-    Add_Whatsapp: "",
-    Add_Facebook: "",
-    Add_Twitter: "",
-    Add_Tiktok: "",
-    Add_Youtube: "",
-    Add_Snapchat: "",
-    Add_Instagram: "",
+    socialMedia: {
+      whatsapp: "",
+      facebook: "",
+      x: "",
+      tiktok: "",
+      youtube: "",
+      snapchat: "",
+      instagram: "",
+    },
   });
 
   const handleCoverUpload = (event) => {
@@ -45,10 +47,22 @@ const AddChef = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+
+    if (name.startsWith("socialMedia.")) {
+      const socialKey = name.split(".")[1]; 
+      setFormData((prev) => ({
+        ...prev,
+        socialMedia: {
+          ...prev.socialMedia, 
+          [socialKey]: value, 
+        },
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const handleSubmit = async (event) => {
@@ -204,7 +218,7 @@ const AddChef = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-10 text-right">
               <Inputs
-                name="Add_Whatsapp"
+                name="socialMedia.whatsapp"
                 label="اضافه رقم واتس اب"
                 type="text"
                 Icon={IoLogoWhatsapp}
@@ -212,7 +226,7 @@ const AddChef = () => {
                 onChange={handleChange}
               />
               <Inputs
-                name="Add_Facebook"
+                name="socialMedia.facebook"
                 label="اضافة رابط فيس بوك"
                 type="text"
                 Icon={TiSocialFacebook}
@@ -220,7 +234,7 @@ const AddChef = () => {
                 onChange={handleChange}
               />
               <Inputs
-                name="Add_Twitter"
+                name="socialMedia.x"
                 label="اضافة رابط اكس"
                 type="text"
                 Icon={RiTwitterXFill}
@@ -228,7 +242,7 @@ const AddChef = () => {
                 onChange={handleChange}
               />
               <Inputs
-                name="Add_Tiktok"
+                name="socialMedia.tiktok"
                 label="اضافة رابط تيك توك"
                 type="text"
                 Icon={FaTiktok}
@@ -236,7 +250,7 @@ const AddChef = () => {
                 onChange={handleChange}
               />
               <Inputs
-                name="Add_Youtube"
+                name="socialMedia.youtube"
                 label="اضافه رابط يوتيوب"
                 type="text"
                 Icon={FaYoutube}
@@ -244,7 +258,7 @@ const AddChef = () => {
                 onChange={handleChange}
               />
               <Inputs
-                name="Add_Snapchat"
+                name="socialMedia.snapchat"
                 label="اضافه رابط سناب شات"
                 type="text"
                 Icon={FaSnapchatGhost}
@@ -253,7 +267,7 @@ const AddChef = () => {
               />
               <div className="md:col-start-3 md:flex md:justify-end">
                 <Inputs
-                  name="Add_Instagram"
+                  name="socialMedia.instagram"
                   label="اضافه رابط انستغرام"
                   type="text"
                   Icon={GrInstagram}
