@@ -11,9 +11,12 @@ import { GrInstagram } from "react-icons/gr";
 import SelectInput from "../../components/shared/inputs/SelectInput";
 import { api_url } from "../../utils/ApiClient";
 import axios from "axios";
+import CheckboxSelectInput from "../../components/shared/inputs/CheckboxSelectInput";
+import countriesData from "../../assets/countries.json";
 
 const AddChef = () => {
   const [specialties, setSpecialties] = useState([]);
+  const [cities, setCities] = useState([]);
 
   useEffect(() => {
     const fetchSpecialties = async () => {
@@ -52,6 +55,24 @@ const AddChef = () => {
     },
   });
 
+  // ✅ تحديث المدن عند تغيير الدولة
+  useEffect(() => {
+    if (formData.country) {
+      const selectedCountry = countriesData.find(
+        (c) => c.name.trim() === formData.country.trim()
+      );
+
+      setCities(
+        selectedCountry
+          ? selectedCountry.states.map((state) => ({
+              value: state.name,
+              label: state.name,
+            }))
+          : []
+      );
+    }
+  }, [formData.country]);
+
   const handleCoverUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -69,7 +90,18 @@ const AddChef = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    if (name.startsWith("socialMedia.")) {
+    if (name === "country") {
+      setFormData((prev) => ({
+        ...prev,
+        country: value,
+        city: "", // ✅ تفريغ المدينة عند تغيير الدولة
+      }));
+    } else if (name === "city") {
+      setFormData((prev) => ({
+        ...prev,
+        city: value,
+      }));
+    } else if (name.startsWith("socialMedia.")) {
       const socialKey = name.split(".")[1];
       setFormData((prev) => ({
         ...prev,
@@ -172,13 +204,13 @@ const AddChef = () => {
             className="space-y-14 mx-auto max-w-full"
           >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-10 text-right">
-              <SelectInput
+              <CheckboxSelectInput
                 name="specialty"
                 label="أنواع وصفات الطبخ"
-                className="w-full px-6 text-xl py-4 "
                 options={specialties}
                 onChange={handleChange}
               />
+
               <Inputs
                 name="short_description"
                 label="وصف مختصر"
@@ -200,22 +232,18 @@ const AddChef = () => {
                 name="city"
                 label="المدينة"
                 className="w-full px-6 text-xl py-4"
-                options={[
-                  { value: "cairo", label: "القاهرة" },
-                  { value: "riyadh", label: "الرياض" },
-                  { value: "dubai", label: "دبي" },
-                ]}
+                options={cities}
                 onChange={handleChange}
+                disabled={!formData.country}
               />
               <SelectInput
                 name="country"
                 label="الدولة"
                 className="w-full px-6 text-xl py-4"
-                options={[
-                  { value: "egypt", label: "مصر" },
-                  { value: "ksa", label: "السعودية" },
-                  { value: "uae", label: "الإمارات" },
-                ]}
+                options={countriesData.map((c) => ({
+                  value: c.name,
+                  label: c.name,
+                }))}
                 onChange={handleChange}
               />
               <div>
