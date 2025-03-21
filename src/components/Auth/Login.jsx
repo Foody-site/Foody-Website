@@ -78,6 +78,7 @@ const Login = () => {
               label={loading ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}
               className="w-full bg-primary-1 hover:bg-hover_primary-1"
               disabled={loading}
+              type="submit"
             />
           </form>
 
