@@ -19,6 +19,7 @@ const AddChef = () => {
   const [cities, setCities] = useState([]);
 
   useEffect(() => {
+    setSpecialties([]);
     const fetchSpecialties = async () => {
       try {
         const response = await axios.get(`${api_url}/chef/recipe/types`);
@@ -31,16 +32,15 @@ const AddChef = () => {
         console.error("Error fetching specialties:", error);
       }
     };
-
     fetchSpecialties();
   }, []);
 
   const [coverPicture, setcoverPicture] = useState(null);
   const [profilePicture, setprofilePicture] = useState(null);
   const [formData, setFormData] = useState({
-    specialty: "",
-    short_description: "",
-    chef_name: "",
+    recipeTypes: "",
+    description: "",
+    name: "",
     city: "",
     country: "",
     contact_number: "",
@@ -55,15 +55,15 @@ const AddChef = () => {
     },
   });
 
-  // ✅ تحديث المدن عند تغيير الدولة
   useEffect(() => {
     if (formData.country) {
       const selectedCountry = countriesData.find(
-        (c) => c.name.trim() === formData.country.trim()
+        (c) =>
+          c.name.trim().toLowerCase() === formData.country.trim().toLowerCase()
       );
 
       setCities(
-        selectedCountry
+        selectedCountry && selectedCountry.states
           ? selectedCountry.states.map((state) => ({
               value: state.name,
               label: state.name,
@@ -75,15 +75,19 @@ const AddChef = () => {
 
   const handleCoverUpload = (event) => {
     const file = event.target.files[0];
-    if (file) {
+    if (file && file.type.startsWith("image/")) {
       setcoverPicture(file);
+    } else {
+      console.error("الرجاء اختيار صورة صحيحة!");
     }
   };
 
   const handleProfileUpload = (event) => {
     const file = event.target.files[0];
-    if (file) {
+    if (file && file.type.startsWith("image/")) {
       setprofilePicture(file);
+    } else {
+      console.error("الرجاء اختيار صورة صحيحة!");
     }
   };
 
@@ -93,8 +97,8 @@ const AddChef = () => {
     if (name === "country") {
       setFormData((prev) => ({
         ...prev,
-        country: value,
-        city: "", // ✅ تفريغ المدينة عند تغيير الدولة
+        country: value.trim(),
+        city: "",
       }));
     } else if (name === "city") {
       setFormData((prev) => ({
@@ -117,31 +121,44 @@ const AddChef = () => {
       }));
     }
   };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    const form = new FormData();
-    Object.keys(formData).forEach((key) => {
-      form.append(key, formData[key]);
-    });
-
-    if (coverPicture) form.append("cover_image", coverPicture);
-    if (profilePicture) form.append("profile_image", profilePicture);
-
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      console.error("لا يوجد توكن، يرجى تسجيل الدخول.");
+      return;
+    }
+  
+    // إعداد البيانات بدون FormData
+    const formDataToSend = {
+      name: formData.name,
+      description: formData.description,
+      recipeTypes: formData.recipeTypes,
+      country: formData.country,
+      city: formData.city,
+      contact_number: formData.contact_number,
+      socialMedia: formData.socialMedia,
+      coverPicture: coverPicture,  // تحقق إن كانت الصور تُرفع بشكل منفصل
+      profilePicture: profilePicture,
+    };
+  
     try {
-      const response = await axios.post(`${api_url}/chef`, form, {
+      const response = await axios.post(`${api_url}/chef/add`, formDataToSend, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
       });
-
-      console.log(response.data);
+  
+      console.log("تمت الإضافة بنجاح:", response.data);
     } catch (error) {
-      console.error("Error submitting form:", error);
+      if (error.response) {
+        console.error("Response Data:", error.response.data);
+      }
     }
   };
-
+  
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       <div className="flex-grow flex justify-center items-center px-8 py-8">
@@ -200,19 +217,19 @@ const AddChef = () => {
           </div>
 
           <form
-            onSubmit={handleSubmit}
             className="space-y-14 mx-auto max-w-full"
+            onSubmit={handleSubmit}
           >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-10 text-right">
               <CheckboxSelectInput
-                name="specialty"
+                name="recipeTypes"
                 label="أنواع وصفات الطبخ"
                 options={specialties}
                 onChange={handleChange}
               />
 
               <Inputs
-                name="short_description"
+                name="description"
                 label="وصف مختصر"
                 type="text"
                 className="w-full h-12 px-6 text-xl py-4"
@@ -242,10 +259,11 @@ const AddChef = () => {
                 className="w-full px-6 text-xl py-4"
                 options={countriesData.map((c) => ({
                   value: c.name,
-                  label: c.name,
+                  label: `${c.name} (${c.iso2})`,
                 }))}
                 onChange={handleChange}
               />
+
               <div>
                 <Inputs
                   name="contact_number"

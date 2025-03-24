@@ -5227,34 +5227,6 @@
     "iso3": "IMN"
   },
   {
-    "name": "Israel",
-    "flag": "https://flagcdn.com/w320/il.png",
-    "states": [
-      {
-        "name": "Central District"
-      },
-      {
-        "name": "Haifa District"
-      },
-      {
-        "name": "Jerusalem District"
-      },
-      {
-        "name": "Northern District"
-      },
-      {
-        "name": "Southern District"
-      },
-      {
-        "name": "Tel Aviv District"
-      }
-    ],
-    "currency": "ILS",
-    "dialCode": "+972",
-    "iso2": "IL",
-    "iso3": "ISR"
-  },
-  {
     "name": "Italy",
     "flag": "https://flagcdn.com/w320/it.png",
     "states": [
