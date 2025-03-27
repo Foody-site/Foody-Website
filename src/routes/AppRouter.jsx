@@ -5,6 +5,7 @@ import Login from "../components/Auth/Login";
 import Register from "../components/Auth/Register";
 import AddChef from "../pages/Add_chef/AddChef";
 import ChooseRole from "../components/Auth/ChooseRole";
+import Login_2 from "../components/Auth/Login_2";
 
 const AppRouter = () => {
   return (
@@ -13,6 +14,7 @@ const AppRouter = () => {
         <Route index element={<Home />} />
       </Route>
       <Route path="/login" element={<Login />} />
+      <Route path="/login2" element={<Login_2 />} />
       <Route path="/Register" element={<Register />} />
       <Route path="/ChooseRole" element={<ChooseRole />} />
       <Route path="/AddChef" element={<AddChef />} />
