@@ -124,7 +124,9 @@ const AddChef = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    const token = localStorage.getItem("accessToken");
+    const token = localStorage.getItem("token");
+    console.log(token);
+    
     if (!token) {
       console.error("لا يوجد توكن، يرجى تسجيل الدخول.");
       return;
@@ -139,12 +141,12 @@ const AddChef = () => {
       city: formData.city,
       contact_number: formData.contact_number,
       socialMedia: formData.socialMedia,
-      coverPicture: coverPicture,  // تحقق إن كانت الصور تُرفع بشكل منفصل
+      coverPicture: coverPicture, 
       profilePicture: profilePicture,
     };
   
     try {
-      const response = await axios.post(`${api_url}/chef/add`, formDataToSend, {
+      const response = await axios.post(`${api_url}/chef`, formDataToSend, {
         headers: {
           "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json",
