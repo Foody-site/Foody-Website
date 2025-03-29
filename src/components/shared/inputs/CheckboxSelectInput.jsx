@@ -22,7 +22,12 @@ const CheckboxDropdown = ({
       : selectedOptions.filter((item) => item !== value);
 
     setSelectedOptions(updatedSelection);
-    onChange(updatedSelection);
+    onChange({
+      target: {
+        name: name, // اسم الحقل
+        value: updatedSelection, // القيم المحددة
+      },
+    });
   };
 
   return (

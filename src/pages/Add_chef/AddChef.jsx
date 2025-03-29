@@ -15,35 +15,22 @@ import CheckboxSelectInput from "../../components/shared/inputs/CheckboxSelectIn
 import countriesData from "../../assets/countries.json";
 
 const AddChef = () => {
-  const [specialties, setSpecialties] = useState([]);
+  // State for available recipe types from API
+  const [availableRecipeTypes, setAvailableRecipeTypes] = useState([]);
   const [cities, setCities] = useState([]);
 
-  useEffect(() => {
-    setSpecialties([]);
-    const fetchSpecialties = async () => {
-      try {
-        const response = await axios.get(`${api_url}/chef/recipe/types`);
-        const formattedData = response.data.map((item) => ({
-          value: item.id,
-          label: item.name.ar,
-        }));
-        setSpecialties(formattedData);
-      } catch (error) {
-        console.error("Error fetching specialties:", error);
-      }
-    };
-    fetchSpecialties();
-  }, []);
+  // Form images
+  const [coverPicture, setCoverPicture] = useState(null);
+  const [profilePicture, setProfilePicture] = useState(null);
 
-  const [coverPicture, setcoverPicture] = useState(null);
-  const [profilePicture, setprofilePicture] = useState(null);
+  // Form data state
   const [formData, setFormData] = useState({
-    recipeTypes: "",
+    selectedRecipeTypes: [], // Renamed for clarity
     description: "",
     name: "",
     city: "",
     country: "",
-    contact_number: "",
+    phone: "",
     socialMedia: {
       whatsapp: "",
       facebook: "",
@@ -55,6 +42,25 @@ const AddChef = () => {
     },
   });
 
+  // Fetch recipe types on component mount
+  useEffect(() => {
+    const fetchRecipeTypes = async () => {
+      try {
+        const response = await axios.get(`${api_url}/chef/recipe/types`);
+        const formattedData = response.data.map((item) => ({
+          value: item.id, // Make sure this is the MongoDB ID
+          label: item.name.ar,
+        }));
+        setAvailableRecipeTypes(formattedData);
+        console.log("Available recipe types:", formattedData); // Debug
+      } catch (error) {
+        console.error("Error fetching recipe types:", error);
+      }
+    };
+    fetchRecipeTypes();
+  }, []);
+
+  // Update cities when country changes
   useEffect(() => {
     if (formData.country) {
       const selectedCountry = countriesData.find(
@@ -76,7 +82,7 @@ const AddChef = () => {
   const handleCoverUpload = (event) => {
     const file = event.target.files[0];
     if (file && file.type.startsWith("image/")) {
-      setcoverPicture(file);
+      setCoverPicture(file);
     } else {
       console.error("الرجاء اختيار صورة صحيحة!");
     }
@@ -85,7 +91,7 @@ const AddChef = () => {
   const handleProfileUpload = (event) => {
     const file = event.target.files[0];
     if (file && file.type.startsWith("image/")) {
-      setprofilePicture(file);
+      setProfilePicture(file);
     } else {
       console.error("الرجاء اختيار صورة صحيحة!");
     }
@@ -94,24 +100,20 @@ const AddChef = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    if (name === "country") {
+    if (name === "selectedRecipeTypes") {
+      const selectedTypeIds = Array.isArray(value) ? value : [value];
+
       setFormData((prev) => ({
         ...prev,
-        country: value.trim(),
-        city: "",
-      }));
-    } else if (name === "city") {
-      setFormData((prev) => ({
-        ...prev,
-        city: value,
+        selectedRecipeTypes: selectedTypeIds,
       }));
     } else if (name.startsWith("socialMedia.")) {
-      const socialKey = name.split(".")[1];
+      const field = name.split(".")[1];
       setFormData((prev) => ({
         ...prev,
         socialMedia: {
           ...prev.socialMedia,
-          [socialKey]: value,
+          [field]: value,
         },
       }));
     } else {
@@ -121,46 +123,78 @@ const AddChef = () => {
       }));
     }
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     const token = localStorage.getItem("token");
-    console.log(token);
-    
     if (!token) {
       console.error("لا يوجد توكن، يرجى تسجيل الدخول.");
       return;
     }
-  
-    // إعداد البيانات بدون FormData
-    const formDataToSend = {
-      name: formData.name,
-      description: formData.description,
-      recipeTypes: formData.recipeTypes,
-      country: formData.country,
-      city: formData.city,
-      contact_number: formData.contact_number,
-      socialMedia: formData.socialMedia,
-      coverPicture: coverPicture, 
-      profilePicture: profilePicture,
-    };
-  
+
+    const formDataToSend = new FormData();
+    formDataToSend.append("name", formData.name);
+    formDataToSend.append("description", formData.description);
+
+    // Handle recipe types properly
+    // Important: Add a special field to indicate this is an empty array if no types are selected
+    if (
+      formData.selectedRecipeTypes &&
+      formData.selectedRecipeTypes.length > 0
+    ) {
+      formData.selectedRecipeTypes.forEach((typeId) => {
+        // Make sure we're adding valid IDs
+        if (typeId) {
+          formDataToSend.append("recipeTypes", typeId);
+        }
+      });
+    } else {
+      // This line is crucial - it tells the server we're intentionally sending an empty array
+      formDataToSend.append("recipeTypes[]", ""); // The empty bracket notation signals an empty array
+    }
+
+    formDataToSend.append("country", formData.country);
+    formDataToSend.append("city", formData.city);
+    formDataToSend.append("phone", formData.phone);
+
+    // Handle social media fields
+    Object.keys(formData.socialMedia).forEach((platform) => {
+      if (formData.socialMedia[platform]) {
+        formDataToSend.append(
+          `socialMedia.${platform}`,
+          formData.socialMedia[platform]
+        );
+      }
+    });
+
+    if (coverPicture) formDataToSend.append("coverPicture", coverPicture);
+    if (profilePicture) formDataToSend.append("profilePicture", profilePicture);
+
+    // Debug what's being sent
+    console.log("Form data being sent:");
+    for (let pair of formDataToSend.entries()) {
+      console.log(pair[0] + ": " + pair[1]);
+    }
+
     try {
       const response = await axios.post(`${api_url}/chef`, formDataToSend, {
         headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
         },
       });
-  
+
       console.log("تمت الإضافة بنجاح:", response.data);
+      // Consider adding success message or redirect here
     } catch (error) {
-      if (error.response) {
-        console.error("Response Data:", error.response.data);
-      }
+      console.error(
+        "حدث خطأ أثناء الإرسال:",
+        error.response ? error.response.data : error
+      );
+      // Consider adding error message UI feedback here
     }
   };
-  
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       <div className="flex-grow flex justify-center items-center px-8 py-8">
@@ -224,12 +258,11 @@ const AddChef = () => {
           >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-10 text-right">
               <CheckboxSelectInput
-                name="recipeTypes"
+                name="selectedRecipeTypes"
                 label="أنواع وصفات الطبخ"
-                options={specialties}
-                onChange={handleChange}
+                options={availableRecipeTypes}
+                onChange={handleChange} // Use the new handler function
               />
-
               <Inputs
                 name="description"
                 label="وصف مختصر"
@@ -238,7 +271,7 @@ const AddChef = () => {
                 onChange={handleChange}
               />
               <Inputs
-                name="chef_name"
+                name="name"
                 label="اسم الشيف"
                 type="text"
                 className="w-full h-12 px-6 text-xl py-4"
@@ -268,7 +301,7 @@ const AddChef = () => {
 
               <div>
                 <Inputs
-                  name="contact_number"
+                  name="phone"
                   label="رقم التواصل الخاص"
                   type="text"
                   className="w-full h-12 px-6 text-xl py-4"
