@@ -16,6 +16,7 @@ const Register = () => {
     birthday: "",
     role: location.state?.role,
   });
+  const [loading, setLoading] = useState(false);
 
   const [errors, setErrors] = useState({});
   const validateForm = () => {
@@ -74,6 +75,7 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     if (!validateForm()) {
       return;
     }
@@ -86,13 +88,14 @@ const Register = () => {
 
     try {
       const res = await axios.post(`${api_url}/auth/register`, updatedData);
-      const { accessToken, refreshToken } = res.data;
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("refreshToken", refreshToken);
+      localStorage.setItem("token", res.data.accessToken);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
       alert("تم التسجيل بنجاح");
       window.location.href = "/";
     } catch (err) {
       alert(err.response?.data?.message || "حدث خطأ أثناء التسجيل!");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -191,7 +194,8 @@ const Register = () => {
             <div className="flex justify-center">
               <Button
                 type="submit"
-                label="تسجيل حساب جديد"
+                label={loading ? "جاري تسجيل الدخول..." : "تسجيل حساب جديد"}
+                disabled={loading}
                 className="max-w-[290px] bg-primary-1 hover:bg-hover_primary-1 text-white py-2 rounded-md text-lg font-semibold"
               />
             </div>
