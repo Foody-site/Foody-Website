@@ -15,6 +15,7 @@ import CheckboxSelectInput from "../../components/shared/inputs/CheckboxSelectIn
 import countriesData from "../../assets/countries.json";
 
 const AddChef = () => {
+  const [loading, setLoading] = useState(false);
   // State for available recipe types from API
   const [availableRecipeTypes, setAvailableRecipeTypes] = useState([]);
   const [cities, setCities] = useState([]);
@@ -126,7 +127,7 @@ const AddChef = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setLoading(true);
     const token = localStorage.getItem("token");
     if (!token) {
       console.error("لا يوجد توكن، يرجى تسجيل الدخول.");
@@ -193,6 +194,8 @@ const AddChef = () => {
         error.response ? error.response.data : error
       );
       // Consider adding error message UI feedback here
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -378,7 +381,8 @@ const AddChef = () => {
             <div className="flex justify-center mt-12">
               <Button
                 type="submit"
-                label="إضافة شيف"
+                label={loading ? " جاري الاضافه ...." : "إضافة شيف"}
+                disabled={loading}
                 className="max-w-[350px] bg-primary-1 hover:bg-hover_primary-1 text-white py-2 rounded-md text-lg font-semibold"
               />
             </div>
