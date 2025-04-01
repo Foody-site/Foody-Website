@@ -44,10 +44,7 @@ const AddRecipe = () => {
   ]);
 
   const handleAddIngredient = () => {
-    setIngredients([
-      ...ingredients,
-      { unit: "", quantity: "", name: "" }, 
-    ]);
+    setIngredients([...ingredients, { unit: "", quantity: "", name: "" }]);
   };
 
   const handleChange = (index, field, value) => {
@@ -172,7 +169,6 @@ const AddRecipe = () => {
                   />
                 </div>
               ))}
-
               <button
                 type="button"
                 onClick={handleAddIngredient}
@@ -181,6 +177,28 @@ const AddRecipe = () => {
                 <FaPlus className="text-2xl" />
                 <span className="ml-2">أضف مكون جديد</span>
               </button>
+            </div>
+            <div className="grid grid-cols-1  md:grid-cols-3 gap-x-10 gap-y-10 text-right mb-4 pt-8">
+              <SelectInput
+                name="mainIngredient"
+                label="المكونات الرئيسية"
+                className="w-full px-6 text-xl py-4"
+                options={[
+                  { value: "meat", label: "لحم" },
+                  { value: "chicken", label: "دجاج" },
+                  { value: "fish", label: "أسماك" },
+                  { value: "vegetable", label: "خضار" },
+                  { value: "rice", label: "أرز" },
+                  { value: "macaroni", label: "مكرونة" },
+                ]}
+              />
+
+              <Inputs
+                name="youtubeLink"
+                label="رابط الفيديو الخاص بالوصفه"
+                type="text"
+                className="w-full h-12 px-6 text-xl py-4"
+              />
             </div>
           </form>
         </div>
