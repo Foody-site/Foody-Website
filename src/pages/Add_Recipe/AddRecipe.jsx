@@ -70,12 +70,12 @@ const AddRecipe = () => {
     const { name, value, type, checked } = e.target;
     if (name === "selectedRecipeTypes") {
       const selectedTypeIds = Array.isArray(value) ? value : [value];
-
+  
       // Ensure we're only keeping MongoDB ObjectIds (valid strings with length 24)
       const validIds = selectedTypeIds.filter(
         (id) => typeof id === "string" && id.length === 24
       );
-
+  
       setFormData((prev) => ({
         ...prev,
         selectedRecipeTypes: validIds,
@@ -86,7 +86,7 @@ const AddRecipe = () => {
       [name]: type === "checkbox" ? checked : value,
     }));
   };
-
+    
   const handleIngredientChange = (index, field, value) => {
     const updatedIngredients = [...formData.ingredients];
     updatedIngredients[index][field] = value;
@@ -210,22 +210,22 @@ const AddRecipe = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Form data before submission:", formData);
-    console.log("Recipe types:", formData.recipeTypes);
-
-    // Check if recipeTypes is a valid array of MongoDB IDs
+  
+    // Check if selectedRecipeTypes is a valid array of MongoDB IDs
     const validIds =
-      Array.isArray(formData.recipeTypes) &&
-      formData.recipeTypes.every(
+      Array.isArray(formData.selectedRecipeTypes) &&
+      formData.selectedRecipeTypes.every(
         (id) => typeof id === "string" && id.length === 24
       );
-
+  
     console.log("Are recipe types valid MongoDB IDs?", validIds);
+  
     // Validate form first
     if (!validateForm()) {
       console.error("يرجى تصحيح الأخطاء قبل الإرسال");
       return;
     }
-
+  
     setLoading(true);
     const token = localStorage.getItem("token");
     if (!token) {
@@ -233,7 +233,7 @@ const AddRecipe = () => {
       setLoading(false);
       return;
     }
-
+  
     const data = new FormData();
     data.append("name", formData.name);
     data.append("description", formData.description);
@@ -243,21 +243,20 @@ const AddRecipe = () => {
     data.append("totalTime", formData.totalTime);
     data.append("isAllergenic", formData.isAllergenic);
     data.append("mainIngredient", formData.mainIngredient);
-
+  
     // Limit preparationSteps to 20 items as per validation
     const limitedSteps = formData.preparationSteps.slice(0, 20);
     limitedSteps.forEach((step, index) =>
       data.append(`preparationSteps[${index}]`, step)
     );
-
+  
     formData.ingredients.forEach((ingredient, index) => {
       data.append(`ingredients[${index}][name]`, ingredient.name);
       data.append(`ingredients[${index}][quantity]`, ingredient.quantity);
       data.append(`ingredients[${index}][unit]`, ingredient.unit);
     });
-
+  
     // Handle recipe types properly
-    // Important: Add a special field to indicate this is an empty array if no types are selected
     if (
       formData.selectedRecipeTypes &&
       formData.selectedRecipeTypes.length > 0
@@ -265,18 +264,17 @@ const AddRecipe = () => {
       formData.selectedRecipeTypes.forEach((typeId) => {
         // Make sure we're adding valid IDs
         if (typeId) {
-          data.append("recipeTypes", typeId); // Use 'data' instead of 'formDataToSend'
+          data.append("recipeTypes", typeId); // Use 'selectedRecipeTypes' here
         }
       });
     } else {
-      // This line is crucial - it tells the server we're intentionally sending an empty array
-      data.append("recipeTypes[]", ""); // The empty bracket notation signals an empty array
+      data.append("recipeTypes[]", ""); // Handle empty array case
     }
-
+  
     if (photo) {
       data.append("photo", photo);
     }
-
+  
     try {
       const response = await axios.post(`${api_url}/recipe`, data, {
         headers: {
@@ -284,9 +282,8 @@ const AddRecipe = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-
+  
       alert("تمت الإضافة بنجاح");
-      // Reset form or redirect
       setFormData({
         name: "",
         description: "",
@@ -310,7 +307,7 @@ const AddRecipe = () => {
       setLoading(false);
     }
   };
-
+  
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       <div className="flex-grow flex justify-center items-center px-8 py-8">
