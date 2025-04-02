@@ -8,8 +8,11 @@ import axios from "axios";
 import PreparationTimePicker from "../../components/shared/inputs/PreparationTimePicker";
 import PreparationSteps from "../../components/shared/inputs/PreparationSteps";
 import SelectInput from "../../components/shared/inputs/SelectInput";
+import Button from "../../components/shared/Buttons/Button";
+import allergy from "../../assets/allergy.jpg";
 
 const AddRecipe = () => {
+  const [isOpen, setIsOpen] = useState(false);
   const [photo, setphoto] = useState(null);
   const [availableRecipeTypes, setAvailableRecipeTypes] = useState([]);
 
@@ -73,10 +76,10 @@ const AddRecipe = () => {
               accept="image/*"
               onChange={handlephoto}
               className="hidden"
-              id="RecipeUpload"
+              id="photo"
             />
             <label
-              htmlFor="RecipeUpload"
+              htmlFor="photo"
               className="absolute bottom-2 right-2 cursor-pointer p-2 bg-white rounded-full shadow-md"
             >
               <TbCameraPlus className="text-primary-1 text-2xl" />
@@ -101,25 +104,27 @@ const AddRecipe = () => {
                 type="text"
                 className="w-full h-12 px-6 text-xl py-4"
               />
-              <div className="flex justify-end gap-x-8 col-span-full">
-                <PreparationTimePicker
-                  label="وقت الطبخ"
-                  onHourChange={(value) => setHours(value)}
-                  onMinuteChange={(value) => setMinutes(value)}
-                  className="w-[30%]"
-                />
-                <PreparationTimePicker
-                  label="وقت الإعداد"
-                  onHourChange={(value) => setHours(value)}
-                  onMinuteChange={(value) => setMinutes(value)}
-                  className="w-[30%]"
-                />
-              </div>
-
-              <div className="col-span-full w-full">
-                <PreparationSteps className="w-full" />
-              </div>
             </div>
+
+            <div className="flex justify-end gap-x-8 col-span-full pt-10">
+              <PreparationTimePicker
+                label="وقت الطبخ"
+                onHourChange={(value) => setHours(value)}
+                onMinuteChange={(value) => setMinutes(value)}
+                className="w-[27%]"
+              />
+              <PreparationTimePicker
+                label="وقت الإعداد"
+                onHourChange={(value) => setHours(value)}
+                onMinuteChange={(value) => setMinutes(value)}
+                className="w-[27%]"
+              />
+            </div>
+
+            <div className="col-span-full w-full pt-10">
+              <PreparationSteps className="w-full" />
+            </div>
+
             <div className="pt-8">
               {ingredients.map((ingredient, index) => (
                 <div
@@ -178,26 +183,94 @@ const AddRecipe = () => {
                 <span className="ml-2">أضف مكون جديد</span>
               </button>
             </div>
-            <div className="grid grid-cols-1  md:grid-cols-3 gap-x-10 gap-y-10 text-right mb-4 pt-8">
-              <SelectInput
-                name="mainIngredient"
-                label="المكونات الرئيسية"
-                className="w-full px-6 text-xl py-4"
-                options={[
-                  { value: "meat", label: "لحم" },
-                  { value: "chicken", label: "دجاج" },
-                  { value: "fish", label: "أسماك" },
-                  { value: "vegetable", label: "خضار" },
-                  { value: "rice", label: "أرز" },
-                  { value: "macaroni", label: "مكرونة" },
-                ]}
-              />
 
-              <Inputs
-                name="youtubeLink"
-                label="رابط الفيديو الخاص بالوصفه"
-                type="text"
-                className="w-full h-12 px-6 text-xl py-4"
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-10 text-right mb-4 pt-8">
+              <div className="md:col-start-2 md:col-span-2 flex justify-end space-x-10">
+                <div className="w-[50%]">
+                  <SelectInput
+                    name="mainIngredient"
+                    label="المكونات الرئيسية"
+                    className="w-full px-6 text-xl py-4"
+                    options={[
+                      { value: "meat", label: "لحم" },
+                      { value: "chicken", label: "دجاج" },
+                      { value: "fish", label: "أسماك" },
+                      { value: "vegetable", label: "خضار" },
+                      { value: "rice", label: "أرز" },
+                      { value: "macaroni", label: "مكرونة" },
+                    ]}
+                  />
+                </div>
+                <div className="w-[50%]">
+                  <Inputs
+                    name="youtubeLink"
+                    label="رابط الفيديو الخاص بالوصفه"
+                    type="text"
+                    className="w-full h-12 px-6 text-xl py-4"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-row-reverse items-center gap-x-2 pt-6 mt-7">
+              <label
+                htmlFor="isAllergenic"
+                className="text-lg font-medium text-gray-700"
+              >
+                هل الوصفة تحتوي على مسببات الحساسية ؟
+              </label>
+              <input
+                type="checkbox"
+                id="isAllergenic"
+                name="isAllergenic"
+                className="w-5 h-5 accent-primary-1"
+              />
+            </div>
+            <div className="text-right">
+              <p className="text-gray-500 text-sm mt-2">
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsOpen(true);
+                  }}
+                  className="text-primary-1 ml-1 underline"
+                >
+                  مسببات الحساسية
+                </button>
+                لمعرفة المذيد عن مسببات الحساسية يرجى الضعط على الرابط التالي{" "}
+              </p>
+
+              {isOpen && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                  <div className="bg-white p-6 rounded-lg shadow-lg w-[40%] max-w-lg text-center relative">
+                    <button
+                      onClick={() => setIsOpen(false)}
+                      className="absolute top-3 right-4 text-gray-600 text-2xl"
+                    >
+                      &times;
+                    </button>
+                    <h2 className="text-xl font-semibold mb-4">
+                      مسببات الحساسية
+                    </h2>
+                    <img
+                      src={allergy}
+                      alt="مسببات الحساسية"
+                      className="w-[80%] h-auto mx-auto rounded-md"
+                    />
+                    <p className="text-gray-600 mt-4">
+                      هذه قائمة بمسببات الحساسية الشائعة، يرجى الانتباه عند
+                      تحضير الطعام.
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="flex justify-center mt-12">
+              <Button
+                type="submit"
+                label="إضافة وصفة"
+                className="max-w-[350px]  bg-primary-1 hover:bg-hover_primary-1 text-white py-2 rounded-md text-lg font-semibold"
               />
             </div>
           </form>

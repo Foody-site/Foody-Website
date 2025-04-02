@@ -1,17 +1,20 @@
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 
-const PreparationSteps = ({ className = "" }) => {
+const PreparationSteps = ({ className = "", onChange }) => {
   const [steps, setSteps] = useState([""]);
 
   const addStep = () => {
-    setSteps([...steps, ""]);
+    const newSteps = [...steps, ""];
+    setSteps(newSteps);
+    onChange(newSteps);
   };
 
   const handleStepChange = (index, value) => {
     const updatedSteps = [...steps];
     updatedSteps[index] = value;
     setSteps(updatedSteps);
+    onChange(updatedSteps);
   };
 
   return (
