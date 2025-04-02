@@ -1,25 +1,29 @@
 import React, { useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
 
-const PreparationTimePicker = ({ label, onChange, className = "" }) => {
+const PreparationTimePicker = ({
+  label,
+  onHourChange,
+  onMinuteChange,
+  className = "",
+}) => {
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
-
-  const updateTotalMinutes = (newHours, newMinutes) => {
-    const totalMinutes = newHours * 60 + newMinutes;
-    onChange(totalMinutes);
-  };
 
   const handleHourChange = (value) => {
     const newHours = parseInt(value, 10);
     setHours(newHours);
-    updateTotalMinutes(newHours, minutes);
+    if (typeof onHourChange === "function") {
+      onHourChange(newHours);
+    }
   };
 
   const handleMinuteChange = (value) => {
     const newMinutes = parseInt(value, 10);
     setMinutes(newMinutes);
-    updateTotalMinutes(hours, newMinutes);
+    if (typeof onMinuteChange === "function") {
+      onMinuteChange(newMinutes);
+    }
   };
 
   return (
