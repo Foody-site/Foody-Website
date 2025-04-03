@@ -74,7 +74,7 @@ const AddRecipe = () => {
         ...prev,
         selectedRecipeTypes: prev.selectedRecipeTypes.includes(value)
           ? prev.selectedRecipeTypes.filter((id) => id !== value)
-          : [...prev.selectedRecipeTypes, value], // إضافة أو إزالة القيم كمصفوفة
+          : [...prev.selectedRecipeTypes, value],      
       }));
     } else {
       setFormData((prev) => ({
