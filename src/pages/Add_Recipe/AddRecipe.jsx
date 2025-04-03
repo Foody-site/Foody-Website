@@ -70,16 +70,22 @@ const AddRecipe = () => {
     const { name, value, type, checked } = e.target;
 
     if (name === "selectedRecipeTypes") {
+      const selectedTypeIds = Array.isArray(value) ? value : [value];
+
       setFormData((prev) => ({
         ...prev,
-        selectedRecipeTypes: prev.selectedRecipeTypes.includes(value)
-          ? prev.selectedRecipeTypes.filter((id) => id !== value)
-          : [...prev.selectedRecipeTypes, value],      
+        selectedRecipeTypes: selectedTypeIds,
+      }));
+    } else if (type === "checkbox") {
+      // Handle checkbox inputs
+      setFormData((prev) => ({
+        ...prev,
+        [name]: checked,
       }));
     } else {
       setFormData((prev) => ({
         ...prev,
-        [name]: type === "checkbox" ? checked : value,
+        [name]: value,
       }));
     }
   };
@@ -208,15 +214,6 @@ const AddRecipe = () => {
     e.preventDefault();
     console.log("Form data before submission:", formData);
 
-    // Check if selectedRecipeTypes is a valid array of MongoDB IDs
-    const validIds =
-      Array.isArray(formData.selectedRecipeTypes) &&
-      formData.selectedRecipeTypes.every(
-        (id) => typeof id === "string" && id.length === 24
-      );
-
-    console.log("Are recipe types valid MongoDB IDs?", validIds);
-
     // Validate form first
     if (!validateForm()) {
       console.error("يرجى تصحيح الأخطاء قبل الإرسال");
@@ -241,6 +238,22 @@ const AddRecipe = () => {
     data.append("isAllergenic", formData.isAllergenic);
     data.append("mainIngredient", formData.mainIngredient);
 
+    // Handle recipe types properly
+    if (
+      formData.selectedRecipeTypes &&
+      formData.selectedRecipeTypes.length > 0
+    ) {
+      formData.selectedRecipeTypes.forEach((typeId) => {
+        // Make sure we're adding valid IDs
+        if (typeId) {
+          data.append("recipeTypes[]", typeId); // Use array notation to ensure the server expects an array
+        }
+      });
+    } else {
+      // If no recipe types are selected, send an empty array
+      data.append("recipeTypes[]", ""); // This line ensures an empty array is sent if no types are selected
+    }
+
     // Limit preparationSteps to 20 items as per validation
     const limitedSteps = formData.preparationSteps.slice(0, 20);
     limitedSteps.forEach((step, index) =>
@@ -252,17 +265,6 @@ const AddRecipe = () => {
       data.append(`ingredients[${index}][quantity]`, ingredient.quantity);
       data.append(`ingredients[${index}][unit]`, ingredient.unit);
     });
-
-    if (
-      formData.selectedRecipeTypes &&
-      formData.selectedRecipeTypes.length > 0
-    ) {
-      formData.selectedRecipeTypes.forEach((typeId) => {
-        data.append("recipeTypes[]", typeId);     
-      });
-    } else {
-      data.append("recipeTypes", "[]");      
-    }
 
     if (photo) {
       data.append("photo", photo);
@@ -334,11 +336,10 @@ const AddRecipe = () => {
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-10 text-right">
               <CheckboxSelectInput
-                name="selectedRecipeTypes" // Make sure this matches your formData property name
+                name="selectedRecipeTypes"
                 label="نوع الطعام"
                 options={availableRecipeTypes}
                 onChange={handleChange}
-                error={errors.selectedRecipeTypes}
               />
               <Inputs
                 name="description"
