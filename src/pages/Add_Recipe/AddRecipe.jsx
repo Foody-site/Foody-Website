@@ -68,25 +68,22 @@ const AddRecipe = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+
     if (name === "selectedRecipeTypes") {
-      const selectedTypeIds = Array.isArray(value) ? value : [value];
-  
-      // Ensure we're only keeping MongoDB ObjectIds (valid strings with length 24)
-      const validIds = selectedTypeIds.filter(
-        (id) => typeof id === "string" && id.length === 24
-      );
-  
       setFormData((prev) => ({
         ...prev,
-        selectedRecipeTypes: validIds,
+        selectedRecipeTypes: prev.selectedRecipeTypes.includes(value)
+          ? prev.selectedRecipeTypes.filter((id) => id !== value)
+          : [...prev.selectedRecipeTypes, value], // إضافة أو إزالة القيم كمصفوفة
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: type === "checkbox" ? checked : value,
       }));
     }
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
   };
-    
+
   const handleIngredientChange = (index, field, value) => {
     const updatedIngredients = [...formData.ingredients];
     updatedIngredients[index][field] = value;
@@ -210,22 +207,22 @@ const AddRecipe = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Form data before submission:", formData);
-  
+
     // Check if selectedRecipeTypes is a valid array of MongoDB IDs
     const validIds =
       Array.isArray(formData.selectedRecipeTypes) &&
       formData.selectedRecipeTypes.every(
         (id) => typeof id === "string" && id.length === 24
       );
-  
+
     console.log("Are recipe types valid MongoDB IDs?", validIds);
-  
+
     // Validate form first
     if (!validateForm()) {
       console.error("يرجى تصحيح الأخطاء قبل الإرسال");
       return;
     }
-  
+
     setLoading(true);
     const token = localStorage.getItem("token");
     if (!token) {
@@ -233,7 +230,7 @@ const AddRecipe = () => {
       setLoading(false);
       return;
     }
-  
+
     const data = new FormData();
     data.append("name", formData.name);
     data.append("description", formData.description);
@@ -243,38 +240,34 @@ const AddRecipe = () => {
     data.append("totalTime", formData.totalTime);
     data.append("isAllergenic", formData.isAllergenic);
     data.append("mainIngredient", formData.mainIngredient);
-  
+
     // Limit preparationSteps to 20 items as per validation
     const limitedSteps = formData.preparationSteps.slice(0, 20);
     limitedSteps.forEach((step, index) =>
       data.append(`preparationSteps[${index}]`, step)
     );
-  
+
     formData.ingredients.forEach((ingredient, index) => {
       data.append(`ingredients[${index}][name]`, ingredient.name);
       data.append(`ingredients[${index}][quantity]`, ingredient.quantity);
       data.append(`ingredients[${index}][unit]`, ingredient.unit);
     });
-  
-    // Handle recipe types properly
+
     if (
       formData.selectedRecipeTypes &&
       formData.selectedRecipeTypes.length > 0
     ) {
       formData.selectedRecipeTypes.forEach((typeId) => {
-        // Make sure we're adding valid IDs
-        if (typeId) {
-          data.append("recipeTypes", typeId); // Use 'selectedRecipeTypes' here
-        }
+        data.append("recipeTypes[]", typeId);     
       });
     } else {
-      data.append("recipeTypes[]", ""); // Handle empty array case
+      data.append("recipeTypes", "[]");      
     }
-  
+
     if (photo) {
       data.append("photo", photo);
     }
-  
+
     try {
       const response = await axios.post(`${api_url}/recipe`, data, {
         headers: {
@@ -282,7 +275,7 @@ const AddRecipe = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-  
+
       alert("تمت الإضافة بنجاح");
       setFormData({
         name: "",
@@ -307,7 +300,7 @@ const AddRecipe = () => {
       setLoading(false);
     }
   };
-  
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       <div className="flex-grow flex justify-center items-center px-8 py-8">
@@ -341,11 +334,11 @@ const AddRecipe = () => {
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-10 text-right">
               <CheckboxSelectInput
-                name="recipeTypes"
+                name="selectedRecipeTypes" // Make sure this matches your formData property name
                 label="نوع الطعام"
                 options={availableRecipeTypes}
-                onChange={handleChange} // Use the new handler function
-                error={errors.recipeTypes}
+                onChange={handleChange}
+                error={errors.selectedRecipeTypes}
               />
               <Inputs
                 name="description"
