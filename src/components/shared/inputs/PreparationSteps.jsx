@@ -5,18 +5,35 @@ const PreparationSteps = ({ className = "", onChange }) => {
   const [steps, setSteps] = useState([""]);
 
   const addStep = () => {
-    const newSteps = [...steps, ""];
-    setSteps(newSteps);
-    onChange(newSteps);
+    setSteps((prevSteps) => [...prevSteps, ""]);
   };
 
   const handleStepChange = (index, value) => {
     const updatedSteps = [...steps];
     updatedSteps[index] = value;
     setSteps(updatedSteps);
-    onChange(updatedSteps);
   };
 
+  const handleBlur = () => {
+    // أولاً: إزالة الخطوات الفارغة
+    const cleanedSteps = steps.filter(step => step.trim() !== "");
+  
+    // ثانياً: فصل الخطوات المدموجة بفواصل
+    const separatedSteps = cleanedSteps.flatMap(step => step.split(",").map(s => s.trim()));
+  
+    // ثالثاً: إزالة المكررات (لو فيه نفس الخطوة مكررة)
+    const finalSteps = [...new Set(separatedSteps)];
+  
+    // لو كانت المصفوفة فاضية بعد التنظيف، نضيف خطوة فارغة واحدة
+    if (finalSteps.length === 0) {
+      setSteps([""]);
+      onChange([""]); // إرسال خطوة فارغة فقط
+    } else {
+      setSteps(finalSteps);
+      onChange(finalSteps); // إرسال الخطوات النظيفة والمفصولة
+    }
+  };
+    
   return (
     <div className={`w-full ${className}`}>
       <label className="block text-gray-700 font-medium mb-2 text-right">
@@ -28,6 +45,7 @@ const PreparationSteps = ({ className = "", onChange }) => {
             name="preparationSteps"
             value={step}
             onChange={(e) => handleStepChange(index, e.target.value)}
+            onBlur={handleBlur} // تحديث الخطوات عند فقدان التركيز فقط
             className="w-full h-24 px-4 py-3 text-lg border border-gray-300 rounded-lg text-right"
             placeholder={`الخطوة ${index + 1}`}
           />

@@ -100,8 +100,7 @@ const AddRecipe = () => {
   };
 
   const handleAddStep = (step) => {
-    // Limit to 20 steps as per validation
-    if (formData.preparationSteps.length < 20) {
+    if (formData.preparationSteps.length < 50) {
       setFormData((prev) => ({
         ...prev,
         preparationSteps: [...prev.preparationSteps, step],
