@@ -186,10 +186,10 @@ const AddChef = () => {
         },
       });
 
-      console.log("تمت الإضافة بنجاح:", response.data);
+      alert("تمت الإضافة بنجاح:", response.data);
       // Consider adding success message or redirect here
     } catch (error) {
-      console.error(
+      alert(
         "حدث خطأ أثناء الإرسال:",
         error.response ? error.response.data : error
       );

@@ -41,6 +41,8 @@ const CheckboxDropdown = ({
         className="w-full text-right border border-gray-300 p-2 bg-white rounded-md flex justify-between items-center"
         onClick={handleToggle}
       >
+        <FaChevronDown className="text-gray-500" />
+
         <span className="text-gray-600">
           {selectedOptions.length > 0
             ? selectedOptions
@@ -48,7 +50,6 @@ const CheckboxDropdown = ({
                 .join(", ")
             : "اختر"}
         </span>
-        <FaChevronDown className="text-gray-500" />
       </button>
 
       {isOpen && (
