@@ -8,14 +8,11 @@ const PreparationSteps = ({
   error,
   currentSteps = [],
 }) => {
-  // استخدام القيم الحالية إن وجدت، وإلا بدء بخطوة فارغة واحدة
   const [steps, setSteps] = useState(
     currentSteps.length > 0 ? currentSteps : [""]
   );
 
-  // عند أي تغيير في الخطوات، قم بإرسالها إلى المكون الأب
   useEffect(() => {
-    // تأكد من أن الخطوات الفارغة تماماً لا يتم إرسالها
     const validSteps = steps.filter((step) => step.trim() !== "");
     onChange(validSteps);
   }, [steps, onChange]);
@@ -37,7 +34,6 @@ const PreparationSteps = ({
       const updatedSteps = steps.filter((_, i) => i !== index);
       setSteps(updatedSteps);
     } else {
-      // إذا كانت هذه الخطوة الوحيدة، فقط نفرغها
       setSteps([""]);
     }
   };
