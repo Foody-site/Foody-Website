@@ -99,13 +99,11 @@ const AddRecipe = () => {
     }));
   };
 
-  const handleAddStep = (step) => {
-    if (formData.preparationSteps.length < 50) {
-      setFormData((prev) => ({
-        ...prev,
-        preparationSteps: [...prev.preparationSteps, step],
-      }));
-    }
+  const handlePreparationStepsChange = (steps) => {
+    setFormData((prev) => ({
+      ...prev,
+      preparationSteps: steps,
+    }));
   };
 
   // Separate handlers for preparation and cooking time
@@ -184,8 +182,6 @@ const AddRecipe = () => {
 
     if (formData.preparationSteps.length === 0)
       newErrors.preparationSteps = "خطوات التحضير مطلوبة";
-    else if (formData.preparationSteps.length > 20)
-      newErrors.preparationSteps = "يجب أن لا تتجاوز خطوات التحضير 20 خطوة";
 
     if (!formData.mainIngredient || formData.mainIngredient.trim() === "")
       newErrors.mainIngredient = "المكون الرئيسي مطلوب";
@@ -381,7 +377,7 @@ const AddRecipe = () => {
 
             <div className="col-span-full w-full pt-10">
               <PreparationSteps
-                onChange={handleAddStep}
+                onChange={handlePreparationStepsChange}
                 className="w-full"
                 maxSteps={20}
                 error={errors.preparationSteps}
