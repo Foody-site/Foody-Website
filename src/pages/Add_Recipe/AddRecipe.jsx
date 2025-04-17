@@ -301,7 +301,7 @@ const AddRecipe = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       <div className="flex-grow flex justify-center items-center px-8 py-8">
-        <div className="w-full max-w-[70rem] p-16 bg-gray-100 rounded-xl flex flex-col items-center">
+        <div className="w-full max-w-[70rem] p-16 bg-gray-100 rounded-xl ">
           <h2 className="text-3xl font-bold text-gray-700 mb-10 text-center">
             إضافة وصفة جديدة
           </h2>
