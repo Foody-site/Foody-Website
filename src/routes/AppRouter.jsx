@@ -7,6 +7,7 @@ import AddChef from "../pages/Add_chef/AddChef";
 import ChooseRole from "../components/Auth/ChooseRole";
 import Login_2 from "../components/Auth/Login_2";
 import AddRecipe from "../pages/Add_Recipe/AddRecipe";
+import Add_Store from "../pages/Add_Store/Add_Store";
 
 const AppRouter = () => {
   return (
@@ -20,6 +21,7 @@ const AppRouter = () => {
       <Route path="/ChooseRole" element={<ChooseRole />} />
       <Route path="/AddChef" element={<AddChef />} />
       <Route path="/AddRecipe" element={<AddRecipe />} />
+      <Route path="/AddStore" element={<Add_Store />} />
     </Routes>
   );
 };
