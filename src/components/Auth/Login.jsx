@@ -46,7 +46,7 @@ const Login = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       <div className="flex flex-grow justify-center items-center">
-        <div className="w-full max-w-sm p-6 border border-gray-300 bg-white rounded-lg shadow-md">
+        <div className="w-full max-w-sm p-6 ">
           <h2 className="text-2xl font-bold text-center text-gray-600 mb-6">
             تسجيل الدخول
           </h2>
