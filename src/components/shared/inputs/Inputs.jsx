@@ -30,7 +30,7 @@ const Inputs = ({
         />
         {isPassword ? (
           <span
-            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-700 cursor-pointer"
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-700 cursor-pointer"
             onClick={() => setShowPassword(!showPassword)}
           >
             {showPassword ? (
@@ -41,7 +41,7 @@ const Inputs = ({
           </span>
         ) : (
           Icon_2 && (
-            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-700">
+            <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-700">
               <Icon size={24} />
             </span>
           )
