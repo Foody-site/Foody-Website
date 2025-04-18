@@ -17,11 +17,11 @@ const AppRouter = () => {
       </Route>
       <Route path="/login" element={<Login />} />
       <Route path="/login2" element={<Login_2 />} />
-      <Route path="/Register" element={<Register />} />
-      <Route path="/ChooseRole" element={<ChooseRole />} />
-      <Route path="/AddChef" element={<AddChef />} />
-      <Route path="/AddRecipe" element={<AddRecipe />} />
-      <Route path="/AddStore" element={<Add_Store />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/choose-role" element={<ChooseRole />} />
+      <Route path="/add-chef" element={<AddChef />} />
+      <Route path="/add-recipe" element={<AddRecipe />} />
+      <Route path="/add-store" element={<Add_Store />} />
     </Routes>
   );
 };
