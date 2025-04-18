@@ -3,8 +3,8 @@ import Footer from "./Footer";
 import { Navigate, Outlet, useLocation } from "react-router";
 
 const Layout = () => {
-  const user = "";
   const location = useLocation();
+  const user = JSON.parse(localStorage.getItem("user"));
 
   return user ? (
     <div>
@@ -13,7 +13,7 @@ const Layout = () => {
       <Footer />
     </div>
   ) : (
-    <Navigate to="login" state={{ from: location }} replace />
+    <Navigate to="/login" state={{ from: location }} replace />
   );
 };
 

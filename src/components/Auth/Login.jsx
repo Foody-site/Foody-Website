@@ -4,6 +4,7 @@ import Button from "../shared/Buttons/Button";
 import Inputs from "../shared/inputs/Inputs";
 import Footer from "../layout/Footer";
 import { api_url } from "../../utils/ApiClient";
+import { useNavigate } from "react-router";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +13,7 @@ const Login = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -23,7 +25,7 @@ const Login = () => {
     setError("");
 
     try {
-      const response = await axios.post(
+      const loginResponse = await axios.post(
         `${api_url}/auth/login`,
         formData,
         {
@@ -31,13 +33,23 @@ const Login = () => {
         }
       );
 
-      console.log("Login Successful:", response.data);
-      localStorage.setItem("token", response.data.accessToken);
-      localStorage.setItem("user", JSON.stringify(response.data.user));
+      const token = loginResponse.data.accessToken;
+      localStorage.setItem("token", token);
+
+      const userResponse = await axios.get(`${api_url}/auth/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      localStorage.setItem("user", JSON.stringify(userResponse.data));
 
       alert("تم تسجيل الدخول بنجاح!");
+      navigate("/");
     } catch (err) {
-      setError(err.response?.data?.message || "فشل تسجيل الدخول. تحقق من بيانات الاعتماد.");
+      setError(
+        err.response?.data?.message || "فشل تسجيل الدخول. تحقق من بيانات الاعتماد."
+      );
     } finally {
       setLoading(false);
     }
