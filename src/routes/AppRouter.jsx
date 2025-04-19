@@ -15,12 +15,15 @@ import Recipe from "../pages/Recipe/Recipe";
 const AppRouter = () => {
   return (
     <Routes>
+      {/* 🔓 Public routes */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/login2" element={<Login_2 />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/choose-role" element={<ChooseRole />} />
+
+      {/* 🔒 Protected routes inside Layout */}
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/login2" element={<Login_2 />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/choose-role" element={<ChooseRole />} />
         <Route path="/chef" element={<Chef />} />
         <Route path="/add-chef" element={<AddChef />} />
         <Route path="/recipe" element={<Recipe />} />
