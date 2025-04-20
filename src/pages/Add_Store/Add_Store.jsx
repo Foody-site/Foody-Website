@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { TbCameraPlus } from "react-icons/tb";
 import Inputs from "../../components/shared/inputs/Inputs";
+import SelectInput from "../../components/shared/inputs/SelectInput";
+import DeliveryApps from "../../components/shared/inputs/DeliveryApps";
 
 const Add_Store = () => {
   // Form images
@@ -27,7 +29,7 @@ const Add_Store = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       <div className="flex-grow flex justify-center items-center px-8 py-8">
-        <div className="w-full max-w-[70rem] p-16 bg-gray-100 rounded-xl ">
+        <div className="w-full max-w-[90rem] p-16 bg-gray-100 rounded-xl ">
           <h2 className="text-3xl font-bold text-center text-gray-700 mb-10">
             إضافة متجر جديد{" "}
           </h2>
@@ -56,7 +58,7 @@ const Add_Store = () => {
               </label>
             </div>
 
-            <div className="absolute -bottom-8 right-5 w-40 h-40 bg-gray-100 rounded-full border flex justify-center items-center shadow-lg">
+            <div className="absolute -bottom-8 right-5 w-60 h-60 bg-gray-100 rounded-full border flex justify-center items-center shadow-lg">
               {profilePicture && (
                 <img
                   src={URL.createObjectURL(profilePicture)}
@@ -80,7 +82,7 @@ const Add_Store = () => {
             </div>
           </div>
           <form className="space-y-14 mx-auto max-w-full">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-10 text-right">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-x-10 gap-y-10 text-right">
               <Inputs
                 name="deliveryPhone"
                 label="رقم التواصل للطلبات"
@@ -99,7 +101,66 @@ const Add_Store = () => {
                   الموقع والشيف{" "}
                 </p>
               </div>
+              <SelectInput
+                name="type"
+                label="نوع المتجر"
+                className="w-full h-12 px-6 text-xl py-4"
+                options={[
+                  { value: "restaurant", label: "مطعم" },
+                  { value: "patisserie", label: "معجنات" },
+                  { value: "health", label: "صحي" },
+                  { value: "icecream", label: "ايس كريم" },
+                ]}
+              />
+              <Inputs
+                name="name"
+                label="الاسم التجاري"
+                type="text"
+                className="w-full h-12 px-6 text-xl py-4"
+              />
             </div>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-x-10 gap-y-10 text-right">
+              <Inputs
+                name="since"
+                label="تأسس منذ عام"
+                type="text"
+                className="w-full h-12 px-6 text-xl py-4"
+              />
+
+              <Inputs
+                name="mapLink"
+                label="رابط المتجر علي خريطة جوجل"
+                type="text"
+                className="w-full h-12 px-6 text-xl py-4"
+              />
+              <SelectInput
+                name="region"
+                label="المنطقة"
+                className="w-full h-12 px-6 text-xl py-4"
+                options={[
+                  { value: "Riyadh", label: "الرياض" },
+                  { value: "Mecca", label: "مكة المكرمة" },
+                  { value: "Eastern", label: "الشرقية" },
+                  { value: "Medina", label: "المدينة المنورة" },
+                  { value: "Asir", label: "عسير" },
+                  { value: "Al-Qassim", label: "القصيم" },
+                  { value: "Tabuk", label: "تبوك" },
+                  { value: "Hail", label: "حائل" },
+                  { value: "Northern Borders", label: "الحدود الشمالية" },
+                  { value: "Jizan", label: "جازان" },
+                  { value: "Najran", label: "نجران" },
+                  { value: "Al-Bahah", label: "الباحة" },
+                  { value: "Al-Jouf", label: "الجوف" },
+                ]}
+              />
+              <SelectInput
+                name="city"
+                label="المدينة"
+                className="w-full h-12 px-6 text-xl py-4"
+                options={[{ value: "Mecca", label: "مكة المكرمة" }]}
+              />
+            </div>
+            <DeliveryApps />
           </form>
         </div>
       </div>
