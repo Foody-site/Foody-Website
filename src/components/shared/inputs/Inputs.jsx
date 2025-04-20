@@ -10,6 +10,7 @@ const Inputs = ({
   Icon_2,
   value,
   onChange,
+  placeholder,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const isPassword = type === "password";
@@ -26,6 +27,7 @@ const Inputs = ({
           type={isPassword && showPassword ? "text" : type}
           value={value}
           onChange={onChange}
+          placeholder={placeholder}
           className={`w-full px-4 py-3 border border-gray-400 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-hover_primary-1 ${className}`}
         />
         {isPassword ? (
