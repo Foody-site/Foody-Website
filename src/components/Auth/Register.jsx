@@ -79,6 +79,7 @@ const Register = () => {
     if (!validateForm()) {
       return;
     }
+
     const updatedData = {
       ...formData,
       phone: formData.phone.trim().startsWith("+2")
@@ -88,8 +89,17 @@ const Register = () => {
 
     try {
       const res = await axios.post(`${api_url}/auth/register`, updatedData);
-      localStorage.setItem("token", res.data.accessToken);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
+      const token = res.data.accessToken;
+      localStorage.setItem("token", token);
+
+      const userResponse = await axios.get(`${api_url}/auth/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      localStorage.setItem("user", JSON.stringify(userResponse.data));
+
       alert("تم التسجيل بنجاح");
       window.location.href = "/";
     } catch (err) {
