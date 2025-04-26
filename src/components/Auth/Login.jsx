@@ -169,7 +169,7 @@ const Login = () => {
               label="انشاء حساب"
               className="w-full mt-4 !text-primary-1 font-medium border border-primary-1 hover:bg-primary-1 hover:!text-white transition" 
               type="button"
-              onClick={() => navigate('/register')}
+              onClick={() => navigate('/choose-role')}
             />
           </form>
           <div className="text-center mt-3">
