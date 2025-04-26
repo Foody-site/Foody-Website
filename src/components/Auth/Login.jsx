@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import Button from "../shared/Buttons/Button";
 import Inputs from "../shared/inputs/Inputs";
-import Footer from "../layout/Footer";
+//import Footer from "../layout/Footer";
 import { api_url } from "../../utils/ApiClient";
 import { FcGoogle } from "react-icons/fc";
 import smiling_woman from "/assets/login/smiling_woman.jpg";
