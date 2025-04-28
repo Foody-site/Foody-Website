@@ -74,12 +74,12 @@ const Login = () => {
           />
           {/* Title and Description */}
           <h2 className="text-1xl font-bold text-center p-3">
-            تعرف على آراء عملائنا
+            تعرف علي اراء عملائنا{" "}
           </h2>
           <p className="text-center text-gray-700 mb-6 max-w-lg">
-            اسمع التجارب مباشرة من مستخدمي تطبيق فودي! قصص وقصوا فيها، استمتعوا
-            بتجربتهم ودوروا أفضل المطاعم بكل سهولة. رضاكم هو أولويتنا، وأفكاركم
-            تساهم لتطويرنا أكثر كل يوم.
+            استمع لتجارب حقيقية من مستخدمي تطبيق فودي! قصص وفّروا فيها، استمتعوا
+            بالعروض، وجربوا أفضل المطاعم بكل سهولة. رضاكم هو أولويتنا، وآراؤكم
+            تلهمنا نطوّر أكثر كل يوم.{" "}
           </p>
           <div className="rounded-xl flex flex-col items-center p-6 w-full max-w-lg">
             {/* Image */}
@@ -167,9 +167,9 @@ const Login = () => {
             />
             <Button
               label="انشاء حساب"
-              className="w-full mt-4 !text-primary-1 font-medium border border-primary-1 hover:bg-primary-1 hover:!text-white transition" 
+              className="w-full mt-4 !text-primary-1 font-medium border border-primary-1 hover:bg-primary-1 hover:!text-white transition"
               type="button"
-              onClick={() => navigate('/choose-role')}
+              onClick={() => navigate("/choose-role")}
             />
           </form>
           <div className="text-center mt-3">
