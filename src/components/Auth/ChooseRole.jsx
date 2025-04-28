@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
-import smile_man from "/assets/choose_role/smile_man.jpg";
+import BUSINESS_photo from "/assets/choose_role/BUSINESS_photo.jpg";
+import CUSTOMER_photo from "/assets/choose_role/CUSTOMER_photo.jpg";
 import Button from "../shared/Buttons/Button";
 import { LuCircleUser } from "react-icons/lu";
 import { IoBriefcaseOutline } from "react-icons/io5";
@@ -23,7 +24,7 @@ export default function ChooseRole() {
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-8">
       <div className="bg-white rounded-lg shadow-md p-8 max-w-4xl w-full">
         <h2 className="text-2xl font-bold text-center mb-4 text-gray-800">
-          اختيار نوع الحساب
+          اختيار نوع الحساب{" "}
         </h2>
         <p className="text-gray-600 text-center mb-8 text-sm">
           حدد نوع الحساب المناسب لك للبدء في استخدام منصة فودي ، سواء كنت عميل
@@ -34,13 +35,15 @@ export default function ChooseRole() {
           {/* Business Account */}
           <div
             className={`relative rounded-lg border ${
-              selectedRole === "BUSINESS" ? "border-primary-1" : "border-gray-200"
+              selectedRole === "BUSINESS"
+                ? "border-primary-1"
+                : "border-gray-200"
             } p-4 cursor-pointer`}
             onClick={() => handleSelectRole("BUSINESS")}
           >
-            <div className="bg-purple-300 rounded-md mb-4">
+            <div className=" rounded-md mb-4">
               <img
-                src={smile_man}
+                src={BUSINESS_photo}
                 alt="Business Account"
                 className="rounded-md w-full"
               />
@@ -55,25 +58,27 @@ export default function ChooseRole() {
               ></div>
               <h3 className="font-bold text-lg flex items-center gap-2 flex-row-reverse">
                 <IoBriefcaseOutline className="text-2xl text-gray-600" />
-                حساب أعمال
+                حساب أعمال{" "}
               </h3>
             </div>
             <p className="text-gray-600 text-sm text-right mt-2">
-              إنشاء وصفات ومحتوى مرئي ( للشيف) , إنشاء وإدارة مطعم (للأصحاب) ,
-              متابعة تقييمات العملاء و إدارة أكثر من فرع أو مطعم لو عنده سلسلة{" "}
+              قم بإنشاء وإدارة صفحتك كـ(شيف/متجر) وأيضاً نشر العروض والخصومات
+              ومتابعة تقييمات وتعليقات عملائك ومتابعينك والرد عليها.{" "}
             </p>
           </div>
 
           {/* Regular Account */}
           <div
             className={`relative rounded-lg border ${
-              selectedRole === "CUSTOMER" ? "border-primary-1" : "border-gray-200"
+              selectedRole === "CUSTOMER"
+                ? "border-primary-1"
+                : "border-gray-200"
             } p-4 cursor-pointer`}
             onClick={() => handleSelectRole("CUSTOMER")}
           >
-            <div className="bg-purple-300 rounded-md mb-4">
+            <div className=" rounded-md mb-4">
               <img
-                src={smile_man}
+                src={CUSTOMER_photo}
                 alt="Regular Account"
                 className="rounded-md w-full"
               />
@@ -92,8 +97,9 @@ export default function ChooseRole() {
               </h3>
             </div>
             <p className="text-gray-600 text-sm text-right mt-2">
-              يشمل استكشاف المطاعم حسب الموقع , مشاهدة وصفات شيفات, حفظ مطاعم أو
-              وصفات للمفضلة و تقييم/تعليق على المطاعم أو الوصفات{" "}
+              الدخول لحسابك الشخصي وإدارته ومتابعة وجباتك ووصفاتك المفضلة
+              واستعراض ومتابعة أخر العروض والخصومات حسب موقعك وأيضاً للتقييم
+              والتعليق والمشاركة مع أحبابك.{" "}
             </p>
           </div>
         </div>
