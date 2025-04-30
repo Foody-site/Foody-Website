@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import Alert from "../shared/Alert/Alert";
 import Button from "../shared/Buttons/Button";
 import Inputs from "../shared/inputs/Inputs";
-import Footer from "./../layout/Footer";
+//import Footer from "./../layout/Footer";
 import axios from "axios";
 import { api_url } from "../../utils/ApiClient";
+import TestimonialCard from "../shared/Testimonials/TestimonialCard";
+import { FcGoogle } from "react-icons/fc";
 
 const Register = () => {
   const location = useLocation();
@@ -14,6 +16,7 @@ const Register = () => {
     email: "",
     phone: "",
     password: "",
+    confirmPassword: "",
     birthday: "",
     role: location.state?.role,
   });
@@ -23,6 +26,8 @@ const Register = () => {
   const [alertMessage, setAlertMessage] = useState("");
   const [alertSubMessage, setAlertSubMessage] = useState("");
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
+
   const validateForm = () => {
     let newErrors = {};
 
@@ -61,6 +66,12 @@ const Register = () => {
       if (age < 13) {
         newErrors.birthday = "! يجب أن يكون عمرك 13 سنة على الأقل";
       }
+    }
+
+    if (!formData.confirmPassword) {
+      newErrors.confirmPassword = "! تأكيد كلمة المرور مطلوب";
+    } else if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "! كلمتا المرور غير متطابقتين";
     }
 
     setErrors(newErrors);
@@ -137,46 +148,36 @@ const Register = () => {
         }}
       />
 
-      <div className="flex flex-col min-h-screen bg-gray-100">
-        <div className="flex-grow flex justify-center items-center px-4">
-          <div className="w-full max-w-2xl p-8">
-            <h2 className="text-2xl font-bold text-center text-gray-700 mb-1">
-              حساب جديد
+      <div className="flex min-h-screen justify-center items-center bg-gray-100 p-6">
+        <div className="flex flex-col md:flex-row gap-20 w-full max-w-7xl">
+          {/* Left Card */}
+          <div className="w-full md:w-[44%]">
+            <TestimonialCard />
+          </div>
+          {/* Right Card */}
+          <div className="bg-white rounded-xl shadow-md flex-1 p-8 max-h-[770px] w-full self-center pl-6">
+            <h2 className="text-3xl font-bold text-center text-gray-700 mb-6">
+              انشاء حساب{" "}
             </h2>
-            <p className="text-center text-gray-500 mb-6">مرحبًا بك! نورتنا</p>
-            <form onSubmit={handleSubmit} className="space-y-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16">
-                <div className="w-full">
-                  <Inputs
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    label="كلمة المرور"
-                    type="password"
-                    className="bg-gray-200 border-gray-300 h-12 w-full"
-                  />
-                  <p className="text-primary-1 text-sm min-h-[1.5rem]">
-                    {errors.password}
-                  </p>
-                </div>
+            <p className="text-center text-gray-500 mb-6">
+              سعداء بانضمامك معنا في فودي و نتمني لك تجربة مميزة
+            </p>
+            <form onSubmit={handleSubmit}>
+              <Inputs
+                name="fullName"
+                value={formData.fullName}
+                onChange={handleChange}
+                label="الاسم"
+                type="text"
+                className="bg-gray-200 border-gray-300 h-12 w-full"
+                placeholder="أدخل الاسم الخاص بك"
+              />
+              <p className="text-primary-1 text-sm min-h-[1.5rem]">
+                {errors.fullName}
+              </p>
 
-                <div className="w-full">
-                  <Inputs
-                    name="fullName"
-                    value={formData.fullName}
-                    onChange={handleChange}
-                    label="الاسم"
-                    type="text"
-                    className="bg-gray-200 border-gray-300 h-12 w-full"
-                  />
-                  <p className="text-primary-1 text-sm min-h-[1.5rem]">
-                    {errors.fullName}
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16">
-                <div className="w-full">
+              <div className="flex flex-col md:flex-row gap-x-4">
+                <div className="w-full md:w-1/2">
                   <Inputs
                     name="email"
                     value={formData.email}
@@ -185,13 +186,14 @@ const Register = () => {
                     type="email"
                     className="bg-gray-200 border-gray-300 h-12 w-full"
                     icon="email"
+                    placeholder="أدخل البريد الإلكتروني الخاص بك"
                   />
-                  <p className="text-red-500 text-sm min-h-[1.5rem]">
+                  <p className="text-primary-1 text-sm min-h-[1.5rem]">
                     {errors.email}
                   </p>
                 </div>
 
-                <div className="w-full">
+                <div className="w-full md:w-1/2">
                   <Inputs
                     name="phone"
                     value={formData.phone}
@@ -199,6 +201,7 @@ const Register = () => {
                     label="رقم الجوال"
                     type="text"
                     className="bg-gray-200 border-gray-300 h-12 w-full"
+                    placeholder="أدخل رقم الجوال الخاص بك"
                   />
                   <p className="text-primary-1 text-sm min-h-[1.5rem]">
                     {errors.phone}
@@ -206,47 +209,81 @@ const Register = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                <p className="text-xs text-primary-1 leading-5">
-                  تاريخ الميلاد لا يتم نشره أو عرضه للمستخدمين الآخرين، بل من
-                  أجل تحديد العروض والخصومات المناسبة لك.
-                </p>
+              <Inputs
+                name="birthday"
+                value={formData.birthday}
+                onChange={handleChange}
+                label="تاريخ الميلاد"
+                type="date"
+                className="bg-gray-200 border-gray-300 h-12 w-full"
+                icon="calendar"
+              />
+              <p className="text-primary-1 text-sm min-h-[1.5rem]">
+                {errors.birthday}
+              </p>
 
-                <div className="w-full">
+              <div className="flex flex-col md:flex-row gap-x-4">
+                <div className="w-full md:w-1/2">
                   <Inputs
-                    name="birthday"
-                    value={formData.birthday}
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
                     onChange={handleChange}
-                    label="تاريخ الميلاد"
-                    type="date"
+                    label="تأكيد كلمة المرور"
+                    type="password"
                     className="bg-gray-200 border-gray-300 h-12 w-full"
-                    icon="calendar"
+                    placeholder="أدخل كلمة المرور الخاص بك"
                   />
                   <p className="text-primary-1 text-sm min-h-[1.5rem]">
-                    {errors.birthday}
+                    {errors.confirmPassword}
+                  </p>
+                </div>
+                <div className="w-full md:w-1/2">
+                  <Inputs
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    label="كلمة المرور"
+                    type="password"
+                    className="bg-gray-200 border-gray-300 h-12 w-full"
+                    placeholder="أدخل كلمة المرور الخاص بك"
+                  />
+                  <p className="text-primary-1 text-sm min-h-[1.5rem]">
+                    {errors.password}
                   </p>
                 </div>
               </div>
 
-              <div className="flex justify-center">
-                <Button
-                  type="submit"
-                  label={loading ? "جاري تسجيل الدخول..." : "تسجيل حساب جديد"}
-                  disabled={loading}
-                  className="max-w-[290px] bg-primary-1 hover:bg-hover_primary-1 text-white py-2 rounded-md text-lg font-semibold"
-                />
-              </div>
+              <Button
+                type="submit"
+                label={loading ? "جاري تسجيل الدخول..." : "انشاء الحساب"}
+                disabled={loading}
+                className="w-full bg-primary-1 hover:bg-hover_primary-1 text-white"
+              />
+
+              <Button
+                label="تسجيل دخول"
+                className="w-full mt-4 !text-primary-1 font-medium border border-primary-1 hover:bg-primary-1 hover:!text-white transition"
+                type="button"
+                onClick={() => navigate("/login")}
+              />
             </form>
 
-            <p className="text-center text-sm text-gray-600 mt-4">
-              هل لديك حساب بالفعل؟
-              <a href="#" className="text-primary-1 hover:underline ml-1">
-                تسجيل الدخول
-              </a>
-            </p>
+            <div className="text-center mt-3">
+              <div className="flex items-center my-4">
+                <hr className="flex-grow border-gray-300" />
+                <span className="px-3 text-gray-500 text-sm">
+                  أو الاستمرار بواسطة
+                </span>
+                <hr className="flex-grow border-gray-300" />
+              </div>
+              <div className="flex justify-center gap-4">
+                <button className="border p-2 rounded-full">
+                  <FcGoogle size={24} className="w-6 h-6" />
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-        <Footer />
       </div>
     </>
   );
