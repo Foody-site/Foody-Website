@@ -131,54 +131,103 @@ const AddChef = () => {
     const token = localStorage.getItem("token");
     if (!token) {
       console.error("لا يوجد توكن، يرجى تسجيل الدخول.");
+      setLoading(false);
       return;
     }
 
-    const formDataToSend = new FormData();
-    formDataToSend.append("name", formData.name);
-    formDataToSend.append("description", formData.description);
+    try {
+      // ========================
+      // الحل 1: محاولة إرسال البيانات بتنسيق JSON بدلاً من FormData
+      // هذا سيعمل إذا كان الـ API يدعم استقبال JSON
+      // ========================
 
-    // Handle recipe types properly
-    // Important: Add a special field to indicate this is an empty array if no types are selected
-    if (
-      formData.selectedRecipeTypes &&
-      formData.selectedRecipeTypes.length > 0
-    ) {
-      formData.selectedRecipeTypes.forEach((typeId) => {
-        // Make sure we're adding valid IDs
-        if (typeId) {
-          formDataToSend.append("recipeTypes", typeId);
+      // إنشاء كائن للبيانات
+      const chefData = {
+        name: formData.name,
+        description: formData.description,
+        country: formData.country,
+        city: formData.city,
+        phone: formData.phone,
+        recipeTypes:
+          formData.selectedRecipeTypes &&
+          formData.selectedRecipeTypes.length > 0
+            ? formData.selectedRecipeTypes.filter(
+                (id) => id && id.trim() !== ""
+              )
+            : [],
+        socialMedia: {},
+      };
+
+      // إضافة بيانات التواصل الاجتماعي
+      Object.keys(formData.socialMedia).forEach((platform) => {
+        if (formData.socialMedia[platform]) {
+          chefData.socialMedia[platform] = formData.socialMedia[platform];
         }
       });
-    } else {
-      // This line is crucial - it tells the server we're intentionally sending an empty array
-      formDataToSend.append("recipeTypes[]", ""); // The empty bracket notation signals an empty array
-    }
 
-    formDataToSend.append("country", formData.country);
-    formDataToSend.append("city", formData.city);
-    formDataToSend.append("phone", formData.phone);
+      // إذا لم تكن هناك ملفات، يمكننا استخدام JSON مباشرة
+      if (!coverPicture && !profilePicture) {
+        console.log("إرسال البيانات كـ JSON:", chefData);
 
-    // Handle social media fields
-    Object.keys(formData.socialMedia).forEach((platform) => {
-      if (formData.socialMedia[platform]) {
-        formDataToSend.append(
-          `socialMedia.${platform}`,
-          formData.socialMedia[platform]
-        );
+        const response = await axios.post(`${api_url}/chef`, chefData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        console.log("استجابة الخادم:", response.data);
+        alert("تمت الإضافة بنجاح!");
+        setLoading(false);
+        return;
       }
-    });
 
-    if (coverPicture) formDataToSend.append("coverPicture", coverPicture);
-    if (profilePicture) formDataToSend.append("profilePicture", profilePicture);
+      // ========================
+      // الحل 2: استخدام FormData مع طريقة مختلفة لإرسال المصفوفة
+      // ========================
 
-    // Debug what's being sent
-    console.log("Form data being sent:");
-    for (let pair of formDataToSend.entries()) {
-      console.log(pair[0] + ": " + pair[1]);
-    }
+      const formDataToSend = new FormData();
 
-    try {
+      // إضافة البيانات الأساسية
+      formDataToSend.append("name", formData.name);
+      formDataToSend.append("description", formData.description);
+      formDataToSend.append("country", formData.country);
+      formDataToSend.append("city", formData.city);
+      formDataToSend.append("phone", formData.phone);
+
+      // إضافة أنواع الوصفات بتنسيق مفهوم للخادم
+      // استخدام تنسيق مصفوفة صريح: "recipeTypes[]"
+      if (
+        formData.selectedRecipeTypes &&
+        formData.selectedRecipeTypes.length > 0
+      ) {
+        formData.selectedRecipeTypes.forEach((typeId) => {
+          if (typeId && typeId.trim() !== "") {
+            formDataToSend.append("recipeTypes[]", typeId);
+          }
+        });
+      } else {
+        // لإرسال مصفوفة فارغة
+        formDataToSend.append("recipeTypes", "[]");
+      }
+
+      // إضافة بيانات التواصل الاجتماعي
+      Object.keys(formData.socialMedia).forEach((platform) => {
+        if (formData.socialMedia[platform]) {
+          formDataToSend.append(
+            `socialMedia[${platform}]`,
+            formData.socialMedia[platform]
+          );
+        }
+      });
+
+      // إضافة الصور
+      if (coverPicture) formDataToSend.append("coverPicture", coverPicture);
+      if (profilePicture)
+        formDataToSend.append("profilePicture", profilePicture);
+
+      console.log("إرسال البيانات كـ FormData");
+
       const response = await axios.post(`${api_url}/chef`, formDataToSend, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -186,14 +235,32 @@ const AddChef = () => {
         },
       });
 
-      alert("تمت الإضافة بنجاح:", response.data);
-      // Consider adding success message or redirect here
+      console.log("استجابة الخادم:", response.data);
+      alert("تمت الإضافة بنجاح!");
     } catch (error) {
-      alert(
-        "حدث خطأ أثناء الإرسال:",
-        error.response ? error.response.data : error
-      );
-      // Consider adding error message UI feedback here
+      console.error("خطأ كامل:", error);
+
+      // رسائل خطأ أكثر وضوحاً
+      let errorMessage = "حدث خطأ أثناء الإرسال";
+
+      if (error.response?.data) {
+        const data = error.response.data;
+
+        if (typeof data === "object") {
+          if (data.message && Array.isArray(data.message)) {
+            errorMessage = data.message.join(", ");
+          } else {
+            errorMessage = JSON.stringify(data);
+          }
+        } else {
+          errorMessage = data;
+        }
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
+      console.error("رسالة الخطأ:", errorMessage);
+      alert(`حدث خطأ: ${errorMessage}`);
     } finally {
       setLoading(false);
     }
