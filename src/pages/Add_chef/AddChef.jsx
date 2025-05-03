@@ -474,7 +474,7 @@ const AddChef = () => {
             </div>
             <div className="w-full flex flex-col gap-4">
               <p className="text-right font-bold text-lg text-gray-700">
-                الرجاء اختيار الوسيلة المفضلة لتواصل العملاء معك من خلال:{" "}
+                : الرجاء اختيار الوسيلة المفضلة لتواصل العملاء معك من خلال{" "}
               </p>
               <div className="flex flex-col items-end gap-4 sm:flex-row sm:flex-wrap sm:justify-between sm:items-start sm:gap-x-12 sm:gap-y-6">
                 <Checkbox
