@@ -136,12 +136,6 @@ const AddChef = () => {
     }
 
     try {
-      // ========================
-      // الحل 1: محاولة إرسال البيانات بتنسيق JSON بدلاً من FormData
-      // هذا سيعمل إذا كان الـ API يدعم استقبال JSON
-      // ========================
-
-      // إنشاء كائن للبيانات
       const chefData = {
         name: formData.name,
         description: formData.description,
@@ -158,14 +152,12 @@ const AddChef = () => {
         socialMedia: {},
       };
 
-      // إضافة بيانات التواصل الاجتماعي
       Object.keys(formData.socialMedia).forEach((platform) => {
         if (formData.socialMedia[platform]) {
           chefData.socialMedia[platform] = formData.socialMedia[platform];
         }
       });
 
-      // إذا لم تكن هناك ملفات، يمكننا استخدام JSON مباشرة
       if (!coverPicture && !profilePicture) {
         console.log("إرسال البيانات كـ JSON:", chefData);
 
@@ -182,21 +174,15 @@ const AddChef = () => {
         return;
       }
 
-      // ========================
-      // الحل 2: استخدام FormData مع طريقة مختلفة لإرسال المصفوفة
-      // ========================
 
       const formDataToSend = new FormData();
 
-      // إضافة البيانات الأساسية
       formDataToSend.append("name", formData.name);
       formDataToSend.append("description", formData.description);
       formDataToSend.append("country", formData.country);
       formDataToSend.append("city", formData.city);
       formDataToSend.append("phone", formData.phone);
 
-      // إضافة أنواع الوصفات بتنسيق مفهوم للخادم
-      // استخدام تنسيق مصفوفة صريح: "recipeTypes[]"
       if (
         formData.selectedRecipeTypes &&
         formData.selectedRecipeTypes.length > 0
@@ -207,11 +193,9 @@ const AddChef = () => {
           }
         });
       } else {
-        // لإرسال مصفوفة فارغة
         formDataToSend.append("recipeTypes", "[]");
       }
 
-      // إضافة بيانات التواصل الاجتماعي
       Object.keys(formData.socialMedia).forEach((platform) => {
         if (formData.socialMedia[platform]) {
           formDataToSend.append(
@@ -221,7 +205,6 @@ const AddChef = () => {
         }
       });
 
-      // إضافة الصور
       if (coverPicture) formDataToSend.append("coverPicture", coverPicture);
       if (profilePicture)
         formDataToSend.append("profilePicture", profilePicture);
@@ -240,7 +223,6 @@ const AddChef = () => {
     } catch (error) {
       console.error("خطأ كامل:", error);
 
-      // رسائل خطأ أكثر وضوحاً
       let errorMessage = "حدث خطأ أثناء الإرسال";
 
       if (error.response?.data) {
