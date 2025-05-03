@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
 
-const CheckboxDropdown = ({
+const CheckboxSelectInput = ({
   name,
   label,
   options,
@@ -86,4 +86,4 @@ const CheckboxDropdown = ({
   );
 };
 
-export default CheckboxDropdown;
+export default CheckboxSelectInput;
