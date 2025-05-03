@@ -100,10 +100,13 @@ const AddRecipe = () => {
   };
 
   const handlePreparationStepsChange = (steps) => {
-    setFormData((prev) => ({
-      ...prev,
-      preparationSteps: steps,
-    }));
+    // استخدام مقارنة للتأكد من أن الخطوات قد تغيرت بالفعل
+    if (JSON.stringify(steps) !== JSON.stringify(formData.preparationSteps)) {
+      setFormData((prev) => ({
+        ...prev,
+        preparationSteps: steps,
+      }));
+    }
   };
 
   // Separate handlers for preparation and cooking time

@@ -8,18 +8,30 @@ const PreparationSteps = ({
   error,
   currentSteps = [],
 }) => {
+  // استخدام مرجع لمتابعة التحديثات الأولية
   const [steps, setSteps] = useState(
     currentSteps.length > 0 ? currentSteps : [""]
   );
 
+  // تنفيذ تحديث فقط عند تغير الـ currentSteps من المكون الأب
   useEffect(() => {
-    const validSteps = steps.filter((step) => step.trim() !== "");
-    onChange(validSteps);
-  }, [steps, onChange]);
+    if (
+      currentSteps.length > 0 &&
+      JSON.stringify(currentSteps) !== JSON.stringify(steps)
+    ) {
+      setSteps(currentSteps);
+    }
+  }, [currentSteps]);
+
+  // لا يوجد useEffect لاستدعاء onChange، بدلاً من ذلك نستدعيها مباشرة بعد كل تغيير
 
   const addStep = () => {
     if (steps.length < maxSteps) {
-      setSteps((prevSteps) => [...prevSteps, ""]);
+      const newSteps = [...steps, ""];
+      setSteps(newSteps);
+      // استدعاء onChange مباشرة بعد تحديث الحالة المحلية
+      const validSteps = newSteps.filter((step) => step.trim() !== "");
+      onChange(validSteps);
     }
   };
 
@@ -27,15 +39,22 @@ const PreparationSteps = ({
     const updatedSteps = [...steps];
     updatedSteps[index] = value;
     setSteps(updatedSteps);
+    // استدعاء onChange مباشرة بعد تحديث الحالة المحلية
+    const validSteps = updatedSteps.filter((step) => step.trim() !== "");
+    onChange(validSteps);
   };
 
   const handleRemoveStep = (index) => {
+    let updatedSteps;
     if (steps.length > 1) {
-      const updatedSteps = steps.filter((_, i) => i !== index);
-      setSteps(updatedSteps);
+      updatedSteps = steps.filter((_, i) => i !== index);
     } else {
-      setSteps([""]);
+      updatedSteps = [""];
     }
+    setSteps(updatedSteps);
+    // استدعاء onChange مباشرة بعد تحديث الحالة المحلية
+    const validSteps = updatedSteps.filter((step) => step.trim() !== "");
+    onChange(validSteps);
   };
 
   return (
@@ -55,7 +74,7 @@ const PreparationSteps = ({
           <button
             type="button"
             onClick={() => handleRemoveStep(index)}
-            className="text-red-500 px-2"
+            className="text-primary-1 px-2"
           >
             <FaTrash />
           </button>
@@ -71,7 +90,7 @@ const PreparationSteps = ({
           <span className="mr-2">أضف خطوة جديدة</span>
         </button>
       )}
-      {error && <p className="text-red-500 text-sm mt-1 text-right">{error}</p>}
+      {error && <p className="text-primary-1 text-sm mt-1 text-right">{error}</p>}
     </div>
   );
 };
