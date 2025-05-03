@@ -19,8 +19,9 @@ const Inputs = ({
   return (
     <div className="w-full">
       <label className="flex items-center justify-end text-gray-700 font-medium mb-1 gap-2">
-        {Icon && <Icon size={20} />}
         {label}
+
+        {Icon && <Icon size={20} />}
       </label>
       <div className="relative">
         <input
@@ -31,7 +32,9 @@ const Inputs = ({
           placeholder={placeholder}
           disabled={disabled}
           dir="rtl"
-          className={`w-full px-4 py-3 border border-gray-400 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-hover_primary-1 ${isPassword ? "pr-10" : ""} ${className}`}
+          className={`w-full px-4 py-3 border border-gray-400 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-hover_primary-1 ${
+            isPassword ? "pr-10" : ""
+          } ${className}`}
         />
         {isPassword ? (
           <span
