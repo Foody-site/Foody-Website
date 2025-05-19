@@ -30,11 +30,11 @@ const Add_Store = () => {
     <div className="flex flex-col min-h-screen bg-gray-100">
       <div className="flex-grow flex justify-center items-center px-8 py-8">
         <div className="w-full max-w-[90rem] p-16 bg-gray-100 rounded-xl ">
-          <h2 className="text-3xl font-bold text-center text-gray-700 mb-10">
-            إضافة متجر جديد{" "}
+          <h2 className="text-3xl font-bold text-right text-gray-700 mb-10">
+            اضافة متجر جديد{" "}
           </h2>
           <div className="mb-10 relative">
-            <div className="relative bg-gray-400 h-72 w-full rounded-lg flex justify-center items-center overflow-hidden">
+            <div className="relative bg-gray-300 h-72 w-full rounded-lg flex justify-center items-center overflow-hidden">
               {coverPicture && (
                 <img
                   src={URL.createObjectURL(coverPicture)}
@@ -51,14 +51,14 @@ const Add_Store = () => {
               />
               <label
                 htmlFor="coverUpload"
-                className="absolute bottom-5 left-5 bg-white px-5 py-2 border rounded-md text-sm flex items-center cursor-pointer"
+                className="absolute bottom-5 left-5 px-5 py-2 border border-primary-1 rounded-md text-sm flex items-center cursor-pointer text-primary-1"
               >
                 <TbCameraPlus className="text-primary-1 text-2xl mr-2" /> إضافة
                 صورة الغلاف
               </label>
             </div>
 
-            <div className="absolute -bottom-8 right-5 w-60 h-60 bg-gray-100 rounded-full border flex justify-center items-center shadow-lg">
+            <div className="absolute -bottom-8 right-5 w-40 h-40 bg-gray-100 rounded-full border flex justify-center items-center shadow-lg">
               {profilePicture && (
                 <img
                   src={URL.createObjectURL(profilePicture)}
@@ -75,9 +75,9 @@ const Add_Store = () => {
               />
               <label
                 htmlFor="profileUpload"
-                className="absolute bottom-2 left-2 cursor-pointer p-2 rounded-full shadow-md"
+                className="absolute bottom-2 right-2 cursor-pointer p-2 rounded-full shadow-md bg-primary-1"
               >
-                <TbCameraPlus className="text-primary-1 text-2xl " />
+                <TbCameraPlus className="text-white text-2xl " />
               </label>
             </div>
           </div>
