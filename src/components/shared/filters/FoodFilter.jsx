@@ -1,126 +1,163 @@
-import React from "react";
+import React, { useState } from "react";
 import {
     FaSearch,
+    FaMapMarkerAlt,
+    FaCity,
+    FaUtensils,
+    FaBiking,
     FaStar,
     FaRegStar,
-    FaLocationArrow,
-    FaClock,
-    FaTags,
-    FaPlusCircle,
 } from "react-icons/fa";
 
 const FoodFilter = () => {
+    const [priceRange, setPriceRange] = useState({ min: 10, max: 50 });
+    const [selectedMeals, setSelectedMeals] = useState(["عشاء"]);
+    const [selectedOptions, setSelectedOptions] = useState(["أضيف حديثاً"]);
+    const [selectedRating, setSelectedRating] = useState(1);
+
+    const toggleSelection = (value, state, setState) => {
+        setState(
+            state.includes(value)
+                ? state.filter((item) => item !== value)
+                : [...state, value]
+        );
+    };
+
     return (
-        <div className="bg-[#D9D9D9] p-4 rounded-xl w-80 space-y-5 text-right font-sans">
+        <div className="bg-[#D713130D] text-white p-4 rounded-xl w-80 space-y-4 font-sans text-sm">
 
             {/* Search Input */}
             <div className="relative">
                 <input
                     type="text"
                     placeholder="ما الذي تريد أن تبحث عنه؟"
-                    className="w-full pr-10 pl-4 py-2 rounded-full text-sm border border-gray-300 focus:outline-none"
+                    className="w-full pl-10 pr-4 py-2 rounded-full bg-white text-black focus:outline-none"
                 />
-                <FaSearch className="absolute top-2.5 right-4 text-gray-500" />
+                <FaSearch className="absolute top-2.5 left-4 text-gray-500" />
             </div>
 
-            {/* Filter Title */}
-            <p className="text-sm font-bold text-gray-800">بحث بحسب :</p>
-
-            {/* Price Range */}
+            {/* السعر */}
             <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">السعر</label>
-                <input type="range" min={20} max={50} className="range range-xs range-error" />
-                <div className="flex justify-between text-xs px-1 text-gray-600 mt-1">
-                    <span>20 ريال</span>
-                    <span>50 ريال</span>
+                <label className="block mb-2 text-white">السعر</label>
+                <div className="relative">
+                    <input
+                        type="range"
+                        min={10}
+                        max={50}
+                        value={priceRange.max}
+                        onChange={(e) =>
+                            setPriceRange({ ...priceRange, max: parseInt(e.target.value) })
+                        }
+                        className="w-full"
+                    />
+                    <div className="flex justify-between text-red-600 text-sm font-bold mt-2">
+                        <span>ريال 10</span>
+                        <span>ريال 50</span>
+                    </div>
                 </div>
             </div>
 
-            {/* City Dropdown */}
+            {/* Dropdowns */}
+            {[
+                { label: "المنطقة", icon: <FaMapMarkerAlt /> },
+                { label: "المدينة", icon: <FaCity /> },
+                { label: "نوع المطعم", icon: <FaUtensils /> },
+                { label: "نوع تطبيقات التوصيل", icon: <FaBiking /> },
+            ].map((item, i) => (
+                <div key={i} className="relative">
+                    <select className="w-full appearance-none pl-10 pr-4 py-2 bg-white text-black rounded-lg">
+                        <option>قم بإختيار {item.label}</option>
+                    </select>
+                    <div className="absolute left-4 top-2.5 text-gray-500">{item.icon}</div>
+                </div>
+            ))}
+
+            {/* نوع الوجبة */}
             <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">المدينة</label>
-                <select className="w-full py-2 px-3 rounded-full border border-gray-300 bg-white text-sm text-right">
-                    <option>المدينة</option>
-                </select>
+                <label className="block mb-2 text-white">نوع الوجبة</label>
+                {["فطور", "فطور متأخر", "غداء", "عشاء"].map((meal) => (
+                    <label
+                        key={meal}
+                        className="flex justify-between items-center bg-white text-black px-3 py-2 rounded-lg mb-1"
+                    >
+                        <span>{meal}</span>
+                        <input
+                            type="checkbox"
+                            checked={selectedMeals.includes(meal)}
+                            onChange={() =>
+                                toggleSelection(meal, selectedMeals, setSelectedMeals)
+                            }
+                            className="accent-primary-1"
+                        />
+                    </label>
+                ))}
             </div>
 
-            {/* Ratings */}
+            {/* مزيد من الخيارات */}
             <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">التقييم</label>
-                <div className="flex flex-col gap-2 text-yellow-400">
-                    {[5, 4, 3, 2, 1].map((rating) => (
-                        <label key={rating} className="flex items-center gap-2 text-gray-700">
-                            <input type="checkbox" className="checkbox checkbox-sm" />
-                            <div className="flex items-center gap-1">
-                                {[...Array(5)].map((_, i) =>
-                                    i < rating ? (
-                                        <FaStar key={i} className="text-yellow-400" />
-                                    ) : (
-                                        <FaRegStar key={i} className="text-gray-400" />
-                                    )
-                                )}
-                            </div>
-                        </label>
-                    ))}
-                </div>
+                <label className="block mb-2 text-white">مزيد من الخيارات</label>
+                {[
+                    "مفتوح الآن",
+                    "جلسات داخلية",
+                    "جلسات خارجية",
+                    "يوجد توصيل",
+                    "جلسات عائلية",
+                    "يوجد حجز مسبق",
+                    "أضيف حديثاً",
+                ].map((opt) => (
+                    <label
+                        key={opt}
+                        className="flex justify-between items-center bg-white text-black px-3 py-2 rounded-lg mb-1"
+                    >
+                        <span>{opt}</span>
+                        <input
+                            type="checkbox"
+                            checked={selectedOptions.includes(opt)}
+                            onChange={() =>
+                                toggleSelection(opt, selectedOptions, setSelectedOptions)
+                            }
+                            className="accent-primary-1"
+                        />
+                    </label>
+                ))}
             </div>
 
-            {/* Toggles */}
-            <div className="flex justify-between gap-2 text-sm text-gray-700">
-                <div className="flex items-center gap-1">
-                    <input type="checkbox" className="toggle toggle-xs" />
-                    <span>مفتوح الآن</span>
-                    <FaClock className="text-gray-500 text-xs" />
-                </div>
-                <div className="flex items-center gap-1">
-                    <input type="checkbox" className="toggle toggle-xs" />
-                    <span>الأقرب منك</span>
-                    <FaLocationArrow className="text-gray-500 text-xs" />
-                </div>
-            </div>
-
-            {/* Promotions */}
-            <div className="flex flex-col gap-1 text-sm text-gray-700">
-                <div className="flex items-center gap-2">
-                    <FaTags />
-                    <span>عروض/خصومات</span>
-                </div>
-                <div className="flex items-center gap-2">
-                    <FaPlusCircle />
-                    <span>أضيف حديثاً</span>
-                </div>
-            </div>
-
-            {/* Delivery Apps */}
+            {/* التقييم */}
             <div>
-                <p className="text-sm font-medium mb-1">تطبيقات التوصيل</p>
-                <div className="h-24 overflow-y-auto bg-white p-2 rounded-lg shadow-inner space-y-1">
-                    {["هنقرستيشن", "مرسول", "أوبر", "كريم", "جاهز"].map((app) => (
-                        <label key={app} className="flex justify-between items-center text-sm text-gray-700">
-                            <span>{app}</span>
-                            <input type="checkbox" className="checkbox checkbox-xs" />
-                        </label>
-                    ))}
-                </div>
+                <label className="block mb-2 text-white">التقييم</label>
+                {[5, 4, 3, 2, 1].map((rating) => (
+                    <label
+                        key={rating}
+                        className="flex justify-between items-center bg-white text-black px-3 py-2 rounded-lg mb-1"
+                    >
+                        <div className="flex gap-1">
+                            {Array.from({ length: 5 }).map((_, i) =>
+                                i < rating ? (
+                                    <FaStar key={i} className="text-yellow-500" />
+                                ) : (
+                                    <FaRegStar key={i} className="text-gray-300" />
+                                )
+                            )}
+                        </div>
+                        <input
+                            type="checkbox"
+                            checked={selectedRating === rating}
+                            onChange={() => setSelectedRating(rating)}
+                            className="accent-primary-1"
+                        />
+                    </label>
+                ))}
             </div>
 
-            {/* Meal Types */}
-            <div>
-                <p className="text-sm font-medium mb-1">نوع الوجبة</p>
-                <div className="bg-white p-2 rounded-lg shadow-inner space-y-1">
-                    {["فطور", "غداء", "عشاء"].map((meal) => (
-                        <label key={meal} className="flex justify-between items-center text-sm text-gray-700">
-                            <span>{meal}</span>
-                            <input type="checkbox" className="checkbox checkbox-xs" />
-                        </label>
-                    ))}
-                </div>
+            {/* Buttons */}
+            <div className="flex gap-2">
+                <button className="w-1/2 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg">
+                    عرض النتائج
+                </button>
+                <button className="w-1/2 border border-red-600 text-red-600 py-2 rounded-lg">
+                    الغاء التصفيات
+                </button>
             </div>
-
-            {/* Button */}
-            <button className="w-full bg-primary-1 hover:bg-hover_primary-1 text-white font-bold py-2 rounded-full text-sm">
-                عرض النتائج
-            </button>
         </div>
     );
 };
