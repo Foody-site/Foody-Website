@@ -3,8 +3,9 @@ import axios from "axios";
 import CategoryTabs from "../shared/category/CategoryTabs";
 import FoodCard from "../shared/cards/FoodCard";
 import { api_url } from "../../utils/ApiClient";
+import { IoIosArrowDropleft, IoIosArrowDropright } from "react-icons/io";
 
-const Store = () => {
+const Store = ({ searchTerm }) => {
     const [stores, setStores] = useState([]);
     const [page, setPage] = useState(1);
     const [type, setType] = useState("restaurant");
@@ -17,7 +18,7 @@ const Store = () => {
 
     useEffect(() => {
         fetchStores();
-    }, [type, page]);
+    }, [type, page, searchTerm]);
 
     const fetchStores = async () => {
         try {
@@ -26,7 +27,13 @@ const Store = () => {
                     page,
                     take: 10,
                     type,
-                },
+                    ...(typeof searchTerm === "string"
+                        ? { name: searchTerm }
+                        : {
+                            name: searchTerm?.name || "",
+                            rating: searchTerm?.rating ?? 0,
+                        }),
+                }
             });
 
             const data = response?.data?.data || [];
@@ -60,7 +67,7 @@ const Store = () => {
         <div className="p-4">
             <CategoryTabs onCategoryChange={handleCategoryChange} />
 
-            <div className="flex flex-wrap gap-4 mt-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
                 {stores.length > 0 ? (
                     stores.map((store) => (
                         <FoodCard key={store.id} store={store} />
@@ -78,14 +85,14 @@ const Store = () => {
                     disabled={!pagination?.hasPreviousPage}
                     className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
                 >
-                    السابق
+                    <IoIosArrowDropleft />
                 </button>
                 <button
                     onClick={() => setPage((prev) => prev + 1)}
                     disabled={!pagination?.hasNextPage}
                     className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
                 >
-                    التالي
+                    <IoIosArrowDropright />
                 </button>
             </div>
         </div>

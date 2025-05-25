@@ -25,7 +25,7 @@ const CategoryTabs = ({ onCategoryChange }) => {
     };
 
     return (
-        <div className="flex p-2 rounded-xl overflow-x-auto">
+        <div className="flex justify-center flex-wrap gap-2 p-2 rounded-xl">
             {tabs.map((tab) => (
                 <button
                     key={tab.label}

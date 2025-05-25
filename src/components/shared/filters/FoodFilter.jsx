@@ -1,19 +1,18 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
-    FaSearch,
     FaMapMarkerAlt,
     FaCity,
     FaUtensils,
     FaBiking,
-    FaStar,
-    FaRegStar,
 } from "react-icons/fa";
+import SearchFilter from "../search/SearchFilter";
+import RatingFilter from "../rating/RatingFilter";
 
-const FoodFilter = () => {
+const FoodFilter = ({ onSearch }) => {
     const [priceRange, setPriceRange] = useState({ min: 10, max: 50 });
     const [selectedMeals, setSelectedMeals] = useState(["عشاء"]);
     const [selectedOptions, setSelectedOptions] = useState(["أضيف حديثاً"]);
-    const [selectedRating, setSelectedRating] = useState(1);
+    const [ratingRange, setRatingRange] = useState(null);
 
     const toggleSelection = (value, state, setState) => {
         setState(
@@ -25,18 +24,10 @@ const FoodFilter = () => {
 
     return (
         <div className="bg-[#D713130D] text-white p-4 rounded-xl w-80 space-y-4 font-sans text-sm">
-
-            {/* Search Input */}
             <div className="relative">
-                <input
-                    type="text"
-                    placeholder="ما الذي تريد أن تبحث عنه؟"
-                    className="w-full pl-10 pr-4 py-2 rounded-full bg-white text-black focus:outline-none"
-                />
-                <FaSearch className="absolute top-2.5 left-4 text-gray-500" />
+                <SearchFilter onSearch={onSearch} />
             </div>
 
-            {/* السعر */}
             <div>
                 <label className="block mb-2 text-white">السعر</label>
                 <div className="relative">
@@ -57,12 +48,10 @@ const FoodFilter = () => {
                 </div>
             </div>
 
-            {/* Dropdowns */}
-            {[
-                { label: "المنطقة", icon: <FaMapMarkerAlt /> },
-                { label: "المدينة", icon: <FaCity /> },
-                { label: "نوع المطعم", icon: <FaUtensils /> },
-                { label: "نوع تطبيقات التوصيل", icon: <FaBiking /> },
+            {[{ label: "المنطقة", icon: <FaMapMarkerAlt /> },
+            { label: "المدينة", icon: <FaCity /> },
+            { label: "نوع المطعم", icon: <FaUtensils /> },
+            { label: "نوع تطبيقات التوصيل", icon: <FaBiking /> },
             ].map((item, i) => (
                 <div key={i} className="relative">
                     <select className="w-full appearance-none pl-10 pr-4 py-2 bg-white text-black rounded-lg">
@@ -72,7 +61,6 @@ const FoodFilter = () => {
                 </div>
             ))}
 
-            {/* نوع الوجبة */}
             <div>
                 <label className="block mb-2 text-white">نوع الوجبة</label>
                 {["فطور", "فطور متأخر", "غداء", "عشاء"].map((meal) => (
@@ -93,7 +81,6 @@ const FoodFilter = () => {
                 ))}
             </div>
 
-            {/* مزيد من الخيارات */}
             <div>
                 <label className="block mb-2 text-white">مزيد من الخيارات</label>
                 {[
@@ -122,36 +109,21 @@ const FoodFilter = () => {
                 ))}
             </div>
 
-            {/* التقييم */}
             <div>
-                <label className="block mb-2 text-white">التقييم</label>
-                {[5, 4, 3, 2, 1].map((rating) => (
-                    <label
-                        key={rating}
-                        className="flex justify-between items-center bg-white text-black px-3 py-2 rounded-lg mb-1"
-                    >
-                        <div className="flex gap-1">
-                            {Array.from({ length: 5 }).map((_, i) =>
-                                i < rating ? (
-                                    <FaStar key={i} className="text-yellow-500" />
-                                ) : (
-                                    <FaRegStar key={i} className="text-gray-300" />
-                                )
-                            )}
-                        </div>
-                        <input
-                            type="checkbox"
-                            checked={selectedRating === rating}
-                            onChange={() => setSelectedRating(rating)}
-                            className="accent-primary-1"
-                        />
-                    </label>
-                ))}
+                <RatingFilter
+                    selectedRating={ratingRange?.min}
+                    setRatingRange={setRatingRange}
+                />
             </div>
 
-            {/* Buttons */}
             <div className="flex gap-2">
-                <button className="w-1/2 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg">
+                <button className="w-1/2 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg"
+                    onClick={() => {
+                        onSearch({
+                            rating: ratingRange?.min,
+                        });
+                    }}
+                >
                     عرض النتائج
                 </button>
                 <button className="w-1/2 border border-red-600 text-red-600 py-2 rounded-lg">
