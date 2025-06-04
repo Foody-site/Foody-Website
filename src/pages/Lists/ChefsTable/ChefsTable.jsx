@@ -1,11 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, forwardRef, useImperativeHandle } from "react";
 import { TbTrash } from "react-icons/tb";
 import { IoEyeOutline } from "react-icons/io5";
 import { LuPencilLine } from "react-icons/lu";
 import { Pagination } from "../../../components/shared/Pagination/Pagination";
 import { api_url } from "../../../utils/ApiClient";
 
-export function ChefsTable() {
+export const ChefsTable = forwardRef((props, ref) => {
+  const { onChefsChange, onLoadingChange } = props;  
   const [chefs, setChefs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -15,46 +16,79 @@ export function ChefsTable() {
   const [chefToDelete, setChefToDelete] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
 
+  useImperativeHandle(ref, () => ({
+    hasChefs: () => chefs.length > 0,
+  }));
+
   useEffect(() => {
     const fetchChefs = async () => {
       setLoading(true);
+      if (onLoadingChange) {
+        onLoadingChange(true);
+      }
+
       try {
         const token = localStorage.getItem("token");
 
-        const response = await fetch(
-          `${api_url}/user/chef`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await fetch(`${api_url}/user/chef`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
         const result = await response.json();
+        console.log("API Response Status:", response.status);
+        console.log("API Result:", result);
+        console.log("Is response OK?", response.ok);
 
         if (response.ok) {
-          if (result.data && Array.isArray(result.data)) {
-            setChefs(result.data);
+          let chefsData = [];
+
+          if (result && typeof result === "object") {
+            if (Array.isArray(result.data)) {
+              console.log("Setting chefs with result.data:", result.data);
+              chefsData = result.data;
+            } else if (Array.isArray(result)) {
+              console.log("Setting chefs with array:", result);
+              chefsData = result;
+            } else {
+              console.log("Setting chefs with single object:", [result]);
+              chefsData = [result];
+            }
 
             if (result.pagination) {
               setPagination(result.pagination);
               setTotalPages(result.pagination.totalPages);
             }
-          } else {
-            setChefs([]);
+          }
+
+          setChefs(chefsData);
+
+          if (onChefsChange) {
+            onChefsChange(chefsData.length > 0);
           }
         } else {
           setChefs([]);
+          if (onChefsChange) {
+            onChefsChange(false);
+          }
         }
       } catch (error) {
+        console.error("Error fetching chefs:", error);
         setChefs([]);
+        if (onChefsChange) {
+          onChefsChange(false);
+        }
       } finally {
         setLoading(false);
+        if (onLoadingChange) {
+          onLoadingChange(false);
+        }
       }
     };
 
     fetchChefs();
-  }, [currentPage]);
+  }, [currentPage, onChefsChange, onLoadingChange]);
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
@@ -74,7 +108,6 @@ export function ChefsTable() {
     try {
       const token = localStorage.getItem("token");
 
-      // Fixed: استخدام chefToDelete.id بدلاً من chef_id غير المعرف
       const response = await fetch(`${api_url}/chef/${chefToDelete.id}`, {
         method: "DELETE",
         headers: {
@@ -84,22 +117,24 @@ export function ChefsTable() {
       });
 
       if (response.ok) {
-        // إزالة الشيف من القائمة
-        setChefs((prevChefs) =>
-          prevChefs.filter((chef) => chef.id !== chefToDelete.id)
+        const updatedChefs = chefs.filter(
+          (chef) => chef.id !== chefToDelete.id
         );
+        setChefs(updatedChefs);
+
+        if (onChefsChange) {
+          onChefsChange(updatedChefs.length > 0);
+        }
+
         setShowDeleteModal(false);
         setChefToDelete(null);
 
-        // إذا كانت هذه آخر عنصر في الصفحة، ارجع للصفحة السابقة
         if (chefs.length === 1 && currentPage > 1) {
           setCurrentPage(currentPage - 1);
         }
 
-        // رسالة نجاح
         alert("تم حذف الشيف بنجاح");
       } else {
-        // معالجة أخطاء الاستجابة
         const errorData = await response.json().catch(() => null);
         console.error("خطأ في حذف الشيف:", errorData);
         alert(errorData?.message || "حدث خطأ أثناء حذف الشيف");
@@ -124,6 +159,9 @@ export function ChefsTable() {
   if (chefs.length === 0) {
     return <div className="text-center py-12">لا توجد شيفات متاحة</div>;
   }
+
+  console.log("Current chefs state:", chefs);
+  console.log("Current loading state:", loading);
 
   return (
     <div>
@@ -152,9 +190,9 @@ export function ChefsTable() {
             </tr>
           </thead>
           <tbody>
-            {chefs.map((chef) => (
+            {chefs.map((chef, index) => (
               <tr
-                key={chef.id}
+                key={chef.id || index}
                 className="hover:bg-gray-50 transition-colors duration-150"
               >
                 <td className="px-4 py-3 border border-gray-300">
@@ -254,4 +292,4 @@ export function ChefsTable() {
       )}
     </div>
   );
-}
+});
