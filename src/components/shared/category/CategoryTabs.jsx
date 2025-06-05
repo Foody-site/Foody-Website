@@ -2,8 +2,8 @@ import React from "react";
 import { useNavigate } from "react-router";
 
 const tabs = [
-    { label: "الشيفات", type: "page", path: "/chefs" },
-    { label: "وصفات", type: "page", path: "/recipes" },
+    { label: "الشيفات", type: "page", path: "/chef" },
+    { label: "وصفات", type: "page", path: "/recipe" },
     { label: "عصائر/آيسكريم", type: "category", enum: "icecream" },
     { label: "أكلات صحية", type: "category", enum: "health" },
     { label: "حلويات", type: "category", enum: "patisserie" },

@@ -7,12 +7,14 @@ import {
 } from "react-icons/fa";
 import SearchFilter from "../search/SearchFilter";
 import RatingFilter from "../rating/RatingFilter";
+import SelectInput from "../../../components/shared/inputs/SelectInput";
 
 const FoodFilter = ({ onSearch }) => {
-    const [priceRange, setPriceRange] = useState({ min: 10, max: 50 });
     const [selectedMeals, setSelectedMeals] = useState(["عشاء"]);
     const [selectedOptions, setSelectedOptions] = useState(["أضيف حديثاً"]);
     const [ratingRange, setRatingRange] = useState(null);
+    const [selectedRegion, setSelectedRegion] = useState("");
+    const [selectedCity, setSelectedCity] = useState("");
 
     const toggleSelection = (value, state, setState) => {
         setState(
@@ -28,39 +30,76 @@ const FoodFilter = ({ onSearch }) => {
                 <SearchFilter onSearch={onSearch} />
             </div>
 
-            <div>
-                <label className="block mb-2 text-white">السعر</label>
-                <div className="relative">
-                    <input
-                        type="range"
-                        min={10}
-                        max={50}
-                        value={priceRange.max}
-                        onChange={(e) =>
-                            setPriceRange({ ...priceRange, max: parseInt(e.target.value) })
-                        }
-                        className="w-full"
-                    />
-                    <div className="flex justify-between text-red-600 text-sm font-bold mt-2">
-                        <span>ريال 10</span>
-                        <span>ريال 50</span>
-                    </div>
+            {/* المنطقة */}
+            <div className="relative">
+                <div className="absolute left-4 top-3 text-gray-500">
+                    <FaMapMarkerAlt />
                 </div>
+                <SelectInput
+                    name="region"
+                    label=""
+                    value={selectedRegion}
+                    onChange={(e) => setSelectedRegion(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 bg-white text-black rounded-lg"
+                    options={[
+                        { value: "", label: "قم بإختيار المنطقة" },
+                        { value: "Riyadh", label: "الرياض" },
+                        { value: "Mecca", label: "مكة المكرمة" },
+                        { value: "Eastern", label: "الشرقية" },
+                        { value: "Medina", label: "المدينة المنورة" },
+                        { value: "Asir", label: "عسير" },
+                        { value: "Al-Qassim", label: "القصيم" },
+                        { value: "Tabuk", label: "تبوك" },
+                        { value: "Hail", label: "حائل" },
+                        { value: "Northern Borders", label: "الحدود الشمالية" },
+                        { value: "Jizan", label: "جازان" },
+                        { value: "Najran", label: "نجران" },
+                        { value: "Al-Bahah", label: "الباحة" },
+                        { value: "Al-Jouf", label: "الجوف" },
+                    ]}
+                />
             </div>
 
-            {[{ label: "المنطقة", icon: <FaMapMarkerAlt /> },
-            { label: "المدينة", icon: <FaCity /> },
-            { label: "نوع المطعم", icon: <FaUtensils /> },
-            { label: "نوع تطبيقات التوصيل", icon: <FaBiking /> },
-            ].map((item, i) => (
-                <div key={i} className="relative">
-                    <select className="w-full appearance-none pl-10 pr-4 py-2 bg-white text-black rounded-lg">
-                        <option>قم بإختيار {item.label}</option>
-                    </select>
-                    <div className="absolute left-4 top-2.5 text-gray-500">{item.icon}</div>
+            {/* المدينة */}
+            <div className="relative">
+                <div className="absolute left-4 top-3 text-gray-500">
+                    <FaCity />
                 </div>
-            ))}
+                <SelectInput
+                    name="city"
+                    label=""
+                    value={selectedCity}
+                    onChange={(e) => setSelectedCity(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 bg-white text-black rounded-lg"
+                    options={[
+                        { value: "", label: "قم بإختيار المدينة" },
+                        { value: "Mecca", label: "مكة المكرمة" },
+                        { value: "Riyadh", label: "الرياض" },
+                        { value: "Jeddah", label: "جدة" },
+                        { value: "Dammam", label: "الدمام" },
+                        { value: "Medina", label: "المدينة المنورة" },
+                        { value: "Khobar", label: "الخبر" },
+                    ]}
+                />
+            </div>
 
+            {/* نوع المطعم */}
+            <div className="relative">
+                <select className="w-full appearance-none pl-10 pr-4 py-2 bg-white text-black rounded-lg">
+                    <option>قم بإختيار نوع المطعم</option>
+                </select>
+                <div className="absolute left-4 top-2.5 text-gray-500"><FaUtensils /></div>
+            </div>
+
+            {/* نوع تطبيقات التوصيل */}
+            <div className="relative">
+                <select className="w-full appearance-none pl-10 pr-4 py-2 bg-white text-black rounded-lg">
+                    <option>قم بإختيار نوع تطبيقات التوصيل</option>
+                </select>
+                <div className="absolute left-4 top-2.5 text-gray-500"><FaBiking /></div>
+            </div>
+
+            {/* نوع الوجبة */}
             <div>
                 <label className="block mb-2 text-white">نوع الوجبة</label>
                 {["فطور", "فطور متأخر", "غداء", "عشاء"].map((meal) => (
@@ -81,6 +120,7 @@ const FoodFilter = ({ onSearch }) => {
                 ))}
             </div>
 
+            {/* مزيد من الخيارات */}
             <div>
                 <label className="block mb-2 text-white">مزيد من الخيارات</label>
                 {[
@@ -109,6 +149,7 @@ const FoodFilter = ({ onSearch }) => {
                 ))}
             </div>
 
+            {/* التقييم */}
             <div>
                 <RatingFilter
                     selectedRating={ratingRange?.min}
@@ -116,17 +157,33 @@ const FoodFilter = ({ onSearch }) => {
                 />
             </div>
 
+            {/* الأزرار */}
             <div className="flex gap-2">
-                <button className="w-1/2 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg"
+                <button
+                    className="w-1/2 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg"
                     onClick={() => {
                         onSearch({
+                            region: selectedRegion,
+                            city: selectedCity,
+                            meals: selectedMeals,
+                            options: selectedOptions,
                             rating: ratingRange?.min,
                         });
                     }}
                 >
                     عرض النتائج
                 </button>
-                <button className="w-1/2 border border-red-600 text-red-600 py-2 rounded-lg">
+                <button
+                    className="w-1/2 border border-red-600 text-red-600 py-2 rounded-lg"
+                    onClick={() => {
+                        setSelectedRegion("");
+                        setSelectedCity("");
+                        setSelectedMeals([]);
+                        setSelectedOptions([]);
+                        setRatingRange(null);
+                        onSearch({});
+                    }}
+                >
                     الغاء التصفيات
                 </button>
             </div>

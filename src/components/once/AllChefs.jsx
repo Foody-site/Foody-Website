@@ -4,6 +4,7 @@ import { api_url } from "../../utils/ApiClient";
 import PageWrapper from "../common/PageWrapper";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { Link } from "react-router";
+import CategoryTabs from "../shared/category/CategoryTabs";
 
 const AllChefs = () => {
     const [chefs, setChefs] = useState([]);
@@ -49,27 +50,50 @@ const AllChefs = () => {
                 {error && <p className="text-center text-red-500">{error}</p>}
             </div>
 
+            <CategoryTabs />
             <div className="grid md:grid-cols-4 grid-cols-2 gap-6">
                 {Array.isArray(chefs) &&
                     chefs.map((chef) => (
-                        <div key={chef.id} className="card text-center">
-                            {/* <img
-                                src={chef.profilePicture}
-                                alt={chef.name}
-                                className="mx-auto rounded-full"
-                                style={{ width: 130, height: 130, objectFit: "cover" }}
-                            /> */}
-                            <Link to={`/chef/${chef.id}`} key={chef.id} className="card text-center">
+                        <div key={chef.id} className="bg-white p-4 rounded-lg shadow-md text-center border">
+                            <div className="flex flex-col items-center">
                                 <img
                                     src={chef.profilePicture || `https://ui-avatars.com/api/?name=${encodeURIComponent(chef.name)}&background=D71313&color=fff&size=130`}
                                     alt={chef.name}
-                                    className="mx-auto rounded-full"
-                                    style={{ width: 130, height: 130, objectFit: "cover" }}
+                                    className="w-24 h-24 rounded-full object-cover mb-2"
                                 />
-                                <p className="mt-2">{chef.name}</p>
-                            </Link>
+                                <h2 className="text-lg font-semibold">{chef.name}</h2>
+                                <p className="text-gray-500 text-sm">أنواع وصفات الطبخ هنا</p>
+                            </div>
+
+                            <div className="flex justify-between text-center mt-4 text-sm border-t pt-4">
+                                <div>
+                                    <p className="font-semibold text-lg text-[#D71313]">120</p>
+                                    <p className="text-gray-600">عدد الزوار</p>
+                                </div>
+                                <div>
+                                    <p className="font-semibold text-lg text-[#D71313]">1700+</p>
+                                    <p className="text-gray-600">عدد المتابعين</p>
+                                </div>
+                                <div>
+                                    <p className="font-semibold text-lg text-[#D71313]">90</p>
+                                    <p className="text-gray-600">عدد الوصفات</p>
+                                </div>
+                            </div>
+
+                            <div className="flex justify-between mt-4 gap-2">
+                                <button className="w-1/2 border border-[#D71313] text-[#D71313] rounded-md py-2 hover:bg-[#D71313] hover:text-white transition">
+                                    المتابعة
+                                </button>
+                                <Link
+                                    to={`/chef/${chef.id}`}
+                                    className="w-1/2 bg-[#D71313] text-white rounded-md py-2 text-center hover:opacity-90 transition"
+                                >
+                                    المزيد من التفاصيل
+                                </Link>
+                            </div>
                         </div>
                     ))}
+
             </div>
 
             {totalPages > 0 && (
