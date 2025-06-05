@@ -12,6 +12,7 @@ import NeedChef from "../pages/Need_Chef/NeedChef";
 import Chef from "../pages/Chef/Chef";
 import Recipe from "../pages/Recipe/Recipe";
 import ChefProfile from "../pages/Chef/ChefProfile";
+import List from "../pages/Lists/List";
 
 const AppRouter = () => {
   return (
@@ -25,6 +26,7 @@ const AppRouter = () => {
       {/* 🔒 Protected routes inside Layout */}
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
+        <Route path="/list" element={<List />} />
         <Route path="/chef" element={<Chef />} />
         <Route path="/chef/:id" element={<ChefProfile />} />
         <Route path="/add-chef" element={<AddChef />} />
