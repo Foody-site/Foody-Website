@@ -10,10 +10,10 @@ import { useNavigate } from "react-router";
 
 export default function List() {
   const [activeTab, setActiveTab] = useState("المتاجر");
-  const [hasChefs, setHasChefs] = useState(false);  
-  const [chefsLoading, setChefsLoading] = useState(false);    
+  const [hasChefs, setHasChefs] = useState(false);
+  const [chefsLoading, setChefsLoading] = useState(false);
   const chefsTableRef = useRef();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const menuItems = [
     { label: "المتاجر", icon: <MdOutlineStoreMallDirectory size={20} /> },
@@ -70,13 +70,13 @@ export default function List() {
 
     switch (activeTab) {
       case "المتاجر":
-        navigate("/add-store");      
+        navigate("/add-store");
         break;
       case "الشيفات":
-        navigate("/add-chef"); 
+        navigate("/add-chef");
         break;
       case "الوصفات":
-        navigate("/add-recipe");   
+        navigate("/add-recipe");
         break;
       default:
         break;
@@ -85,35 +85,33 @@ export default function List() {
 
   return (
     <div className="w-full bg-white p-4 pb-6 rounded-lg shadow-sm">
-      <div className="flex flex-row-reverse justify-between mb-6">
-        <h1 className="pt-10 text-xl font-bold text-right">حسابات الأعمال</h1>
+      <h1 className="pt-10 pb-10 text-xl font-bold text-right">
+        حسابات الأعمال
+      </h1>
+      <div className="w-full max-w-[91%] mr-auto flex flex-col sm:flex-row items-center border border-gray-300 px-4 py-3 rounded-md gap-2 sm:gap-6 relative">
+        <Button
+          label={getButtonText()}
+          disabled={isButtonDisabled()}
+          onClick={handleAddClick}
+          className={`w-full sm:w-auto py-2 px-4 rounded-md transition-colors ${
+            isButtonDisabled()
+              ? "bg-gray-400 text-gray-600 cursor-not-allowed"
+              : "bg-red-600 hover:bg-red-700 text-white"
+          }`}
+        />
 
-        <div className="pt-32 flex items-center gap-4">
-          <div className="flex items-center border border-gray-300 px-6 py-3 rounded-md gap-[1440px]">
-            <Button
-              label={getButtonText()}
-              disabled={isButtonDisabled()}
-              onClick={handleAddClick}   
-              className={`py-2 px-4 rounded-md transition-colors ${
-                isButtonDisabled()
-                  ? "bg-gray-400 text-gray-600 cursor-not-allowed"
-                  : "bg-red-600 hover:bg-red-700 text-white"
-              }`}
-            />
-            <span className="text-lg font-semibold text-gray-700">
-              {activeTab}
-            </span>
-          </div>
-        </div>
+        <span className="absolute right-4 sm:static sm:ml-auto text-base font-semibold text-gray-700 text-right">
+          {activeTab}
+        </span>
       </div>
 
-      <div className="flex flex-row-reverse gap-6">
-        <div className="w-40 max-w-[160px] max-h-[170px] overflow-auto rounded-lg border p-2 flex flex-col gap-2 bg-white">
+      <div className="pt-3 flex flex-col lg:flex-row-reverse gap-4">
+        <div className="w-full lg:w-40 max-w-full lg:max-w-[160px] max-h-44 overflow-auto rounded-lg border p-2 flex flex-row lg:flex-col gap-2 bg-white">
           {menuItems.map((item) => (
             <button
               key={item.label}
               onClick={() => setActiveTab(item.label)}
-              className={`flex items-center justify-between px-4 py-3 rounded-md text-sm font-medium text-right transition-colors
+              className={`flex items-center justify-between w-full px-4 py-3 rounded-md text-sm font-medium text-right transition-colors
         ${
           activeTab === item.label
             ? "bg-red-100 text-red-600 font-bold"

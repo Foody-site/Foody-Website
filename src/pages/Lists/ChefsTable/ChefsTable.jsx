@@ -6,7 +6,7 @@ import { Pagination } from "../../../components/shared/Pagination/Pagination";
 import { api_url } from "../../../utils/ApiClient";
 
 export const ChefsTable = forwardRef((props, ref) => {
-  const { onChefsChange, onLoadingChange } = props;  
+  const { onChefsChange, onLoadingChange } = props;
   const [chefs, setChefs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -260,9 +260,8 @@ export const ChefsTable = forwardRef((props, ref) => {
               تأكيد الحذف
             </h3>
             <p className="text-gray-600 mb-6 text-right">
-              هل أنت متأكد من حذف الشيف "{chefToDelete?.name}"؟
-              <br />
-              لا يمكن التراجع عن هذا الإجراء.
+              ؟ ( {chefToDelete?.name} ) هل أنت متأكد من حذف الشيف
+              <br />. لا يمكن التراجع عن هذا الإجراء{" "}
             </p>
             <div className="flex gap-3 justify-end">
               <button
