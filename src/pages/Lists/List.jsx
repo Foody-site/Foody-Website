@@ -20,6 +20,11 @@ export default function List() {
     { label: "الشيفات", icon: <PiChefHatLight size={20} /> },
     { label: "الوصفات", icon: <CiForkAndKnife size={20} /> },
   ];
+  const tabTitles = {
+    المتاجر: "المتاجر الخاصة بك",
+    الشيفات: "الشيفات",
+    الوصفات: "الوصفات الخاصة بالشفات",
+  };
 
   const renderTable = () => {
     switch (activeTab) {
@@ -101,7 +106,7 @@ export default function List() {
         />
 
         <span className="absolute right-4 sm:static sm:ml-auto text-base font-semibold text-gray-700 text-right">
-          {activeTab}
+          {tabTitles[activeTab]}
         </span>
       </div>
 
