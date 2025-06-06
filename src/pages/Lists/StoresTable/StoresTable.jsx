@@ -53,13 +53,25 @@ export function StoresTable() {
       <div className="overflow-x-auto">
         <table className="w-full border-collapse table-auto">
           <thead>
-            <tr className="text-right text-gray-500 border-b border-gray-200">
-              <th className="px-4 py-2 font-medium">مزيد من التفاصيل</th>
-              <th className="px-4 py-2 font-medium">رقم التواصل مع الإدارة</th>
-              <th className="px-4 py-2 font-medium">المنطقة</th>
-              <th className="px-4 py-2 font-medium">المدينة</th>
-              <th className="px-4 py-2 font-medium">نوع المتجر</th>
-              <th className="px-4 py-2 font-medium">تفاصيل المتجر</th>
+            <tr className="text-right text-gray-700">
+              <th className="px-4 py-3 font-medium text-center border border-gray-300">
+                مزيد من التفاصيل
+              </th>
+              <th className="px-4 py-3 font-medium text-right border border-gray-300">
+                رقم التواصل مع الإدارة{" "}
+              </th>
+              <th className="px-4 py-3 font-medium text-right border border-gray-300">
+                المنطقة{" "}
+              </th>
+              <th className="px-4 py-3 font-medium text-right border border-gray-300">
+                المدينة{" "}
+              </th>
+              <th className="px-4 py-3 font-medium text-right border border-gray-300">
+                نوع المتجر{" "}
+              </th>
+              <th className="px-4 py-3 font-medium text-right border border-gray-300">
+                تفاصيل المتجر{" "}
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -68,29 +80,43 @@ export function StoresTable() {
                 key={store.id}
                 className="border-b border-gray-200 hover:bg-gray-50"
               >
-                <td className="px-4 py-3">
+                <td className="px-4 py-3 text-gray-700 text-sm text-right border border-gray-300">
                   <div className="flex gap-2 justify-center">
-                    <button className="text-red-500 hover:bg-red-50 p-1 rounded-md">
+                    <button
+                      onClick={() => handleDeleteClick(chef)}
+                      className="text-red-500 bg-red-100 hover:bg-red-300 p-1 rounded-md transition-colors"
+                      title="حذف الشيف"
+                    >
                       <TbTrash size={16} />
                     </button>
-                    <button className="text-blue-500 hover:bg-blue-50 p-1 rounded-md">
+                    <button
+                      className="text-blue-500 bg-blue-100 hover:bg-blue-300 p-1 rounded-md transition-colors"
+                      title="عرض تفاصيل الشيف"
+                    >
                       <IoEyeOutline size={16} />
                     </button>
-                    <button className="text-gray-500 hover:bg-gray-100 p-1 rounded-md">
+                    <button
+                      className="text-blue-500 bg-blue-100 hover:bg-blue-300 p-1 rounded-md transition-colors"
+                      title="تعديل الشيف"
+                    >
                       <LuPencilLine size={16} />
                     </button>
                   </div>
                 </td>
-                <td className="px-4 py-3 text-gray-600">{store.manager}</td>
-                <td className="px-4 py-3 text-gray-600">{store.location}</td>
-                <td className="px-4 py-3 text-gray-600">{store.city}</td>
-                <td className="px-4 py-3 text-gray-600">{store.type}</td>
-                <td className="px-4 py-3 flex items-center gap-2">
-                  <div className="flex-shrink-0">
-                    <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                      <span className="text-xs">{store.id}</span>
-                    </div>
-                  </div>
+                <td className="px-4 py-3 text-gray-700 text-lg font-bold text-right border border-gray-300">
+                  {store.manager}
+                </td>
+                <td className="px-4 py-3 text-gray-700 text-sm text-right border border-gray-300">
+                  {store.location}
+                </td>
+                <td className="px-4 py-3 text-gray-700 text-sm text-right border border-gray-300">
+                  {store.city}
+                </td>
+                <td className="px-4 py-3 text-gray-700 text-sm text-right border border-gray-300">
+                  {store.type}
+                </td>
+                <td className="px-4 py-3 text-gray-700 text-sm text-right border border-gray-300">
+                  <div className="flex-shrink-0"></div>
                   <div className="text-right">
                     <div className="font-medium">{store.name}</div>
                   </div>
@@ -101,7 +127,7 @@ export function StoresTable() {
         </table>
       </div>
 
-      <Pagination 
+      <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={handlePageChange}
