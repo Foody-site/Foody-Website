@@ -1,5 +1,4 @@
 import { Route, Routes } from "react-router";
-import Home from "../pages/home/Home";
 import Layout from "../components/layout/Layout";
 import Login from "../components/Auth/Login";
 import Register from "../components/Auth/Register";
@@ -13,6 +12,7 @@ import Chef from "../pages/Chef/Chef";
 import Recipe from "../pages/Recipe/Recipe";
 import ChefProfile from "../pages/Chef/ChefProfile";
 import List from "../pages/Lists/List";
+import Home from "../pages/Home/Home";
 
 const AppRouter = () => {
   return (
