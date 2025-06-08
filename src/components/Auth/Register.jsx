@@ -44,7 +44,7 @@ const Register = () => {
       newErrors.email = "! يرجى إدخال بريد إلكتروني صالح";
     }
 
-    const phoneRegex = /^[0-9]{10,15}$/;
+    const phoneRegex = /^[0-9]{7,11}$/;
     if (!formData.phone.trim()) {
       newErrors.phone = "! رقم الهاتف مطلوب";
     } else if (!phoneRegex.test(formData.phone)) {
@@ -97,9 +97,9 @@ const Register = () => {
 
     const updatedData = {
       ...formData,
-      phone: formData.phone.trim().startsWith("+2")
+      phone: formData.phone.trim().startsWith("+966")
         ? formData.phone.trim()
-        : `+2${formData.phone.trim()}`,
+        : `+966${formData.phone.trim()}`,
     };
 
     try {
