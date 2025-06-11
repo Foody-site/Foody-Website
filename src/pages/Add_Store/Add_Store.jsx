@@ -23,7 +23,6 @@ const timeOptions = [
   { label: "10:00 ص", value: "10:00" },
   { label: "11:00 ص", value: "11:00" },
   { label: "12:00 م", value: "12:00" },
-  // أكمل بقية الأوقات حسب الحاجة
 ];
 const Add_Store = () => {
   const navigate = useNavigate();
@@ -286,7 +285,7 @@ const Add_Store = () => {
               <div className="w-96">
                 <SelectInput
                   name="type"
-                  label="نوع المتجر"
+                  label="تطبيق التوصيل الرئيسي"
                   className="h-12 px-6 text-xl py-4"
                   options={[
                     { value: "restaurant", label: "مطعم" },
