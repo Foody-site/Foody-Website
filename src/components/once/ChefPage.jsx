@@ -4,6 +4,7 @@ import axios from "axios";
 import PageWrapper from "../common/PageWrapper";
 import { api_url } from "../../utils/ApiClient";
 import { FaHeart, FaShareAlt, FaTwitter, FaStar } from "react-icons/fa";
+import Sponsors from "./Sponsors";
 
 const ChefPage = () => {
     const { id } = useParams();
@@ -71,17 +72,7 @@ const ChefPage = () => {
                 {/* Left Section */}
                 <div className="w-full lg:w-2/3">
                     {/* Sponsors */}
-                    <div className="flex items-center gap-3 mb-4">
-                        {Array(5).fill(0).map((_, i) => (
-                            <div key={i} className="w-14 h-14 rounded-full border overflow-hidden">
-                                <img
-                                    src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1600&q=80"
-                                    alt="Sponsor"
-                                    className="object-cover w-full h-full"
-                                />
-                            </div>
-                        ))}
-                    </div>
+                    <Sponsors />
 
                     {/* Cards Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
