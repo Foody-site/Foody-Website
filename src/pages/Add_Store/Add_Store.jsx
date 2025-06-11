@@ -3,8 +3,33 @@ import { TbCameraPlus } from "react-icons/tb";
 import Inputs from "../../components/shared/inputs/Inputs";
 import SelectInput from "../../components/shared/inputs/SelectInput";
 import DeliveryApps from "../../components/shared/inputs/DeliveryApps";
+import TextAreaInput from "../../components/shared/inputs/TextAreaInput ";
+import { FaSnapchatGhost, FaTiktok } from "react-icons/fa";
+import { RiTwitterXFill } from "react-icons/ri";
+import { TiSocialFacebook } from "react-icons/ti";
+import { IoLogoWhatsapp } from "react-icons/io";
+import { GrInstagram } from "react-icons/gr";
+import { PiGlobeThin } from "react-icons/pi";
+import MultiCheckBox from "../../components/shared/inputs/MultiCheckBox";
+import WorkTimeRange from "../../components/shared/inputs/WorkTimeRange";
+import Button from "../../components/shared/Buttons/Button";
+import { useNavigate } from "react-router";
 
+const timeOptions = [
+  { label: "06:00 ص", value: "06:00" },
+  { label: "07:00 ص", value: "07:00" },
+  { label: "08:00 ص", value: "08:00" },
+  { label: "09:00 ص", value: "09:00" },
+  { label: "10:00 ص", value: "10:00" },
+  { label: "11:00 ص", value: "11:00" },
+  { label: "12:00 م", value: "12:00" },
+  // أكمل بقية الأوقات حسب الحاجة
+];
 const Add_Store = () => {
+  const navigate = useNavigate();
+
+  // const [loading, setLoading] = useState(false);
+
   // Form images
   const [coverPicture, setcoverPicture] = useState(null);
   const [profilePicture, setprofilePicture] = useState(null);
@@ -26,10 +51,22 @@ const Add_Store = () => {
       console.error("الرجاء اختيار صورة صحيحة!");
     }
   };
+  const [selectedTimes, setSelectedTimes] = useState([]);
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
+
+  const handleOptionChange = (value) => {
+    setSelectedTimes((prev) =>
+      prev.includes(value)
+        ? prev.filter((item) => item !== value)
+        : [...prev, value]
+    );
+  };
+
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100">
+    <div className="flex flex-col min-h-screen ">
       <div className="flex-grow flex justify-center items-center px-8 py-8">
-        <div className="w-full max-w-[90rem] p-16 bg-gray-100 rounded-xl ">
+        <div className="w-full max-w-[90rem] p-16  rounded-xl ">
           <h2 className="text-3xl font-bold text-right text-gray-700 mb-10">
             اضافة متجر جديد{" "}
           </h2>
@@ -81,8 +118,8 @@ const Add_Store = () => {
               </label>
             </div>
           </div>
-          <form className="space-y-14 mx-auto max-w-full">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-x-10 gap-y-10 text-right">
+          <form className="pt-6 space-y-14 mx-auto max-w-full">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-10 text-right">
               <Inputs
                 name="deliveryPhone"
                 label="رقم التواصل للطلبات"
@@ -101,17 +138,6 @@ const Add_Store = () => {
                   الموقع والشيف{" "}
                 </p>
               </div>
-              <SelectInput
-                name="type"
-                label="نوع المتجر"
-                className="w-full h-12 px-6 text-xl py-4"
-                options={[
-                  { value: "restaurant", label: "مطعم" },
-                  { value: "patisserie", label: "معجنات" },
-                  { value: "health", label: "صحي" },
-                  { value: "icecream", label: "ايس كريم" },
-                ]}
-              />
               <Inputs
                 name="name"
                 label="الاسم التجاري"
@@ -119,20 +145,17 @@ const Add_Store = () => {
                 className="w-full h-12 px-6 text-xl py-4"
               />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-x-10 gap-y-10 text-right">
-              <Inputs
-                name="since"
-                label="تأسس منذ عام"
+            <div className="grid grid-cols-1 md:grid-cols-1 gap-x-10 gap-y-10 text-right">
+              <TextAreaInput
+                name="description"
+                label="وصف مختصر عن المتجر"
                 type="text"
-                className="w-full h-12 px-6 text-xl py-4"
+                className="w-full h-36 px-6 text-xl py-4 placeholder:text-sm"
+                placeholder="قم بادخال وصف مختصر عن المتجر هنا"
+                //onChange={handleChange}
               />
-
-              <Inputs
-                name="mapLink"
-                label="رابط المتجر علي خريطة جوجل"
-                type="text"
-                className="w-full h-12 px-6 text-xl py-4"
-              />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-10 text-right">
               <SelectInput
                 name="region"
                 label="المنطقة"
@@ -159,8 +182,199 @@ const Add_Store = () => {
                 className="w-full h-12 px-6 text-xl py-4"
                 options={[{ value: "Mecca", label: "مكة المكرمة" }]}
               />
+              <SelectInput
+                name="type"
+                label="نوع المتجر"
+                className="w-full h-12 px-6 text-xl py-4"
+                options={[
+                  { value: "restaurant", label: "مطعم" },
+                  { value: "patisserie", label: "معجنات" },
+                  { value: "health", label: "صحي" },
+                  { value: "icecream", label: "ايس كريم" },
+                ]}
+              />
+              <Inputs
+                name="since"
+                label="رخصة بلدي"
+                type="text"
+                className="w-full h-12 px-6 text-xl py-4"
+              />
+              <Inputs
+                name="since"
+                label="عنوان وطني"
+                type="text"
+                className="w-full h-12 px-6 text-xl py-4"
+              />
+              <Inputs
+                name="since"
+                label="تأسس منذ عام"
+                type="text"
+                className="w-full h-12 px-6 text-xl py-4"
+              />
+              <Inputs
+                name="since"
+                label="صورة المنيو"
+                type="text"
+                className="w-full h-12 px-6 text-xl py-4"
+              />
+              <Inputs
+                name="since"
+                label="الرقم الضريبي"
+                type="text"
+                className="w-full h-12 px-6 text-xl py-4"
+              />
+              <Inputs
+                name="since"
+                label="سجل التجاري"
+                type="text"
+                className="w-full h-12 px-6 text-xl py-4"
+              />
+              <Inputs
+                name="since"
+                Icon={IoLogoWhatsapp}
+                label="إضافة رقم واتساب"
+                type="text"
+                className="w-full h-12 px-6 text-xl py-4"
+              />
+              <Inputs
+                name="since"
+                Icon={TiSocialFacebook}
+                label="إضافة رابط فيسبوك"
+                type="text"
+                className="w-full h-12 px-6 text-xl py-4"
+              />
+              <Inputs
+                name="mapLink"
+                Icon={FaSnapchatGhost}
+                label="إضافة رابط سناب شات"
+                type="text"
+                className="w-full h-12 px-6 text-xl py-4"
+              />
+              <Inputs
+                name="mapLink"
+                Icon={RiTwitterXFill}
+                label="إضافة رابط اكس"
+                type="text"
+                className="w-full h-12 px-6 text-xl py-4"
+              />
+              <Inputs
+                name="mapLink"
+                Icon={GrInstagram}
+                label="إضافة رابط انستغرام"
+                type="text"
+                className="w-full h-12 px-6 text-xl py-4"
+              />
+              <Inputs
+                name="mapLink"
+                Icon={FaTiktok}
+                label="إضافة رابط  تيك توك"
+                type="text"
+                className="w-full h-12 px-6 text-xl py-4"
+              />
+              <div className="md:col-start-3 md:col-span-1 flex justify-end ">
+                <Inputs
+                  name="mapLink"
+                  Icon={PiGlobeThin}
+                  label="رابط  الموقع  الإلكتروني"
+                  type="text"
+                  className="w-full h-12 px-6 text-xl py-4 "
+                />
+              </div>
             </div>
             <DeliveryApps />
+            <div className="md:col-start-1 md:col-span-2 flex justify-end text-right">
+              <div className="w-96">
+                <SelectInput
+                  name="type"
+                  label="نوع المتجر"
+                  className="h-12 px-6 text-xl py-4"
+                  options={[
+                    { value: "restaurant", label: "مطعم" },
+                    { value: "patisserie", label: "معجنات" },
+                    { value: "health", label: "صحي" },
+                    { value: "icecream", label: "ايس كريم" },
+                  ]}
+                />
+              </div>
+            </div>
+            <div className="flex gap-8">
+              <div className="w-1/2">
+                <MultiCheckBox
+                  label="نوع الوجبة"
+                  options={[
+                    { label: "عشاء", value: "dinner" },
+                    { label: "غداء", value: "lunch" },
+                    { label: "فطور متاخر", value: "late-breakfast" },
+                    { label: "فطار", value: "breakfast" },
+                  ]}
+                  selectedOptions={selectedTimes}
+                  onChange={handleOptionChange}
+                />
+              </div>
+
+              <div className="w-1/2">
+                <MultiCheckBox
+                  label="نظام أوقات العمل"
+                  options={[
+                    { label: "مفتوح 7 / 24", value: "open" },
+                    { label: "دوامين", value: "double" },
+                    { label: "دوام", value: "single" },
+                  ]}
+                  selectedOptions={selectedTimes}
+                  onChange={handleOptionChange}
+                />
+              </div>
+            </div>
+            <div className="flex gap-8">
+              <div className="w-1/2">
+                <WorkTimeRange
+                  label="وقت عمل الدوام التاني"
+                  fromValue={from}
+                  toValue={to}
+                  onFromChange={setFrom}
+                  onToChange={setTo}
+                  options={timeOptions}
+                />
+              </div>
+
+              <div className="w-1/2">
+                <WorkTimeRange
+                  label="وقت عمل الدوام الاول"
+                  fromValue={from}
+                  toValue={to}
+                  onFromChange={setFrom}
+                  onToChange={setTo}
+                  options={timeOptions}
+                />
+              </div>
+            </div>
+            <MultiCheckBox
+              label="معلومات أخرى"
+              options={[
+                { label: "يوجد حجز مسبق", value: "preBooking" },
+                { label: "جلسات عائلية", value: "familySessions" },
+                { label: "يوجد توصيل", value: "hasDelivery" },
+                { label: "جلسات خارجية", value: "outdoorSessions" },
+                { label: "جلسات داخلية ", value: "indoorSessions" },
+              ]}
+              selectedOptions={selectedTimes}
+              onChange={handleOptionChange}
+            />
+            <div className="flex justify-center mt-12 pt-12">
+              <div className="flex gap-4 w-full max-w-2xl justify-center">
+                <Button
+                  label="إلغاء"
+                  className="flex-1 h-[55px] !text-primary-1 font-medium border border-primary-1 hover:bg-primary-1 hover:!text-white transition"
+                  type="button"
+                  onClick={() => navigate("/list")}
+                />
+                <Button
+                  type="submit"
+                  label="إضافة المتجر"
+                  className="flex-1 h-[55px] bg-primary-1 hover:bg-hover_primary-1 text-white rounded-md text-lg font-semibold"
+                />
+              </div>
+            </div>
           </form>
         </div>
       </div>
