@@ -8,20 +8,53 @@ import {
 import SearchFilter from "../search/SearchFilter";
 import RatingFilter from "../rating/RatingFilter";
 import SelectInput from "../../../components/shared/inputs/SelectInput";
+import MoreChoicesFilter from "../MoreChoicesFilter/MoreChoicesFilter";
+import DeliveryApps from "../DeliveryApps/DeliveryApps";
+import MealType from "../MealType/MealType";
 
 const FoodFilter = ({ onSearch }) => {
-    const [selectedMeals, setSelectedMeals] = useState(["عشاء"]);
+    const [selectedMeals, setSelectedMeals] = useState({
+        breakfast: false,
+        lateBreakfast: false,
+        lunch: false,
+        dinner: true,
+    });
+
     const [selectedOptions, setSelectedOptions] = useState(["أضيف حديثاً"]);
     const [ratingRange, setRatingRange] = useState(null);
     const [selectedRegion, setSelectedRegion] = useState("");
     const [selectedCity, setSelectedCity] = useState("");
+    const [selectedDeliveryApps, setSelectedDeliveryApps] = useState([]);
+    
+    const handleSearch = () => {
+        const deliveryAppParams = selectedDeliveryApps.reduce((acc, app) => {
+            acc[app] = true;
+            return acc;
+        }, {});
 
-    const toggleSelection = (value, state, setState) => {
-        setState(
-            state.includes(value)
-                ? state.filter((item) => item !== value)
-                : [...state, value]
-        );
+        const optionsObj = {
+            isOpen: selectedOptions.includes("مفتوح الآن"),
+            indoorSessions: selectedOptions.includes("جلسات داخلية"),
+            outdoorSessions: selectedOptions.includes("جلسات خارجية"),
+            hasDelivery: selectedOptions.includes("يوجد توصيل"),
+            familySessions: selectedOptions.includes("جلسات عائلية"),
+            preBooking: selectedOptions.includes("يوجد حجز مسبق"),
+            newStore: selectedOptions.includes("أضيف حديثاً"),
+        };
+
+        const mealParams = Object.entries(selectedMeals).reduce((acc, [key, value]) => {
+            if (value) acc[key] = true;
+            return acc;
+        }, {});
+
+        onSearch({
+            ...deliveryAppParams,
+            region: selectedRegion,
+            city: selectedCity,
+            rating: ratingRange?.min,
+            ...optionsObj,
+            ...mealParams,
+        });
     };
 
     return (
@@ -30,11 +63,8 @@ const FoodFilter = ({ onSearch }) => {
                 <SearchFilter onSearch={onSearch} />
             </div>
 
-            {/* المنطقة */}
             <div className="relative">
-                <div className="absolute left-4 top-3 text-gray-500">
-                    <FaMapMarkerAlt />
-                </div>
+                <div className="absolute left-4 top-3 text-gray-500"><FaMapMarkerAlt /></div>
                 <SelectInput
                     name="region"
                     label=""
@@ -60,11 +90,8 @@ const FoodFilter = ({ onSearch }) => {
                 />
             </div>
 
-            {/* المدينة */}
             <div className="relative">
-                <div className="absolute left-4 top-3 text-gray-500">
-                    <FaCity />
-                </div>
+                <div className="absolute left-4 top-3 text-gray-500"><FaCity /></div>
                 <SelectInput
                     name="city"
                     label=""
@@ -83,7 +110,6 @@ const FoodFilter = ({ onSearch }) => {
                 />
             </div>
 
-            {/* نوع المطعم */}
             <div className="relative">
                 <select className="w-full appearance-none pl-10 pr-4 py-2 bg-white text-black rounded-lg">
                     <option>قم بإختيار نوع المطعم</option>
@@ -91,65 +117,26 @@ const FoodFilter = ({ onSearch }) => {
                 <div className="absolute left-4 top-2.5 text-gray-500"><FaUtensils /></div>
             </div>
 
-            {/* نوع تطبيقات التوصيل */}
             <div className="relative">
-                <select className="w-full appearance-none pl-10 pr-4 py-2 bg-white text-black rounded-lg">
-                    <option>قم بإختيار نوع تطبيقات التوصيل</option>
-                </select>
-                <div className="absolute left-4 top-2.5 text-gray-500"><FaBiking /></div>
+                <DeliveryApps
+                    selectedApps={selectedDeliveryApps}
+                    setSelectedApps={setSelectedDeliveryApps}
+                />
+                
             </div>
 
-            {/* نوع الوجبة */}
+            <MealType
+                selectedMeals={selectedMeals}
+                setSelectedMeals={setSelectedMeals}
+            />
+
             <div>
-                <label className="block mb-2 text-white">نوع الوجبة</label>
-                {["فطور", "فطور متأخر", "غداء", "عشاء"].map((meal) => (
-                    <label
-                        key={meal}
-                        className="flex justify-between items-center bg-white text-black px-3 py-2 rounded-lg mb-1"
-                    >
-                        <span>{meal}</span>
-                        <input
-                            type="checkbox"
-                            checked={selectedMeals.includes(meal)}
-                            onChange={() =>
-                                toggleSelection(meal, selectedMeals, setSelectedMeals)
-                            }
-                            className="accent-primary-1"
-                        />
-                    </label>
-                ))}
+                <MoreChoicesFilter
+                    selectedOptions={selectedOptions}
+                    setSelectedOptions={setSelectedOptions}
+                />
             </div>
 
-            {/* مزيد من الخيارات */}
-            <div>
-                <label className="block mb-2 text-white">مزيد من الخيارات</label>
-                {[
-                    "مفتوح الآن",
-                    "جلسات داخلية",
-                    "جلسات خارجية",
-                    "يوجد توصيل",
-                    "جلسات عائلية",
-                    "يوجد حجز مسبق",
-                    "أضيف حديثاً",
-                ].map((opt) => (
-                    <label
-                        key={opt}
-                        className="flex justify-between items-center bg-white text-black px-3 py-2 rounded-lg mb-1"
-                    >
-                        <span>{opt}</span>
-                        <input
-                            type="checkbox"
-                            checked={selectedOptions.includes(opt)}
-                            onChange={() =>
-                                toggleSelection(opt, selectedOptions, setSelectedOptions)
-                            }
-                            className="accent-primary-1"
-                        />
-                    </label>
-                ))}
-            </div>
-
-            {/* التقييم */}
             <div>
                 <RatingFilter
                     selectedRating={ratingRange?.min}
@@ -157,19 +144,10 @@ const FoodFilter = ({ onSearch }) => {
                 />
             </div>
 
-            {/* الأزرار */}
             <div className="flex gap-2">
                 <button
                     className="w-1/2 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg"
-                    onClick={() => {
-                        onSearch({
-                            region: selectedRegion,
-                            city: selectedCity,
-                            meals: selectedMeals,
-                            options: selectedOptions,
-                            rating: ratingRange?.min,
-                        });
-                    }}
+                    onClick={handleSearch}
                 >
                     عرض النتائج
                 </button>
@@ -178,7 +156,12 @@ const FoodFilter = ({ onSearch }) => {
                     onClick={() => {
                         setSelectedRegion("");
                         setSelectedCity("");
-                        setSelectedMeals([]);
+                        setSelectedMeals({
+                            breakfast: false,
+                            lateBreakfast: false,
+                            lunch: false,
+                            dinner: false,
+                        });
                         setSelectedOptions([]);
                         setRatingRange(null);
                         onSearch({});

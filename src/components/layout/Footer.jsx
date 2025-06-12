@@ -8,8 +8,8 @@ import PageWrapper from "../common/PageWrapper";
 
 const Footer = () => {
   return (
-    <PageWrapper>
-      <footer className="bg-[#970D0D] text-white text-sm font-sans">
+    <footer className="bg-[#970D0D] text-white text-sm font-sans max-w-full">
+      <PageWrapper>
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6 text-center md:text-right mb-6">
           <div className="md:col-span-1">
             <img
@@ -84,8 +84,8 @@ const Footer = () => {
         <div className="text-center py-4 text-xs" dir="rtl">
           © 2025 Foody . جميع الحقوق محفوظة
         </div>
-      </footer>
-    </PageWrapper>
+      </PageWrapper>
+    </footer>
   );
 };
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import CategoryTabs from "../shared/category/CategoryTabs";
 import FoodCard from "../shared/cards/FoodCard";
@@ -22,27 +22,48 @@ const Store = ({ searchTerm }) => {
 
     const fetchStores = async () => {
         try {
-            const response = await axios.get(`${api_url}/store`, {
-                params: {
-                    page,
-                    take: 10,
-                    type,
-                    ...(typeof searchTerm === "string"
-                        ? { name: searchTerm }
-                        : {
-                            name: searchTerm?.name || "",
-                            rating: searchTerm?.rating ?? 0,
-                        }),
-                }
-            });
-
-            const data = response?.data?.data || [];
-            const pag = response?.data?.pagination || {
-                hasNextPage: false,
-                hasPreviousPage: false,
-                currentPage: 1,
-                totalPages: 1,
+            const baseParams = {
+                page,
+                take: 10,
+                type,
             };
+
+            if (searchTerm && typeof searchTerm === "object") {
+                if (searchTerm.name) baseParams.name = searchTerm.name;
+                if (searchTerm.rating) baseParams.rate = searchTerm.rating;
+
+                if (searchTerm.indoorSessions) baseParams.indoorSessions = true;
+                if (searchTerm.outdoorSessions) baseParams.outdoorSessions = true;
+                if (searchTerm.familySessions) baseParams.familySessions = true;
+                if (searchTerm.hasDelivery) baseParams.hasDelivery = true;
+                if (searchTerm.isOpen) baseParams.isOpen = true;
+                if (searchTerm.newStore) baseParams.newStore = true;
+                if (searchTerm.preBooking) baseParams.preBooking = true;
+                if (searchTerm.region) baseParams.region = searchTerm.region;
+                if (searchTerm.city) baseParams.city = searchTerm.city;
+
+                if (searchTerm.breakfast) baseParams.breakfast = true;
+                if (searchTerm.lateBreakfast) baseParams.lateBreakfast = true;
+                if (searchTerm.lunch) baseParams.lunch = true;
+                if (searchTerm.dinner) baseParams.dinner = true;
+
+                if (searchTerm.meals?.length > 0) {
+                    baseParams.meals = searchTerm.meals.join(",");
+                }
+
+                const deliveryAppKeys = [
+                    "keeta", "hungerStation", "toyou", "mrsool", "theChefz",
+                    "mrMandoob", "shgardi", "uber", "careem", "noon", "jahez", "other"
+                ];
+
+                deliveryAppKeys.forEach((app) => {
+                    if (searchTerm[app]) baseParams[app] = true;
+                });
+            }
+
+            const response = await axios.get(`${api_url}/store`, { params: baseParams });
+            const data = response?.data?.data || [];
+            const pag = response?.data?.pagination || {};
 
             setStores(data);
             setPagination(pag);
