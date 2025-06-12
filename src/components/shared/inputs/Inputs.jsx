@@ -20,7 +20,6 @@ const Inputs = ({
     <div className="w-full">
       <label className="flex items-center justify-end text-gray-700 font-medium mb-1 gap-2">
         {label}
-
         {Icon && <Icon size={20} />}
       </label>
       <div className="relative">
@@ -33,7 +32,7 @@ const Inputs = ({
           disabled={disabled}
           dir="rtl"
           className={`w-full px-4 py-3 border border-gray-400 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-hover_primary-1 ${
-            isPassword ? "pr-10" : ""
+            isPassword || Icon_2 ? "pr-10" : ""
           } ${className}`}
         />
         {isPassword ? (
@@ -50,7 +49,7 @@ const Inputs = ({
         ) : (
           Icon_2 && (
             <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-700">
-              <Icon size={24} />
+              <Icon_2 size={24} />
             </span>
           )
         )}

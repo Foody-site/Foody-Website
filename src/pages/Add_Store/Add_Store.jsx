@@ -230,42 +230,42 @@ const Add_Store = () => {
               />
               <Inputs
                 name="since"
-                Icon={IoLogoWhatsapp}
+                Icon_2={IoLogoWhatsapp}
                 label="إضافة رقم واتساب"
                 type="text"
                 className="w-full h-12 px-6 text-xl py-4"
               />
               <Inputs
                 name="since"
-                Icon={TiSocialFacebook}
+                Icon_2={TiSocialFacebook}
                 label="إضافة رابط فيسبوك"
                 type="text"
                 className="w-full h-12 px-6 text-xl py-4"
               />
               <Inputs
                 name="mapLink"
-                Icon={FaSnapchatGhost}
+                Icon_2={FaSnapchatGhost}
                 label="إضافة رابط سناب شات"
                 type="text"
                 className="w-full h-12 px-6 text-xl py-4"
               />
               <Inputs
                 name="mapLink"
-                Icon={RiTwitterXFill}
+                Icon_2={RiTwitterXFill}
                 label="إضافة رابط اكس"
                 type="text"
                 className="w-full h-12 px-6 text-xl py-4"
               />
               <Inputs
                 name="mapLink"
-                Icon={GrInstagram}
+                Icon_2={GrInstagram}
                 label="إضافة رابط انستغرام"
                 type="text"
                 className="w-full h-12 px-6 text-xl py-4"
               />
               <Inputs
                 name="mapLink"
-                Icon={FaTiktok}
+                Icon_2={FaTiktok}
                 label="إضافة رابط  تيك توك"
                 type="text"
                 className="w-full h-12 px-6 text-xl py-4"
@@ -273,7 +273,7 @@ const Add_Store = () => {
               <div className="md:col-start-3 md:col-span-1 flex justify-end ">
                 <Inputs
                   name="mapLink"
-                  Icon={PiGlobeThin}
+                  Icon_2={PiGlobeThin}
                   label="رابط  الموقع  الإلكتروني"
                   type="text"
                   className="w-full h-12 px-6 text-xl py-4 "
