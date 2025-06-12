@@ -193,13 +193,13 @@ const Add_Store = () => {
                 ]}
               />
               <Inputs
-                name="since"
+                name="licenseFile"
                 label="رخصة بلدي"
                 type="text"
                 className="w-full h-12 px-6 text-xl py-4"
               />
               <Inputs
-                name="since"
+                name="nationalAddressFile"
                 label="عنوان وطني"
                 type="text"
                 className="w-full h-12 px-6 text-xl py-4"
@@ -211,66 +211,73 @@ const Add_Store = () => {
                 className="w-full h-12 px-6 text-xl py-4"
               />
               <Inputs
-                name="since"
+                name="menuPhoto"
                 label="صورة المنيو"
-                type="text"
+                type="file"
                 className="w-full h-12 px-6 text-xl py-4"
               />
               <Inputs
-                name="since"
+                name="taxNumber"
                 label="الرقم الضريبي"
                 type="text"
                 className="w-full h-12 px-6 text-xl py-4"
               />
               <Inputs
-                name="since"
+                name="commercialRegisterPhoto"
                 label="سجل التجاري"
                 type="text"
                 className="w-full h-12 px-6 text-xl py-4"
               />
               <Inputs
-                name="since"
+                name="socialMediaLinks[whatsappNumber]"
                 Icon_2={IoLogoWhatsapp}
                 label="إضافة رقم واتساب"
                 type="text"
                 className="w-full h-12 px-6 text-xl py-4"
               />
               <Inputs
-                name="since"
+                name="socialMediaLinks[facebook]"
                 Icon_2={TiSocialFacebook}
                 label="إضافة رابط فيسبوك"
                 type="text"
                 className="w-full h-12 px-6 text-xl py-4"
               />
               <Inputs
-                name="mapLink"
+                name="socialMediaLinks[snapchat]"
                 Icon_2={FaSnapchatGhost}
                 label="إضافة رابط سناب شات"
                 type="text"
                 className="w-full h-12 px-6 text-xl py-4"
               />
               <Inputs
-                name="mapLink"
+                name="socialMediaLinks[x]"
                 Icon_2={RiTwitterXFill}
                 label="إضافة رابط اكس"
                 type="text"
                 className="w-full h-12 px-6 text-xl py-4"
               />
               <Inputs
-                name="mapLink"
+                name="socialMediaLinks[instagram]"
                 Icon_2={GrInstagram}
                 label="إضافة رابط انستغرام"
                 type="text"
                 className="w-full h-12 px-6 text-xl py-4"
               />
               <Inputs
-                name="mapLink"
+                name="socialMediaLinks[tiktok]"
                 Icon_2={FaTiktok}
                 label="إضافة رابط  تيك توك"
                 type="text"
                 className="w-full h-12 px-6 text-xl py-4"
               />
-              <div className="md:col-start-3 md:col-span-1 flex justify-end ">
+              <div className="md:col-start-2 md:col-span-2 flex justify-end space-x-10 ">
+                <Inputs
+                  name="socialMediaLinks[website]"
+                  Icon_2={PiGlobeThin}
+                  label="رابط  الموقع  الإلكتروني"
+                  type="text"
+                  className="w-full h-12 px-6 text-xl py-4 "
+                />
                 <Inputs
                   name="mapLink"
                   Icon_2={PiGlobeThin}
