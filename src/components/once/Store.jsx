@@ -31,6 +31,9 @@ const Store = ({ searchTerm }) => {
             if (searchTerm && typeof searchTerm === "object") {
                 if (searchTerm.name) baseParams.name = searchTerm.name;
                 if (searchTerm.rating) baseParams.rate = searchTerm.rating;
+                
+                if (searchTerm.city) baseParams.city = searchTerm.city;
+                if (searchTerm.region) baseParams.region = searchTerm.region;
 
                 if (searchTerm.indoorSessions) baseParams.indoorSessions = true;
                 if (searchTerm.outdoorSessions) baseParams.outdoorSessions = true;
@@ -108,6 +111,7 @@ const Store = ({ searchTerm }) => {
                 >
                     <IoIosArrowDropleft />
                 </button>
+                <span className="px-4 py-2">{pagination?.currentPage}</span>
                 <button
                     onClick={() => setPage((prev) => prev + 1)}
                     disabled={!pagination?.hasNextPage}

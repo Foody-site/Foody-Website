@@ -6,7 +6,7 @@ const SearchFilter = ({ onSearch }) => {
 
     const handleSearch = () => {
         if (onSearch) {
-            onSearch(query);
+            onSearch({ name: query });
         }
     };
 

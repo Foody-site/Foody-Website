@@ -11,6 +11,7 @@ import SelectInput from "../../../components/shared/inputs/SelectInput";
 import MoreChoicesFilter from "../MoreChoicesFilter/MoreChoicesFilter";
 import DeliveryApps from "../DeliveryApps/DeliveryApps";
 import MealType from "../MealType/MealType";
+import PlaceSearch from "../PlaceSearch/PlaceSearch";
 
 const FoodFilter = ({ onSearch }) => {
     const [selectedMeals, setSelectedMeals] = useState({
@@ -25,7 +26,7 @@ const FoodFilter = ({ onSearch }) => {
     const [selectedRegion, setSelectedRegion] = useState("");
     const [selectedCity, setSelectedCity] = useState("");
     const [selectedDeliveryApps, setSelectedDeliveryApps] = useState([]);
-    
+
     const handleSearch = () => {
         const deliveryAppParams = selectedDeliveryApps.reduce((acc, app) => {
             acc[app] = true;
@@ -64,65 +65,27 @@ const FoodFilter = ({ onSearch }) => {
             </div>
 
             <div className="relative">
-                <div className="absolute left-4 top-3 text-gray-500"><FaMapMarkerAlt /></div>
-                <SelectInput
-                    name="region"
-                    label=""
-                    value={selectedRegion}
-                    onChange={(e) => setSelectedRegion(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 bg-white text-black rounded-lg"
-                    options={[
-                        { value: "", label: "قم بإختيار المنطقة" },
-                        { value: "Riyadh", label: "الرياض" },
-                        { value: "Mecca", label: "مكة المكرمة" },
-                        { value: "Eastern", label: "الشرقية" },
-                        { value: "Medina", label: "المدينة المنورة" },
-                        { value: "Asir", label: "عسير" },
-                        { value: "Al-Qassim", label: "القصيم" },
-                        { value: "Tabuk", label: "تبوك" },
-                        { value: "Hail", label: "حائل" },
-                        { value: "Northern Borders", label: "الحدود الشمالية" },
-                        { value: "Jizan", label: "جازان" },
-                        { value: "Najran", label: "نجران" },
-                        { value: "Al-Bahah", label: "الباحة" },
-                        { value: "Al-Jouf", label: "الجوف" },
-                    ]}
+                <PlaceSearch
+                    selectedRegion={selectedRegion}
+                    setSelectedRegion={setSelectedRegion}
+                    selectedCity={selectedCity}
+                    setSelectedCity={setSelectedCity}
                 />
             </div>
 
-            <div className="relative">
-                <div className="absolute left-4 top-3 text-gray-500"><FaCity /></div>
-                <SelectInput
-                    name="city"
-                    label=""
-                    value={selectedCity}
-                    onChange={(e) => setSelectedCity(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 bg-white text-black rounded-lg"
-                    options={[
-                        { value: "", label: "قم بإختيار المدينة" },
-                        { value: "Mecca", label: "مكة المكرمة" },
-                        { value: "Riyadh", label: "الرياض" },
-                        { value: "Jeddah", label: "جدة" },
-                        { value: "Dammam", label: "الدمام" },
-                        { value: "Medina", label: "المدينة المنورة" },
-                        { value: "Khobar", label: "الخبر" },
-                    ]}
-                />
-            </div>
-
-            <div className="relative">
+            {/* <div className="relative">
                 <select className="w-full appearance-none pl-10 pr-4 py-2 bg-white text-black rounded-lg">
                     <option>قم بإختيار نوع المطعم</option>
                 </select>
                 <div className="absolute left-4 top-2.5 text-gray-500"><FaUtensils /></div>
-            </div>
+            </div> */}
 
             <div className="relative">
                 <DeliveryApps
                     selectedApps={selectedDeliveryApps}
                     setSelectedApps={setSelectedDeliveryApps}
                 />
-                
+
             </div>
 
             <MealType
@@ -165,6 +128,7 @@ const FoodFilter = ({ onSearch }) => {
                         setSelectedOptions([]);
                         setRatingRange(null);
                         onSearch({});
+                        setSelectedDeliveryApps([]);
                     }}
                 >
                     الغاء التصفيات
