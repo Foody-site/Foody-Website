@@ -86,13 +86,13 @@ const Hero = () => {
                                                 <p className="mt-2 text-[#808080]">الوصف</p>
 
                                                 <div className="flex gap-4 items-center mt-4 text-sm">
-                                                    <div className="flex items-center gap-1">
-                                                        <span>1030 سعر حراري</span>
-                                                        <FaFireAlt />
-                                                    </div>
-                                                    <div className="flex items-center gap-1">
+                                                    <div className="flex items-center gap-1 text-[#C7C7C7] border-2 p-1 rounded-md">
                                                         <span>42</span>
                                                         <FaUtensils />
+                                                    </div>
+                                                    <div className="flex items-center gap-1 text-[#C7C7C7] border-2 p-1 rounded-md">
+                                                        <FaFireAlt />
+                                                        <span>1030 سعر حراري</span>
                                                     </div>
                                                 </div>
 
