@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import CategoryTabs from "../shared/category/CategoryTabs";
 import FoodCard from "../shared/cards/FoodCard";
 import { api_url } from "../../utils/ApiClient";
-import { IoIosArrowDropleft, IoIosArrowDropright } from "react-icons/io";
+import Pagination from "../common/Pagination";
 
 const Store = ({ searchTerm }) => {
     const [stores, setStores] = useState([]);
@@ -24,34 +24,50 @@ const Store = ({ searchTerm }) => {
         try {
             const baseParams = {
                 page,
-                take: 10,
+                take: 9,
                 type,
             };
 
             if (searchTerm && typeof searchTerm === "object") {
-                if (searchTerm.name) baseParams.name = searchTerm.name;
-                if (searchTerm.rating) baseParams.rate = searchTerm.rating;
-                
-                if (searchTerm.city) baseParams.city = searchTerm.city;
-                if (searchTerm.region) baseParams.region = searchTerm.region;
+                const {
+                    name,
+                    rating,
+                    city,
+                    region,
+                    indoorSessions,
+                    outdoorSessions,
+                    familySessions,
+                    hasDelivery,
+                    isOpen,
+                    newStore,
+                    preBooking,
+                    breakfast,
+                    lateBreakfast,
+                    lunch,
+                    dinner,
+                    meals
+                } = searchTerm;
 
-                if (searchTerm.indoorSessions) baseParams.indoorSessions = true;
-                if (searchTerm.outdoorSessions) baseParams.outdoorSessions = true;
-                if (searchTerm.familySessions) baseParams.familySessions = true;
-                if (searchTerm.hasDelivery) baseParams.hasDelivery = true;
-                if (searchTerm.isOpen) baseParams.isOpen = true;
-                if (searchTerm.newStore) baseParams.newStore = true;
-                if (searchTerm.preBooking) baseParams.preBooking = true;
-                if (searchTerm.region) baseParams.region = searchTerm.region;
-                if (searchTerm.city) baseParams.city = searchTerm.city;
+                if (name) baseParams.name = name;
+                if (rating) baseParams.rate = rating;
+                if (city) baseParams.city = city;
+                if (region) baseParams.region = region;
 
-                if (searchTerm.breakfast) baseParams.breakfast = true;
-                if (searchTerm.lateBreakfast) baseParams.lateBreakfast = true;
-                if (searchTerm.lunch) baseParams.lunch = true;
-                if (searchTerm.dinner) baseParams.dinner = true;
+                if (indoorSessions) baseParams.indoorSessions = true;
+                if (outdoorSessions) baseParams.outdoorSessions = true;
+                if (familySessions) baseParams.familySessions = true;
+                if (hasDelivery) baseParams.hasDelivery = true;
+                if (isOpen) baseParams.isOpen = true;
+                if (newStore) baseParams.newStore = true;
+                if (preBooking) baseParams.preBooking = true;
 
-                if (searchTerm.meals?.length > 0) {
-                    baseParams.meals = searchTerm.meals.join(",");
+                if (breakfast) baseParams.breakfast = true;
+                if (lateBreakfast) baseParams.lateBreakfast = true;
+                if (lunch) baseParams.lunch = true;
+                if (dinner) baseParams.dinner = true;
+
+                if (Array.isArray(meals) && meals.length > 0) {
+                    baseParams.meals = meals.join(",");
                 }
 
                 const deliveryAppKeys = [
@@ -103,23 +119,7 @@ const Store = ({ searchTerm }) => {
                 )}
             </div>
 
-            <div className="flex justify-center mt-6 gap-2">
-                <button
-                    onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-                    disabled={!pagination?.hasPreviousPage}
-                    className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
-                >
-                    <IoIosArrowDropleft />
-                </button>
-                <span className="px-4 py-2">{pagination?.currentPage}</span>
-                <button
-                    onClick={() => setPage((prev) => prev + 1)}
-                    disabled={!pagination?.hasNextPage}
-                    className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
-                >
-                    <IoIosArrowDropright />
-                </button>
-            </div>
+            <Pagination pagination={pagination} setPage={setPage} />
         </div>
     );
 };
