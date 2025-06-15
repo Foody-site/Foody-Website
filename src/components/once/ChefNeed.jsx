@@ -1,120 +1,139 @@
-import React from "react";
-import { FaMapMarkerAlt, FaHeart, FaUserFriends, FaBirthdayCake, FaGraduationCap, FaEllipsisH } from "react-icons/fa";
-import { AiFillStar } from "react-icons/ai";
+import {
+    FaMapMarkerAlt,
+    FaHeart,
+    FaUserFriends,
+    FaBirthdayCake,
+    FaGraduationCap,
+    FaEllipsisH,
+} from "react-icons/fa";
 import { BsCalendar2Date } from "react-icons/bs";
-import { FiChevronDown } from "react-icons/fi";
+import PageWrapper from "../common/PageWrapper";
 
 const ChefNeed = () => {
+    const occasions = [
+        { label: "ليلة رومانسية", icon: <FaHeart /> },
+        { label: "تجمع عائلي", icon: <BsCalendar2Date /> },
+        { label: "حفلة تخرج", icon: <FaGraduationCap /> },
+        { label: "تجمع اصدقاء", icon: <FaUserFriends /> },
+        { label: "عيد ميلاد", icon: <FaBirthdayCake /> },
+        { label: "أخرى", icon: <FaEllipsisH /> },
+    ];
+
     return (
-        <div className="flex flex-col lg:flex-row items-start justify-center p-6 gap-10 bg-white min-h-screen">
-            {/* Left Section - Chef Info */}
-            <div className="flex flex-col items-center text-center gap-2">
-                <img
-                    src="/public/assets/home/chef.png"
-                    alt="Chef"
-                    className="rounded-full w-28 h-28 object-cover"
-                />
-                <div className="flex items-center gap-1 text-yellow-500 mt-2">
-                    <AiFillStar />
-                    <span className="text-red-600 font-semibold text-lg">4.7</span>
+        <PageWrapper>
+            <div className="flex flex-col lg:flex-row gap-10">
+                {/* Left Section - Form */}
+                <div className="w-full lg:w-2/3">
+                    <h2 className="text-2xl font-bold mb-6 text-right">المناسبة</h2>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        {occasions.map((item, idx) => (
+                            <label
+                                key={idx}
+                                className="flex items-center justify-between border border-gray-300 rounded-md px-4 py-3 cursor-pointer text-right"
+                            >
+                                <span className="flex items-center gap-2 text-sm text-gray-700">
+                                    <span className="text-primary-1">{item.icon}</span>
+                                    {item.label}
+                                </span>
+                                <input
+                                    type="radio"
+                                    name="occasion"
+                                    className="form-radio text-primary-1 w-4 h-4"
+                                />
+                            </label>
+                        ))}
+                    </div>
+
+                    {/* Date Field */}
+                    <div className="mb-4">
+                        <label className="block mb-2 text-right font-medium">تاريخ المناسبة</label>
+                        <div className="flex flex-row-reverse items-center border rounded px-3 py-2">
+                            <BsCalendar2Date className="ml-2 text-gray-500" />
+                            <input
+                                type="date"
+                                className="flex-grow bg-transparent text-right outline-none"
+                            />
+                        </div>
+                    </div>
+
+                    {/* City Dropdown */}
+                    <div className="mb-4">
+                        <label className="block mb-2 text-right font-medium">المدينة</label>
+                        <div className="flex flex-row-reverse items-center border rounded px-3 py-2">
+                            <FaMapMarkerAlt className="ml-2 text-gray-500" />
+                            <select className="flex-grow bg-transparent text-right outline-none">
+                                <option value="">اختر المدينة</option>
+                                <option>الرياض</option>
+                                <option>جدة</option>
+                                <option>مكة</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    {/* Guests */}
+                    <div className="mb-4">
+                        <label className="block mb-2 text-right font-medium">عدد المدعوين</label>
+                        <div className="flex flex-row-reverse items-center border rounded px-3 py-2">
+                            <FaUserFriends className="ml-2 text-gray-500" />
+                            <input
+                                type="number"
+                                className="flex-grow bg-transparent text-right outline-none"
+                                placeholder="أدخل العدد"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Contact */}
+                    <div className="mb-6">
+                        <label className="block mb-2 text-right font-medium">رقم التواصل</label>
+                        <div className="flex flex-row-reverse items-center border rounded px-3 py-2">
+                            <FaUserFriends className="ml-2 text-gray-500" />
+                            <input
+                                type="tel"
+                                className="flex-grow bg-transparent text-right outline-none"
+                                placeholder="أدخل رقم الهاتف"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Submit */}
+                    <button className="w-full bg-red-600 hover:bg-red-700 transition text-white py-3 rounded-md text-center font-semibold">
+                        حجز الشيف
+                    </button>
                 </div>
-                <h2 className="text-xl font-bold">هشام باعشن</h2>
-                <p className="text-gray-600 text-sm leading-5 max-w-xs">
-                    صانع محتوى - شيف سعودي ويقدم مدونة الطعام لكل حكاية
-                </p>
-                <div className="flex gap-4 mt-2 text-sm text-gray-700">
-                    <div>الرياض <FaMapMarkerAlt className="inline ml-1" /></div>
-                    <div>122 متابع</div>
-                    <div>20 وصفة</div>
+
+                {/* Right Section - Chef Info */}
+                <div className="w-full lg:w-1/3 border rounded-lg p-4 text-center shadow-sm">
+                    <img
+                        src="/public/assets/home/chef.png"
+                        alt="Chef"
+                        className="rounded-full w-20 h-20 object-cover mx-auto"
+                    />
+                    <h3 className="text-xl font-bold mt-2">هشام باعشن</h3>
+                    <p className="text-sm text-gray-500 mb-2">أنواع وصفات الطبخ هنا</p>
+
+                    <div className="flex justify-between text-center py-3 border-t border-b my-2 text-sm">
+                        <div>
+                            <p className="font-bold text-gray-900">1700+</p>
+                            <p className="text-gray-600">عدد الوصفات</p>
+                        </div>
+                        <div>
+                            <p className="font-bold text-gray-900">456</p>
+                            <p className="text-gray-600">عدد المتابعين</p>
+                        </div>
+                        <div>
+                            <p className="font-bold text-gray-900">120</p>
+                            <p className="text-gray-600">عدد الزوار</p>
+                        </div>
+                    </div>
+
+                    <button className="w-full bg-red-600 hover:bg-red-700 transition text-white py-2 rounded-md font-semibold">
+                        المتابعة
+                    </button>
                 </div>
             </div>
-
-            {/* Right Section - Form */}
-            <div className="w-full max-w-md">
-                <h2 className="text-center text-xl font-bold mb-4">المناسبة</h2>
-
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                    <label className="flex items-center gap-2 border border-gray-300 rounded-lg py-2 px-4 cursor-pointer">
-                        <input type="radio" name="occasion" className="radio radio-primary" />
-                        <span className="flex items-center gap-1">
-                            <FaBirthdayCake className="text-xl" />
-                            عيد ميلاد
-                        </span>
-                    </label>
-
-                    <label className="flex items-center gap-2 border border-gray-300 rounded-lg py-2 px-4 cursor-pointer">
-                        <input type="radio" name="occasion" className="radio radio-primary" />
-                        <span className="flex items-center gap-1">
-                            🎉 تجمع عائلي
-                        </span>
-                    </label>
-
-                    <label className="flex items-center gap-2 border border-gray-300 rounded-lg py-2 px-4 cursor-pointer">
-                        <input type="radio" name="occasion" className="radio radio-primary" />
-                        <span className="flex items-center gap-1">
-                            <FaGraduationCap className="text-xl" />
-                            حفلة تخرج
-                        </span>
-                    </label>
-
-                    <label className="flex items-center gap-2 border border-gray-300 rounded-lg py-2 px-4 cursor-pointer">
-                        <input type="radio" name="occasion" className="radio radio-primary" />
-                        <span className="flex items-center gap-1">
-                            <FaUserFriends className="text-xl" />
-                            تجمع اصدقاء
-                        </span>
-                    </label>
-
-                    <label className="flex items-center gap-2 border border-gray-300 rounded-lg py-2 px-4 cursor-pointer">
-                        <input type="radio" name="occasion" className="radio radio-primary" />
-                        <span className="flex items-center gap-1">
-                            <FaHeart className="text-xl text-red-500" />
-                            ليلة رومانسية
-                        </span>
-                    </label>
-
-                    <label className="flex items-center gap-2 border border-gray-300 rounded-lg py-2 px-4 cursor-pointer">
-                        <input type="radio" name="occasion" className="radio radio-primary" />
-                        <span className="flex items-center gap-1">
-                            <FaEllipsisH className="text-xl" />
-                            أخرى
-                        </span>
-                    </label>
-                </div>
-
-                {/* Date */}
-                <div className="mb-4">
-                    <label className="label">
-                        <span className="label-text text-right block w-full mb-1">تاريخ المناسبة :</span>
-                    </label>
-                    <div className="relative">
-                        <input type="date" className="input input-bordered bg-black text-white w-full pl-10" />
-                        <BsCalendar2Date className="absolute left-3 top-3 text-gray-400" />
-                    </div>
-                </div>
-
-                {/* City */}
-                <div className="mb-6">
-                    <label className="label">
-                        <span className="label-text text-right block w-full mb-1">المدينة :</span>
-                    </label>
-                    <div className="relative">
-                        <select className="select select-bordered w-full bg-black text-white">
-                            <option disabled selected>اختر المدينة</option>
-                            <option>الرياض</option>
-                            <option>جدة</option>
-                            <option>مكة</option>
-                        </select>
-                        <FiChevronDown className="absolute left-3 top-3 text-gray-400" />
-                    </div>
-                </div>
-
-                {/* Button */}
-                <button className="btn btn-error text-white w-full rounded-full">
-                    ارسل الى الشيف
-                </button>
-            </div>
-        </div>
+        </PageWrapper>
     );
 };
 
