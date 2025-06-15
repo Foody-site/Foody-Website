@@ -16,11 +16,11 @@ const Home = () => {
             <Hero />
             <PageWrapper>
                 <div className="flex gap-4">
-                    <div className="flex-1">
-                        <Store searchTerm={searchTerm} />
-                    </div>
                     <div className="w-auto">
                         <FoodFilter onSearch={handleSearch} />
+                    </div>
+                    <div className="flex-1">
+                        <Store searchTerm={searchTerm} />
                     </div>
                 </div>
             </PageWrapper>

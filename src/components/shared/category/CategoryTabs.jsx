@@ -25,14 +25,14 @@ const CategoryTabs = ({ onCategoryChange }) => {
     };
 
     return (
-        <div className="flex justify-center flex-wrap gap-2 p-2 rounded-xl">
+        <div className="w-full flex justify-between flex-wrap gap-2 p-2 rounded-xl border border-[#808080]">
             {tabs.map((tab) => (
                 <button
                     key={tab.label}
                     onClick={() => handleClick(tab)}
                     className={`min-w-[100px] px-4 py-2 rounded-lg mx-1 text-sm border transition-all duration-200 ${active === tab.label
-                        ? "bg-red-600 text-white"
-                        : "text-black border-gray-500"
+                        ? "bg-primary-1 text-white"
+                        : "text-black border-[#808080]"
                         }`}
                 >
                     {tab.label}
