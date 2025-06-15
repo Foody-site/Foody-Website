@@ -1,12 +1,11 @@
+import { BiSolidOffer, BiSolidTimer } from "react-icons/bi";
 import {
     FaHeart,
-    FaCog,
     FaMapMarkerAlt,
     FaStar,
-    FaInfoCircle,
-    FaCheckCircle,
     FaShareAlt,
 } from "react-icons/fa";
+import { MdVerified } from "react-icons/md";
 
 const FoodCard = ({ store }) => {
     return (
@@ -18,8 +17,8 @@ const FoodCard = ({ store }) => {
                     className="w-full h-48 object-cover"
                 />
                 <div className="absolute top-4 left-4 flex flex-col gap-2">
-                    <button className="bg-white p-2 rounded-full shadow text-red-500">
-                        <FaCog />
+                    <button className="text-white p-2 rounded-md shadow bg-primary-1">
+                        <BiSolidOffer />
                     </button>
                 </div>
             </div>
@@ -27,8 +26,8 @@ const FoodCard = ({ store }) => {
             <div className="p-4">
                 <div className="flex items-center justify-between mb-1">
                     <div className="flex items-center gap-1">
-                        <FaCheckCircle className="text-red-600 text-sm" />
-                        <h3 className="font-bold text-black text-lg">{store.name || "اسم المتجر"}</h3>
+                        <h3 className="font-bold text-black text-lg line-clamp-1">{store.name || "اسم المتجر"}</h3>
+                        <MdVerified size={18} className="text-primary-1 text-sm" />
                     </div>
                     <div className="flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded">
                         <span className="text-yellow-500 text-sm"><FaStar /></span>
@@ -36,28 +35,29 @@ const FoodCard = ({ store }) => {
                     </div>
                 </div>
 
-                <p className="text-gray-500 text-sm mb-2">{store.description || "ماكولات سريعة - مشروبات - بيتزا"}</p>
+                <p className="text-gray-500 text-sm mb-2 line-clamp-2">{store.description || "ماكولات سريعة - مشروبات - بيتزا"}</p>
 
                 <div className="flex items-center gap-3 mb-3 text-xs text-gray-600">
-                    <div className="flex items-center gap-1">
-                        <FaInfoCircle />
+                    <div className="flex items-center gap-1 text-[#C7C7C7] border border-[#C7C7C7] px-2 py-0.5 rounded">
+                        <BiSolidTimer size={16} />
                         <span>مفتوح الآن</span>
                     </div>
-                    <div className="flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded">
+                    <div className="flex items-center gap-1 text-[#C7C7C7] border border-[#C7C7C7] px-2 py-0.5 rounded">
                         <FaMapMarkerAlt />
                         <span>{store.distance || "2Km"}</span>
                     </div>
                 </div>
 
                 <div className="flex justify-between items-center gap-2">
-                    <button className="w-10 h-10 flex items-center justify-center border rounded-lg text-red-500">
-                        <FaShareAlt />
+                    <button className="w-10 h-10 flex items-center justify-center border border-primary-1 rounded-lg text-primary-1">
+                        <FaHeart />
                     </button>
-                    <button className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg text-sm">
+                    <button className="flex-1 bg-primary-1 hover:bg-red-700 text-white py-2 rounded-lg text-sm">
                         المزيد من التفاصيل
                     </button>
-                    <button className="w-10 h-10 flex items-center justify-center border rounded-lg text-red-500">
-                        <FaHeart />
+
+                    <button className="w-10 h-10 flex items-center justify-center border border-primary-1 rounded-lg text-primary-1">
+                        <FaShareAlt />
                     </button>
                 </div>
             </div>
