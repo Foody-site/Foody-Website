@@ -110,7 +110,7 @@ const Store = ({ searchTerm }) => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
                 {stores.length > 0 ? (
                     stores.map((store) => (
-                        <FoodCard key={store.id} store={store} />
+                        <FoodCard key={store._id} store={store} />
                     ))
                 ) : (
                     <p className="text-center w-full mt-4">
