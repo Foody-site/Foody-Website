@@ -42,7 +42,7 @@ const Hero = () => {
                                             <img
                                                 src="https://dummyimage.com/187"
                                                 alt="image"
-                                                className="w-full rounded-lg object-cover"
+                                                className="w-full h-full rounded-lg object-cover"
                                             />
 
                                             {/* Text Details */}
@@ -51,7 +51,7 @@ const Hero = () => {
                                                 <p className="mt-2 text-[#808080]">الوصف</p>
 
                                                 {/* Stats */}
-                                                <div className="flex gap-4 items-center mt-4 text-sm">
+                                                <div className="flex flex-wrap gap-4 items-center mt-4 text-sm">
                                                     <div className="flex items-center gap-1 text-[#C7C7C7] border-2 p-1 rounded-md">
                                                         <span>42</span>
                                                         <FaUtensils />
@@ -79,13 +79,13 @@ const Hero = () => {
                                             <img
                                                 src="https://dummyimage.com/187"
                                                 alt="image"
-                                                className="w-full rounded-lg object-cover"
+                                                className="w-full h-full rounded-lg object-cover"
                                             />
                                             <div className='ms-3 space-y-10'>
                                                 <h3 className="font-bold text-lg">الاسم</h3>
                                                 <p className="mt-2 text-[#808080]">الوصف</p>
 
-                                                <div className="flex gap-4 items-center mt-4 text-sm">
+                                                <div className="flex flex-wrap gap-4 items-center mt-4 text-sm">
                                                     <div className="flex items-center gap-1 text-[#C7C7C7] border-2 p-1 rounded-md">
                                                         <span>42</span>
                                                         <FaUtensils />
