@@ -17,7 +17,7 @@ const RecipeChef = () => {
         setLoading(true);
         try {
             const token = localStorage.getItem("token");
-            const response = await axios.get(`${api_url}/recipe`, {
+            const response = await axios.get(`${api_url}/chef/${id}/recipes`, {
                 params: {
                     page,
                     take,
@@ -28,6 +28,8 @@ const RecipeChef = () => {
             });
 
             const data = response.data;
+            console.log(data);
+            
             setRecipes(data.data || []);
             setPagination({
                 totalPages: data.pagination?.totalPages || 1,
