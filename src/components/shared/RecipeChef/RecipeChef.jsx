@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import { FaHeart } from "react-icons/fa";
+import { FaArrowLeft, FaArrowRight, FaHeart, FaShareAlt } from "react-icons/fa";
 import { useParams } from "react-router";
 import { api_url } from "../../../utils/ApiClient";
 
@@ -55,26 +55,53 @@ const RecipeChef = () => {
 
     return (
         <>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {recipes.map((recipe, i) => (
-                    <div key={i} className="border rounded-lg shadow p-3 bg-white flex flex-col">
+                    <div key={i} className="relative bg-white rounded-2xl overflow-hidden shadow-lg font-sans">
+                        {/* Image */}
                         <img
                             src={recipe.photo || "https://via.placeholder.com/300x200"}
                             alt="recipe"
-                            className="w-full h-48 object-cover rounded mb-3"
+                            className="w-full h-48 object-cover"
                         />
-                        <h3 className="font-bold text-md mb-1">{recipe.name || "اسم الوصفة"}</h3>
-                        <p className="text-sm text-gray-600 mb-2">{recipe.description || "وصف الوصفة هنا"}</p>
-                        <div className="text-sm text-gray-500">
-                            <p>مدة التحضير: {recipe.preparationTime || "-"} دقيقة</p>
-                            <p>مدة الطبخ: {recipe.cookingTime || "-"} دقيقة</p>
-                            <p>الوقت الكلي: {recipe.totalTime || "-"} دقيقة</p>
-                        </div>
-                        <div className="mt-3 flex justify-between items-center">
-                            <button className="btn btn-sm bg-primary-1 text-white">عرض التفاصيل</button>
-                            <button className="btn btn-sm btn-outline text-red-500 border-red-500">
-                                <FaHeart />
-                            </button>
+
+                        <div className="p-4">
+                            <h3 className="font-bold text-lg text-black mb-1 line-clamp-1">
+                                {recipe.name || "اسم الوصفة"}
+                            </h3>
+
+                            <p className="text-gray-500 text-sm mb-3 line-clamp-2">
+                                {recipe.description || "وصف قصير للوصفة هنا"}
+                            </p>
+
+                            <div className="flex justify-between text-xs text-gray-700 border border-gray-200 rounded p-2 mb-3 text-center">
+                                <div className="flex-1">
+                                    <p className="font-semibold">مدة التحضير</p>
+                                    <p>{recipe.preparationTime || "-"} دقيقة</p>
+                                </div>
+                                <div className="w-px bg-gray-300 mx-2" />
+                                <div className="flex-1">
+                                    <p className="font-semibold">مدة الطبخ</p>
+                                    <p>{recipe.cookingTime || "-"} دقيقة</p>
+                                </div>
+                                <div className="w-px bg-gray-300 mx-2" />
+                                <div className="flex-1">
+                                    <p className="font-semibold">الوقت الكلي</p>
+                                    <p>{recipe.totalTime || "-"} دقيقة</p>
+                                </div>
+                            </div>
+
+                            <div className="flex justify-between items-center gap-2">
+                                <button className="w-10 h-10 flex items-center justify-center border border-primary-1 rounded-lg text-primary-1">
+                                    <FaHeart />
+                                </button>
+                                <button className="flex-1 bg-primary-1 hover:bg-red-700 text-white py-2 rounded-lg text-sm">
+                                    عرض التفاصيل
+                                </button>
+                                <button className="w-10 h-10 flex items-center justify-center border border-primary-1 rounded-lg text-primary-1">
+                                    <FaShareAlt />
+                                </button>
+                            </div>
                         </div>
                     </div>
                 ))}
@@ -85,27 +112,39 @@ const RecipeChef = () => {
                 <button
                     onClick={() => handlePageChange(pagination.currentPage - 1)}
                     disabled={pagination.currentPage === 1}
-                    className="btn btn-sm"
-                >
-                    «
-                </button>
-                {[...Array(pagination.totalPages)].map((_, i) => (
-                    <button
-                        key={i}
-                        className={`btn btn-sm ${
-                            pagination.currentPage === i + 1 ? "bg-primary-1 text-white" : ""
+                    className={`w-10 h-10 border rounded flex items-center justify-center ${pagination.currentPage > 1
+                        ? "bg-primary-1 text-white"
+                        : "border-primary-1 text-primary-1 opacity-50 cursor-not-allowed"
                         }`}
-                        onClick={() => handlePageChange(i + 1)}
-                    >
-                        {i + 1}
-                    </button>
-                ))}
+                >
+                    <FaArrowRight />
+                </button>
+
+                {[...Array(pagination.totalPages)].map((_, i) => {
+                    const page = i + 1;
+                    return (
+                        <button
+                            key={i}
+                            onClick={() => handlePageChange(page)}
+                            className={`w-10 h-10 border rounded flex items-center justify-center ${pagination.currentPage === page
+                                ? "bg-primary-1 text-white"
+                                : "border-primary-1 text-primary-1 hover:bg-primary-1 hover:text-white"
+                                }`}
+                        >
+                            {String(page).padStart(2, "0")}
+                        </button>
+                    );
+                })}
+
                 <button
                     onClick={() => handlePageChange(pagination.currentPage + 1)}
                     disabled={pagination.currentPage === pagination.totalPages}
-                    className="btn btn-sm"
+                    className={`w-10 h-10 border rounded flex items-center justify-center ${pagination.currentPage < pagination.totalPages
+                        ? "bg-primary-1 text-white"
+                        : "border-primary-1 text-primary-1 opacity-50 cursor-not-allowed"
+                        }`}
                 >
-                    »
+                    <FaArrowLeft />
                 </button>
             </div>
         </>
