@@ -4,6 +4,19 @@ import { IoEyeOutline } from "react-icons/io5";
 import { LuPencilLine } from "react-icons/lu";
 import { Pagination } from "../../../components/shared/Pagination/Pagination";
 import { api_url } from "../../../utils/ApiClient";
+import { useNavigate } from "react-router";
+
+// Helper function to format phone number (remove +20 prefix if exists)
+const formatPhoneNumber = (phoneNumber) => {
+  if (!phoneNumber) return "غير محدد";
+
+  // If the phone number starts with +20, remove it
+  if (phoneNumber.startsWith("+2")) {
+    return phoneNumber.substring(2); // Remove first 3 characters (+20)
+  }
+
+  return phoneNumber; // Return as is if not starting with +20
+};
 
 export const StoresTable = forwardRef((props, ref) => {
   const { onStoresChange, onLoadingChange } = props;
@@ -16,6 +29,7 @@ export const StoresTable = forwardRef((props, ref) => {
   const [storeToDelete, setStoreToDelete] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [itemsPerPage] = useState(10);
+  const navigate = useNavigate();
 
   useImperativeHandle(ref, () => ({
     hasStores: () => stores.length > 0,
@@ -238,6 +252,7 @@ export const StoresTable = forwardRef((props, ref) => {
                         <TbTrash size={16} />
                       </button>
                       <button
+                        onClick={() => navigate(`/store/view/${store.id}`)}
                         className="text-blue-500 bg-blue-100 hover:bg-blue-300 p-1 rounded-md transition-colors"
                         title="عرض تفاصيل المتجر"
                       >
@@ -254,7 +269,7 @@ export const StoresTable = forwardRef((props, ref) => {
 
                   {/* Manager Contact */}
                   <td className="px-4 py-3 text-gray-700 text-lg font-bold text-right border border-gray-300">
-                    {store?.deliveryPhone || "غير محدد"}
+                    {formatPhoneNumber(store?.contactPhone)}
                   </td>
 
                   {/* Location/Area */}
