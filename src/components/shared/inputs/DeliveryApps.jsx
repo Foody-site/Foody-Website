@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import Inputs from "./Inputs";
 
-const DeliveryApps = ({ apps, onCheckboxChange }) => {
+const DeliveryApps = ({ apps, onCheckboxChange, onInputChange }) => {
   return (
     <div className="w-full">
       <h2 className="text-2xl font-bold text-right mb-6">تطبيقات التوصيل</h2>
@@ -25,6 +25,8 @@ const DeliveryApps = ({ apps, onCheckboxChange }) => {
                 type="text"
                 name={app.name}
                 placeholder={`أدخل الرابط من ${app.label}`}
+                value={app.link || ""}
+                onChange={(e) => onInputChange(app.name, e.target.value)}
                 disabled={!app.checked}
                 className={`w-full h-12 px-6 text-base py-4 text-right transition-opacity duration-300 ${
                   !app.checked ? "opacity-50 cursor-not-allowed" : ""

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { TbCameraPlus } from "react-icons/tb";
 import Inputs from "../../components/shared/inputs/Inputs";
@@ -49,6 +49,21 @@ const timeOptions = [
 const Add_Store = () => {
   const navigate = useNavigate();
 
+  // استخدام useRef لمنع تكرار البيانات من DeliveryForm
+  const prevDeliveryDataRef = useRef(null);
+  const [deliveryData, setDeliveryData] = useState(null);
+
+  // معالج محسن لبيانات التوصيل
+  const handleDeliveryDataChange = (data) => {
+    if (!data) return;
+
+    const dataString = JSON.stringify(data);
+    if (prevDeliveryDataRef.current !== dataString) {
+      setDeliveryData(data);
+      prevDeliveryDataRef.current = dataString;
+    }
+  };
+
   // Loading state
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -56,8 +71,8 @@ const Add_Store = () => {
 
   // Form states
   const [workTimeType, setWorkTimeType] = useState("");
-  const [coverPicture, setcoverPicture] = useState(null);
-  const [profilePicture, setprofilePicture] = useState(null);
+  const [coverPicture, setCoverPicture] = useState(null);
+  const [profilePicture, setProfilePicture] = useState(null);
   const [selectedMealTimes, setSelectedMealTimes] = useState([]);
   const [selectedAdditionalInfo, setSelectedAdditionalInfo] = useState([]);
 
@@ -70,7 +85,7 @@ const Add_Store = () => {
   const handleCoverUpload = (event) => {
     const file = event.target.files[0];
     if (file && file.type.startsWith("image/")) {
-      setcoverPicture(file);
+      setCoverPicture(file);
     } else {
       setError("الرجاء اختيار صورة صحيحة للغلاف!");
     }
@@ -79,7 +94,7 @@ const Add_Store = () => {
   const handleProfileUpload = (event) => {
     const file = event.target.files[0];
     if (file && file.type.startsWith("image/")) {
-      setprofilePicture(file);
+      setProfilePicture(file);
     } else {
       setError("الرجاء اختيار صورة صحيحة للملف الشخصي!");
     }
@@ -101,142 +116,27 @@ const Add_Store = () => {
     );
   };
 
-  // دالة إرسال البيانات للباك إند
-  const submitStoreData = async (formData) => {
+  // دالة مساعدة لاستخراج الإحداثيات من رابط خرائط جوجل
+  function parseGoogleMapLink(link) {
     try {
-      const token = localStorage.getItem("token"); // أو sessionStorage أو من context
+      if (!link) return [31.0999884, 29.9699776];
 
-      if (!token) {
-        throw new Error("لم يتم العثور على رمز المصادقة");
+      // محاولة استخراج الإحداثيات من الرابط
+      const regex = /@([-0-9.]+),([-0-9.]+)/;
+      const match = link.match(regex);
+
+      if (match && match.length >= 3) {
+        // الإحداثيات من الرابط [خط الطول، خط العرض]
+        return [parseFloat(match[2]), parseFloat(match[1])];
       }
 
-      const submitData = new FormData();
-
-      // البيانات الأساسية
-      submitData.append("name", formData.get("name") || "");
-      submitData.append("type", formData.get("type") || "");
-      submitData.append("description", formData.get("description") || "");
-      submitData.append("contactPhone", formData.get("contactPhone") || "");
-      submitData.append("deliveryPhone", formData.get("deliveryPhone") || "");
-      submitData.append("city", formData.get("city") || "");
-      submitData.append("region", formData.get("region") || "");
-      submitData.append("mapLink", formData.get("mapLink") || "");
-      submitData.append(
-        "since",
-        formData.get("since") || new Date().getFullYear()
-      );
-      submitData.append("taxNumber", formData.get("taxNumber") || "");
-
-      // الصور
-      if (coverPicture) {
-        submitData.append("coverPicture", coverPicture);
-      }
-      if (profilePicture) {
-        submitData.append("profilePicture", profilePicture);
-      }
-
-      // الملفات
-      const licenseFile = formData.get("licenseFile");
-      const nationalAddressFile = formData.get("nationalAddressFile");
-      const menuPhoto = formData.get("menuPhoto");
-      const commercialRegisterPhoto = formData.get("commercialRegisterPhoto");
-
-      if (licenseFile && licenseFile.size > 0) {
-        submitData.append("licenseFile", licenseFile);
-      }
-      if (nationalAddressFile && nationalAddressFile.size > 0) {
-        submitData.append("natoinalAddressFiles", nationalAddressFile);
-      }
-      if (menuPhoto && menuPhoto.size > 0) {
-        submitData.append("menuPhoto", menuPhoto);
-      }
-      if (commercialRegisterPhoto && commercialRegisterPhoto.size > 0) {
-        submitData.append("commercialRegisterPhoto", commercialRegisterPhoto);
-      }
-
-      // وسائل التواصل الاجتماعي
-      const socialMediaLinks = {
-        snapchat: formData.get("socialMediaLinks[snapchat]") || null,
-        facebook: formData.get("socialMediaLinks[facebook]") || null,
-        whatsappNumber:
-          formData.get("socialMediaLinks[whatsappNumber]") || null,
-        tiktok: formData.get("socialMediaLinks[tiktok]") || null,
-        instagram: formData.get("socialMediaLinks[instagram]") || null,
-        x: formData.get("socialMediaLinks[x]") || null,
-        website: formData.get("socialMediaLinks[website]") || null,
-      };
-      submitData.append("socialMediaLinks", JSON.stringify(socialMediaLinks));
-
-      // أوقات العمل
-      const shifts = [];
-      if (workTimeType !== "open") {
-        if (shift1From && shift1To) {
-          shifts.push({
-            startTime: shift1From,
-            endTime: shift1To,
-          });
-        }
-        if (workTimeType === "double" && shift2From && shift2To) {
-          shifts.push({
-            startTime: shift2From,
-            endTime: shift2To,
-          });
-        }
-      }
-      submitData.append("shifts", JSON.stringify(shifts));
-
-      // أنواع الوجبات
-      submitData.append("mealType", JSON.stringify(selectedMealTimes));
-
-      // المعلومات الإضافية
-      const additionalInfo = {
-        indoorSessions: selectedAdditionalInfo.includes("indoorSessions"),
-        hasDelivery: selectedAdditionalInfo.includes("hasDelivery"),
-        familySessions: selectedAdditionalInfo.includes("familySessions"),
-        outdoorSessions: selectedAdditionalInfo.includes("outdoorSessions"),
-        preBooking: selectedAdditionalInfo.includes("preBooking"),
-      };
-      submitData.append("additionalInfo", JSON.stringify(additionalInfo));
-
-      // تطبيقات التوصيل (من DeliveryForm)
-      const deliveryAppLinks = {
-        keeta: formData.get("deliveryAppLinks[keeta]") || null,
-        hungerStation: formData.get("deliveryAppLinks[hungerStation]") || null,
-        toyou: formData.get("deliveryAppLinks[toyou]") || null,
-        mrsool: formData.get("deliveryAppLinks[mrsool]") || null,
-        theChefz: formData.get("deliveryAppLinks[theChefz]") || null,
-        mrMandoob: formData.get("deliveryAppLinks[mrMandoob]") || null,
-        shgardi: formData.get("deliveryAppLinks[shgardi]") || null,
-        uber: formData.get("deliveryAppLinks[uber]") || null,
-        careem: formData.get("deliveryAppLinks[careem]") || null,
-        noon: formData.get("deliveryAppLinks[noon]") || null,
-        jahez: formData.get("deliveryAppLinks[jahez]") || null,
-        other: formData.get("deliveryAppLinks[other]") || null,
-      };
-      submitData.append("deliveryAppLinks", JSON.stringify(deliveryAppLinks));
-
-      // التطبيق الرئيسي للتوصيل
-      const mainDeliveryApp = formData.get("mainDeliveryApp");
-      if (mainDeliveryApp) {
-        submitData.append("mainDeliveryApp", mainDeliveryApp);
-      }
-
-      // إرسال الطلب
-      const response = await axios.post(`${api_url}/store`, submitData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      return response.data;
+      // قيم افتراضية إذا لم يتم العثور على إحداثيات
+      return [31.0999884, 29.9699776];
     } catch (error) {
-      console.error("خطأ في إرسال البيانات:", error);
-      throw error;
+      console.error("خطأ في استخراج الإحداثيات:", error);
+      return [31.0999884, 29.9699776];
     }
-  };
-
-  // معالج الإرسال
+  }
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -244,32 +144,271 @@ const Add_Store = () => {
     setSuccess("");
 
     try {
-      const formData = new FormData(e.target);
-      const result = await submitStoreData(formData);
+      // جمع البيانات من النموذج
+      const name = e.target.querySelector('input[name="name"]')?.value || "";
+      const description =
+        e.target.querySelector('textarea[name="description"]')?.value || "";
+      const type = e.target.querySelector('select[name="type"]')?.value || "";
+      const contactPhone =
+        e.target.querySelector('input[name="contactPhone"]')?.value || "";
+      const deliveryPhone =
+        e.target.querySelector('input[name="deliveryPhone"]')?.value || "";
+      const city = e.target.querySelector('select[name="city"]')?.value || "";
+      const region =
+        e.target.querySelector('select[name="region"]')?.value || "";
+      const mapLink =
+        e.target.querySelector('input[name="mapLink"]')?.value || "";
+
+      // تحويل القيم إلى الأنواع المناسبة
+      const taxNumber = e.target.querySelector(
+        'input[name="taxNumber"]'
+      )?.value;
+      // تحويل since إلى رقم بدلاً من سلسلة نصية
+      const sinceValue = e.target.querySelector('input[name="since"]')?.value;
+      const since = sinceValue
+        ? parseInt(sinceValue)
+        : new Date().getFullYear();
+
+      // إنشاء كائن additionalInfo مع قيم بوليان (لأننا سنحول الكائن إلى FormData لاحقًا)
+      const additionalInfo = {
+        indoorSessions: selectedAdditionalInfo.includes("indoorSessions"),
+        hasDelivery: selectedAdditionalInfo.includes("hasDelivery"),
+        carRequest: false,
+        familySessions: selectedAdditionalInfo.includes("familySessions"),
+        outdoorSessions: selectedAdditionalInfo.includes("outdoorSessions"),
+        preBooking: selectedAdditionalInfo.includes("preBooking"),
+      };
+
+      // التحقق من الحقول الإلزامية
+      const requiredFields = {
+        name,
+        description,
+        type,
+        contactPhone,
+        deliveryPhone,
+        city,
+        region,
+      };
+      const missingFields = Object.entries(requiredFields)
+        .filter(([_, value]) => !value)
+        .map(([key, _]) => key);
+
+      if (missingFields.length > 0 || selectedMealTimes.length === 0) {
+        // تعريف متغير errorMessage هنا
+        let errorMessage = "";
+
+        if (missingFields.length > 0) {
+          errorMessage = `يرجى ملء الحقول الإلزامية التالية: ${missingFields.join(
+            ", "
+          )}`;
+        }
+
+        if (selectedMealTimes.length === 0) {
+          errorMessage += errorMessage ? " و " : "";
+          errorMessage += "يرجى اختيار نوع وجبة واحدة على الأقل";
+        }
+
+        setError(errorMessage);
+        setLoading(false);
+        return;
+      }
+
+      // دالة للتحقق من صحة الروابط
+      const validateAndFixUrl = (url) => {
+        if (!url || typeof url !== "string") return "";
+        if (url.trim() === "") return "";
+        if (!/^https?:\/\//i.test(url)) {
+          return `https://${url}`;
+        }
+        return url;
+      };
+
+      // تحليل إحداثيات رابط الخريطة
+      const coordinates = parseGoogleMapLink(mapLink);
+
+      // إنشاء كائن FormData
+      const formData = new FormData();
+
+      // إضافة البيانات الأساسية
+      formData.append("name", name);
+      formData.append("description", description);
+      formData.append("type", type);
+      formData.append("contactPhone", contactPhone);
+      formData.append("deliveryPhone", deliveryPhone);
+      formData.append("city", city);
+      formData.append("region", region);
+      formData.append("mapLink", mapLink);
+      formData.append("since", since);
+
+      // إضافة الملفات إذا كانت متوفرة
+      if (coverPicture) formData.append("coverPicture", coverPicture);
+      if (profilePicture) formData.append("profilePicture", profilePicture);
+
+      // الحصول على الملفات الأخرى إذا كانت متوفرة
+      const licenseFile = e.target.querySelector('input[name="licenseFile"]')
+        ?.files[0];
+      const nationalAddressFile = e.target.querySelector(
+        'input[name="nationalAddressFile"]'
+      )?.files[0];
+      const menuPhoto = e.target.querySelector('input[name="menuPhoto"]')
+        ?.files[0];
+      const commercialRegisterPhoto = e.target.querySelector(
+        'input[name="commercialRegisterPhoto"]'
+      )?.files[0];
+
+      // إضافة الملفات الأخرى إذا كانت متوفرة
+      if (licenseFile) formData.append("licenseFile", licenseFile);
+      if (nationalAddressFile)
+        formData.append("nationalAddressFile", nationalAddressFile);
+      if (menuPhoto) formData.append("menuPhoto", menuPhoto);
+      if (commercialRegisterPhoto)
+        formData.append("commercialRegisterPhoto", commercialRegisterPhoto);
+
+      // إضافة الرقم الضريبي إذا كان متوفراً
+      if (taxNumber) formData.append("taxNumber", taxNumber);
+
+      // إضافة روابط وسائل التواصل الاجتماعي
+      const socialInputs = [
+        {
+          key: "snapchat",
+          selector: 'input[name="socialMediaLinks[snapchat]"]',
+        },
+        {
+          key: "facebook",
+          selector: 'input[name="socialMediaLinks[facebook]"]',
+        },
+        {
+          key: "whatsappNumber",
+          selector: 'input[name="socialMediaLinks[whatsappNumber]"]',
+        },
+        { key: "tiktok", selector: 'input[name="socialMediaLinks[tiktok]"]' },
+        {
+          key: "instagram",
+          selector: 'input[name="socialMediaLinks[instagram]"]',
+        },
+        { key: "x", selector: 'input[name="socialMediaLinks[x]"]' },
+        { key: "website", selector: 'input[name="socialMediaLinks[website]"]' },
+      ];
+
+      socialInputs.forEach(({ key, selector }) => {
+        const value = document.querySelector(selector)?.value;
+        if (value && value.trim() !== "") {
+          const finalValue =
+            key === "whatsappNumber" ? value : validateAndFixUrl(value);
+          formData.append(`socialMediaLinks[${key}]`, finalValue);
+        }
+      });
+
+      // إضافة روابط تطبيقات التوصيل
+      if (deliveryData && deliveryData.deliveryAppLinks) {
+        Object.entries(deliveryData.deliveryAppLinks).forEach(
+          ([key, value]) => {
+            if (value && value.trim() !== "") {
+              formData.append(
+                `deliveryAppLinks[${key}]`,
+                validateAndFixUrl(value)
+              );
+            }
+          }
+        );
+      }
+
+      // إضافة التطبيق الرئيسي للتوصيل إذا كان متوفراً
+      if (deliveryData?.mainDeliveryApp) {
+        formData.append("mainDeliveryApp", deliveryData.mainDeliveryApp);
+      }
+
+      // إضافة الإحداثيات
+      formData.append("location[type]", "Point");
+      formData.append("location[coordinates][0]", parseFloat(coordinates[0]));
+      formData.append("location[coordinates][1]", parseFloat(coordinates[1]));
+
+      // إضافة مواعيد العمل (shifts)
+      if (workTimeType !== "open") {
+        if (shift1From && shift1To) {
+          formData.append("shifts[0][startTime]", shift1From);
+          formData.append("shifts[0][endTime]", shift1To);
+        } else {
+          formData.append("shifts[0][startTime]", "2025-04-05T00:12:43.000Z");
+          formData.append("shifts[0][endTime]", "2025-04-05T22:16:43.000Z");
+        }
+
+        if (workTimeType === "double" && shift2From && shift2To) {
+          formData.append("shifts[1][startTime]", shift2From);
+          formData.append("shifts[1][endTime]", shift2To);
+        }
+      } else {
+        formData.append("shifts[0][startTime]", "2025-04-05T00:12:43.000Z");
+        formData.append("shifts[0][endTime]", "2025-04-05T22:16:43.000Z");
+      }
+
+      // إضافة أنواع الوجبات
+      const validMealTypes = ["breakfast", "lunch", "dinner", "late-breakfast"];
+      const mealType =
+        selectedMealTimes.length > 0
+          ? selectedMealTimes.filter((meal) => validMealTypes.includes(meal))
+          : ["dinner"];
+
+      mealType.forEach((meal, index) => {
+        formData.append(`mealType[${index}]`, meal);
+      });
+
+      // إضافة المعلومات الإضافية
+      Object.entries(additionalInfo).forEach(([key, value]) => {
+        formData.append(`additionalInfo[${key}]`, value);
+      });
+
+      // طباعة البيانات للتحقق (اختياري)
+      console.log("FormData being sent:");
+      for (let pair of formData.entries()) {
+        console.log(pair[0], pair[1]);
+      }
+
+      // إرسال البيانات
+      const token = localStorage.getItem("token");
+      const response = await axios.post(`${api_url}/store`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data", // مهم لإرسال FormData
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       setSuccess("تم إضافة المتجر بنجاح!");
-      console.log("نجح الإرسال:", result);
+      console.log("تم إرسال البيانات بنجاح:", response.data);
 
-      // إعادة توجيه بعد 2 ثانية
+      // إعادة التوجيه بعد النجاح
       setTimeout(() => {
-        navigate("/stores"); // أو أي صفحة تانية
+        navigate("/list");
       }, 2000);
     } catch (error) {
-      setError(
-        error.response?.data?.message ||
-          error.message ||
-          "حدث خطأ أثناء إضافة المتجر"
-      );
-      console.error("فشل الإرسال:", error);
+      console.error("خطأ في إرسال البيانات:", error);
+
+      let errorMessage = "حدث خطأ أثناء إضافة المتجر، يرجى المحاولة مرة أخرى";
+
+      if (error.response?.data?.message) {
+        if (Array.isArray(error.response.data.message)) {
+          console.log("رسائل الخطأ الكاملة:", error.response.data.message);
+          errorMessage = error.response.data.message.join("\n");
+        } else {
+          errorMessage = error.response.data.message;
+        }
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
+      setError(errorMessage);
+
+      if (error.response?.data) {
+        console.error("بيانات الخطأ من الخادم:", error.response.data);
+      }
     } finally {
       setLoading(false);
     }
   };
-
   return (
-    <div className="flex flex-col min-h-screen ">
+    <div className="flex flex-col min-h-screen">
       <div className="flex-grow flex justify-center items-center px-8 py-8">
-        <div className="w-full max-w-[90rem] p-16  rounded-xl ">
+        <div className="w-full max-w-[90rem] p-16 rounded-xl">
           <h2 className="text-3xl font-bold text-right text-gray-700 mb-10">
             اضافة متجر جديد
           </h2>
@@ -330,7 +469,7 @@ const Add_Store = () => {
                 htmlFor="profileUpload"
                 className="absolute bottom-2 right-2 cursor-pointer p-2 rounded-full shadow-md bg-primary-1"
               >
-                <TbCameraPlus className="text-white text-2xl " />
+                <TbCameraPlus className="text-white text-2xl" />
               </label>
             </div>
           </div>
@@ -338,6 +477,7 @@ const Add_Store = () => {
           <form
             onSubmit={handleSubmit}
             className="pt-6 space-y-14 mx-auto max-w-full"
+            encType="multipart/form-data"
           >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-10 text-right">
               <Inputs
@@ -438,7 +578,7 @@ const Add_Store = () => {
               <Inputs
                 name="since"
                 label="تأسس منذ عام"
-                type="date"
+                type="text"
                 className="w-full h-12 px-6 text-xl py-4"
               />
               <Inputs
@@ -503,25 +643,25 @@ const Add_Store = () => {
                 type="text"
                 className="w-full h-12 px-6 text-xl py-4"
               />
-              <div className="md:col-start-2 md:col-span-2 flex justify-end space-x-10 ">
+              <div className="md:col-start-2 md:col-span-2 flex justify-end space-x-10">
                 <Inputs
                   name="mapLink"
                   Icon_2={MdOutlineLocationOn}
                   label="رابط المتجر علي خريطة جوجل"
                   type="text"
-                  className="w-full h-12 px-6 text-xl py-4 "
+                  className="w-full h-12 px-6 text-xl py-4"
                 />
                 <Inputs
                   name="socialMediaLinks[website]"
                   Icon_2={PiGlobeThin}
                   label="رابط  الموقع  الإلكتروني"
                   type="text"
-                  className="w-full h-12 px-6 text-xl py-4 "
+                  className="w-full h-12 px-6 text-xl py-4"
                 />
               </div>
             </div>
 
-            <DeliveryForm />
+            <DeliveryForm onDataChange={handleDeliveryDataChange} />
 
             <div className="flex gap-8">
               <div className="w-1/2">
@@ -570,7 +710,7 @@ const Add_Store = () => {
                   </div>
                 )}
 
-                <div className="w-1/2 ">
+                <div className="w-1/2">
                   <WorkTimeRange
                     label="وقت عمل الدوام الاول"
                     fromValue={shift1From}

@@ -12,6 +12,7 @@ const Inputs = ({
   onChange,
   placeholder,
   disabled,
+  ...otherProps
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [fileName, setFileName] = useState(""); // لتخزين اسم الملف
@@ -45,6 +46,7 @@ const Inputs = ({
             onChange={handleFileChange}
             disabled={disabled}
             className="absolute inset-0 opacity-0 cursor-pointer"
+            {...otherProps}
           />
         </label>
       ) : (
