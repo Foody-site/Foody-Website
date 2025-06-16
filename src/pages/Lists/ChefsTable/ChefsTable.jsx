@@ -4,6 +4,7 @@ import { IoEyeOutline } from "react-icons/io5";
 import { LuPencilLine } from "react-icons/lu";
 import { Pagination } from "../../../components/shared/Pagination/Pagination";
 import { api_url } from "../../../utils/ApiClient";
+import { useNavigate } from "react-router";
 
 export const ChefsTable = forwardRef((props, ref) => {
   const { onChefsChange, onLoadingChange } = props;
@@ -15,6 +16,12 @@ export const ChefsTable = forwardRef((props, ref) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [chefToDelete, setChefToDelete] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleViewChef = (chef) => {
+    // توجيه المستخدم إلى صفحة عرض بيانات الشيف
+    navigate(`/chef/view/${chef.id}`);
+  };
 
   useImperativeHandle(ref, () => ({
     hasChefs: () => chefs.length > 0,
@@ -205,6 +212,7 @@ export const ChefsTable = forwardRef((props, ref) => {
                       <TbTrash size={16} />
                     </button>
                     <button
+                      onClick={() => handleViewChef(chef)} // إضافة معالج الحدث هنا
                       className="text-blue-500 bg-blue-100 hover:bg-blue-300 p-1 rounded-md transition-colors"
                       title="عرض تفاصيل الشيف"
                     >
