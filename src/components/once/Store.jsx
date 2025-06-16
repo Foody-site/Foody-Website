@@ -39,6 +39,8 @@ const Store = ({ searchTerm }) => {
                     familySessions,
                     hasDelivery,
                     isOpen,
+                    longitude,
+                    latitude,
                     newStore,
                     preBooking,
                     breakfast,
@@ -60,7 +62,11 @@ const Store = ({ searchTerm }) => {
                 if (isOpen) baseParams.isOpen = true;
                 if (newStore) baseParams.newStore = true;
                 if (preBooking) baseParams.preBooking = true;
-
+                if (longitude && latitude) {
+                    baseParams.longitude = longitude;
+                    baseParams.latitude = latitude;
+                }
+                
                 if (breakfast) baseParams.breakfast = true;
                 if (lateBreakfast) baseParams.lateBreakfast = true;
                 if (lunch) baseParams.lunch = true;
