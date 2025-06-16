@@ -578,7 +578,7 @@ const Add_Store = () => {
               <Inputs
                 name="since"
                 label="تأسس منذ عام"
-                type="text"
+                type="date"
                 className="w-full h-12 px-6 text-xl py-4"
               />
               <Inputs
@@ -650,6 +650,13 @@ const Add_Store = () => {
                   label="رابط المتجر علي خريطة جوجل"
                   type="text"
                   className="w-full h-12 px-6 text-xl py-4"
+                />
+                <Inputs
+                  name="mapLink"
+                  Icon_2={MdOutlineLocationOn}
+                  label="رابط المتجر علي خريطة جوجل"
+                  type="text"
+                  className="w-full h-12 px-6 text-xl py-4 "
                 />
                 <Inputs
                   name="socialMediaLinks[website]"
