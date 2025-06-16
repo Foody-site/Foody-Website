@@ -3,7 +3,7 @@ import axios from "axios";
 import CategoryTabs from "../shared/category/CategoryTabs";
 import FoodCard from "../shared/cards/FoodCard";
 import { api_url } from "../../utils/ApiClient";
-import Pagination from "../common/Pagination";
+import Pagination2 from "../common/Pagination2";
 
 const Store = ({ searchTerm }) => {
     const [stores, setStores] = useState([]);
@@ -119,7 +119,7 @@ const Store = ({ searchTerm }) => {
                 )}
             </div>
 
-            <Pagination pagination={pagination} setPage={setPage} />
+            <Pagination2 pagination={pagination} setPage={setPage} />
         </div>
     );
 };
