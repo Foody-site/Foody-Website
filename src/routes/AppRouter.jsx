@@ -16,6 +16,7 @@ import Home from "../pages/Home/Home";
 import UserProfile from "../components/once/UserProfile";
 import ViewStore from "../pages/Lists/StoresTable/ViewStore";
 import ViewChef from "../pages/Lists/ChefsTable/ViewChef";
+import ViewRecipe from "../pages/Lists/RecipesTable/ViewRecipe";
 
 const AppRouter = () => {
   return (
@@ -32,6 +33,7 @@ const AppRouter = () => {
         <Route path="/list" element={<List />} />
         <Route path="/chef/view/:id" element={<ViewChef />} />
         <Route path="/store/view/:id" element={<ViewStore />} />
+        <Route path="/recipe/view/:id" element={<ViewRecipe />} />
         <Route path="/chef" element={<Chef />} />
         <Route path="/user-profile" element={<UserProfile />} />
         <Route path="/chef" element={<Chef />} />

@@ -41,8 +41,7 @@ const timeOptions = [
 const ViewStore = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const currentDateTime = "2025-06-16 21:20:14";
-  const currentUser = "Amr3011";
+  
 
   // Loading state
   const [loading, setLoading] = useState(true);
