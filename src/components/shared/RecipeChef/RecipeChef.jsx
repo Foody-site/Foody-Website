@@ -29,7 +29,7 @@ const RecipeChef = () => {
 
             const data = response.data;
             console.log(data);
-            
+
             setRecipes(data.data || []);
             setPagination({
                 totalPages: data.pagination?.totalPages || 1,
@@ -91,6 +91,12 @@ const RecipeChef = () => {
                                     <p className="font-semibold">الوقت الكلي</p>
                                     <p>{recipe.totalTime || "-"} دقيقة</p>
                                 </div>
+                            </div>
+
+                            <div>
+                                <p className="text-[#C7C7C7] border border-[#C7C7C7] p-2 rounded-md text-[16px] my-2">
+                                    {recipe.isAllergenic === true ? "تحتوي هذه الوصفة علي احد مسببات حساسية" : ""}
+                                </p>
                             </div>
 
                             <div className="flex justify-between items-center gap-2">
