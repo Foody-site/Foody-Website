@@ -46,7 +46,7 @@ export const StoresTable = forwardRef((props, ref) => {
         const token = localStorage.getItem("token");
 
         // Add pagination parameters to the URL
-        const url = new URL(`${api_url}/store/user`); // تغيير الـ endpoint حسب API الخاص بك
+        const url = new URL(`${api_url}/store/user`);
         url.searchParams.append("page", currentPage.toString());
         url.searchParams.append("take", itemsPerPage.toString());
 
@@ -145,6 +145,14 @@ export const StoresTable = forwardRef((props, ref) => {
     setShowDeleteModal(true);
   };
 
+  const handleViewStore = (store) => {
+    navigate(`/store/view/${store.id}`);
+  };
+
+  const handleEditStore = (store) => {
+    navigate(`/store/edit/${store.id}`);
+  };
+
   const handleDeleteConfirm = async () => {
     if (!storeToDelete) return;
 
@@ -213,8 +221,8 @@ export const StoresTable = forwardRef((props, ref) => {
       <div className="overflow-hidden rounded-lg border border-gray-300">
         <table className="w-full table-fixed border-collapse border border-gray-300">
           <thead>
-            <tr className="text-right text-gray-700">
-              <th className="px-4 py-3 font-medium text-center border border-gray-300">
+            <tr className="text-right text-gray-700 bg-gray-100">
+              <th className="px-4 py-3 font-medium text-center border border-gray-300 w-[120px]">
                 مزيد من التفاصيل
               </th>
               <th className="px-4 py-3 font-medium text-right border border-gray-300">
@@ -252,13 +260,14 @@ export const StoresTable = forwardRef((props, ref) => {
                         <TbTrash size={16} />
                       </button>
                       <button
-                        onClick={() => navigate(`/store/view/${store.id}`)}
+                        onClick={() => handleViewStore(store)}
                         className="text-blue-500 bg-blue-100 hover:bg-blue-300 p-1 rounded-md transition-colors"
                         title="عرض تفاصيل المتجر"
                       >
                         <IoEyeOutline size={16} />
                       </button>
                       <button
+                        onClick={() => handleEditStore(store)}
                         className="text-blue-500 bg-blue-100 hover:bg-blue-300 p-1 rounded-md transition-colors"
                         title="تعديل المتجر"
                       >
@@ -314,9 +323,8 @@ export const StoresTable = forwardRef((props, ref) => {
               تأكيد الحذف
             </h3>
             <p className="text-gray-600 mb-6 text-right">
-              هل أنت متأكد من حذف المتجر ( {storeToDelete?.name} )؟
-              <br />
-              لا يمكن التراجع عن هذا الإجراء.
+              ؟ ( {storeToDelete?.name} ) هل أنت متأكد من حذف المتجر
+              <br />. لا يمكن التراجع عن هذا الإجراء{" "}
             </p>
             <div className="flex gap-3 justify-end">
               <button

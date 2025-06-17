@@ -19,6 +19,7 @@ import ViewChef from "../pages/Lists/ChefsTable/ViewChef";
 import ViewRecipe from "../pages/Lists/RecipesTable/ViewRecipe";
 import EditRecipe from "../pages/Lists/RecipesTable/EditRecipe";
 import EditChef from "../pages/Lists/ChefsTable/EditChef";
+import EditStore from "../pages/Lists/StoresTable/EditStore";
 
 const AppRouter = () => {
   return (
@@ -38,6 +39,7 @@ const AppRouter = () => {
         <Route path="/recipe/view/:id" element={<ViewRecipe />} />
         <Route path="/recipe/edit/:id" element={<EditRecipe />} />
         <Route path="/chef/edit/:id" element={<EditChef />} />
+        <Route path="/store/edit/:id" element={<EditStore />} />
         <Route path="/chef" element={<Chef />} />
         <Route path="/user-profile" element={<UserProfile />} />
         <Route path="/chef" element={<Chef />} />

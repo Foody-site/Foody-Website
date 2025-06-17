@@ -175,8 +175,8 @@ export const ChefsTable = forwardRef((props, ref) => {
       <div className="overflow-hidden rounded-lg border border-gray-300">
         <table className="w-full table-fixed border-collapse border border-gray-300">
           <thead>
-            <tr className="text-right text-gray-700">
-              <th className="px-4 py-3 font-medium text-center border border-gray-300">
+            <tr className="text-right text-gray-700 bg-gray-100">
+              <th className="px-4 py-3 font-medium text-center border border-gray-300 w-[120px]">
                 مزيد من التفاصيل
               </th>
               <th className="px-4 py-3 font-medium text-right border border-gray-300">
