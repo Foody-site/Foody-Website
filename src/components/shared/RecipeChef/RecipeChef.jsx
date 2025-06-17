@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { FaArrowLeft, FaArrowRight, FaHeart, FaShareAlt } from "react-icons/fa";
-import { useParams } from "react-router";
+import { Link, useParams } from "react-router";
 import { api_url } from "../../../utils/ApiClient";
 import FavouriteRecipe from "../Favourites/FavouriteRecipe";
 
@@ -102,12 +102,18 @@ const RecipeChef = () => {
 
                             <div className="flex justify-between items-center gap-2">
                                 <FavouriteRecipe itemId={recipe.id} isInitiallyFavorited={recipe.isFavorited} />
-                                <button className="flex-1 bg-primary-1 hover:bg-red-700 text-white py-2 rounded-lg text-sm">
-                                    عرض التفاصيل
-                                </button>
-                                <button className="w-10 h-10 flex items-center justify-center border border-primary-1 rounded-lg text-primary-1">
+
+                                {/* Navigate Button */}
+                                <Link to={`/recipe/${recipe.id}`} className="flex-1">
+                                    <div className="bg-primary-1 hover:bg-red-700 text-white py-2 rounded-lg text-sm text-center w-full">
+                                        عرض التفاصيل
+                                    </div>
+                                </Link>
+
+                                {/* Share Button */}
+                                <div className="w-10 h-10 flex items-center justify-center border border-primary-1 rounded-lg text-primary-1">
                                     <FaShareAlt />
-                                </button>
+                                </div>
                             </div>
                         </div>
                     </div>
