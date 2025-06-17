@@ -3,6 +3,7 @@ import axios from "axios";
 import { FaArrowLeft, FaArrowRight, FaHeart, FaShareAlt } from "react-icons/fa";
 import { useParams } from "react-router";
 import { api_url } from "../../../utils/ApiClient";
+import FavouriteRecipe from "../Favourites/FavouriteRecipe";
 
 const RecipeChef = () => {
     const { id } = useParams();
@@ -100,9 +101,7 @@ const RecipeChef = () => {
                             </div>
 
                             <div className="flex justify-between items-center gap-2">
-                                <button className="w-10 h-10 flex items-center justify-center border border-primary-1 rounded-lg text-primary-1">
-                                    <FaHeart />
-                                </button>
+                                <FavouriteRecipe itemId={recipe.id} isInitiallyFavorited={recipe.isFavorited} />
                                 <button className="flex-1 bg-primary-1 hover:bg-red-700 text-white py-2 rounded-lg text-sm">
                                     عرض التفاصيل
                                 </button>
