@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        "primary-1": "#D12020",
+        "primary-1": "#D71313",
         "hover_primary-1":"#B91C1C",
         "secondry-1": "#D9D9D9",
       },

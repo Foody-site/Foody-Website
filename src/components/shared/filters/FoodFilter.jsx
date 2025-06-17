@@ -1,126 +1,139 @@
-import React from "react";
+import { useState } from "react";
 import {
-    FaSearch,
-    FaStar,
-    FaRegStar,
-    FaLocationArrow,
-    FaClock,
-    FaTags,
-    FaPlusCircle,
+    FaMapMarkerAlt,
+    FaCity,
+    FaUtensils,
+    FaBiking,
 } from "react-icons/fa";
+import SearchFilter from "../search/SearchFilter";
+import RatingFilter from "../rating/RatingFilter";
+import SelectInput from "../../../components/shared/inputs/SelectInput";
+import MoreChoicesFilter from "../MoreChoicesFilter/MoreChoicesFilter";
+import DeliveryApps from "../DeliveryApps/DeliveryApps";
+import MealType from "../MealType/MealType";
+import PlaceSearch from "../PlaceSearch/PlaceSearch";
 
-const FoodFilter = () => {
+const FoodFilter = ({ onSearch }) => {
+    const [selectedMeals, setSelectedMeals] = useState({
+        breakfast: false,
+        lateBreakfast: false,
+        lunch: false,
+        dinner: true,
+    });
+
+    const [selectedOptions, setSelectedOptions] = useState(["أضيف حديثاً"]);
+    const [ratingRange, setRatingRange] = useState(null);
+    const [selectedRegion, setSelectedRegion] = useState("");
+    const [selectedCity, setSelectedCity] = useState("");
+    const [selectedDeliveryApps, setSelectedDeliveryApps] = useState([]);
+
+    const handleSearch = () => {
+        const deliveryAppParams = selectedDeliveryApps.reduce((acc, app) => {
+            acc[app] = true;
+            return acc;
+        }, {});
+
+        const optionsObj = {
+            isOpen: selectedOptions.includes("مفتوح الآن"),
+            indoorSessions: selectedOptions.includes("جلسات داخلية"),
+            outdoorSessions: selectedOptions.includes("جلسات خارجية"),
+            hasDelivery: selectedOptions.includes("يوجد توصيل"),
+            familySessions: selectedOptions.includes("جلسات عائلية"),
+            preBooking: selectedOptions.includes("يوجد حجز مسبق"),
+            newStore: selectedOptions.includes("أضيف حديثاً"),
+        };
+
+        const mealParams = Object.entries(selectedMeals).reduce((acc, [key, value]) => {
+            if (value) acc[key] = true;
+            return acc;
+        }, {});
+
+        onSearch({
+            ...deliveryAppParams,
+            region: selectedRegion,
+            city: selectedCity,
+            rating: ratingRange?.min,
+            ...optionsObj,
+            ...mealParams,
+        });
+    };
+
     return (
-        <div className="bg-[#D9D9D9] p-4 rounded-xl w-80 space-y-5 text-right font-sans">
-
-            {/* Search Input */}
+        <div className="bg-[#D713130D] text-white p-4 rounded-xl w-80 space-y-4 font-sans text-sm">
             <div className="relative">
-                <input
-                    type="text"
-                    placeholder="ما الذي تريد أن تبحث عنه؟"
-                    className="w-full pr-10 pl-4 py-2 rounded-full text-sm border border-gray-300 focus:outline-none"
+                <SearchFilter onSearch={onSearch} />
+            </div>
+
+            <div className="relative">
+                <PlaceSearch
+                    selectedRegion={selectedRegion}
+                    setSelectedRegion={setSelectedRegion}
+                    selectedCity={selectedCity}
+                    setSelectedCity={setSelectedCity}
                 />
-                <FaSearch className="absolute top-2.5 right-4 text-gray-500" />
             </div>
 
-            {/* Filter Title */}
-            <p className="text-sm font-bold text-gray-800">بحث بحسب :</p>
-
-            {/* Price Range */}
-            <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">السعر</label>
-                <input type="range" min={20} max={50} className="range range-xs range-error" />
-                <div className="flex justify-between text-xs px-1 text-gray-600 mt-1">
-                    <span>20 ريال</span>
-                    <span>50 ريال</span>
-                </div>
-            </div>
-
-            {/* City Dropdown */}
-            <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">المدينة</label>
-                <select className="w-full py-2 px-3 rounded-full border border-gray-300 bg-white text-sm text-right">
-                    <option>المدينة</option>
+            {/* <div className="relative">
+                <select className="w-full appearance-none pl-10 pr-4 py-2 bg-white text-black rounded-lg">
+                    <option>قم بإختيار نوع المطعم</option>
                 </select>
+                <div className="absolute left-4 top-2.5 text-gray-500"><FaUtensils /></div>
+            </div> */}
+
+            <div className="relative">
+                <DeliveryApps
+                    selectedApps={selectedDeliveryApps}
+                    setSelectedApps={setSelectedDeliveryApps}
+                />
+
             </div>
 
-            {/* Ratings */}
+            <MealType
+                selectedMeals={selectedMeals}
+                setSelectedMeals={setSelectedMeals}
+            />
+
             <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">التقييم</label>
-                <div className="flex flex-col gap-2 text-yellow-400">
-                    {[5, 4, 3, 2, 1].map((rating) => (
-                        <label key={rating} className="flex items-center gap-2 text-gray-700">
-                            <input type="checkbox" className="checkbox checkbox-sm" />
-                            <div className="flex items-center gap-1">
-                                {[...Array(5)].map((_, i) =>
-                                    i < rating ? (
-                                        <FaStar key={i} className="text-yellow-400" />
-                                    ) : (
-                                        <FaRegStar key={i} className="text-gray-400" />
-                                    )
-                                )}
-                            </div>
-                        </label>
-                    ))}
-                </div>
+                <MoreChoicesFilter
+                    selectedOptions={selectedOptions}
+                    setSelectedOptions={setSelectedOptions}
+                />
             </div>
 
-            {/* Toggles */}
-            <div className="flex justify-between gap-2 text-sm text-gray-700">
-                <div className="flex items-center gap-1">
-                    <input type="checkbox" className="toggle toggle-xs" />
-                    <span>مفتوح الآن</span>
-                    <FaClock className="text-gray-500 text-xs" />
-                </div>
-                <div className="flex items-center gap-1">
-                    <input type="checkbox" className="toggle toggle-xs" />
-                    <span>الأقرب منك</span>
-                    <FaLocationArrow className="text-gray-500 text-xs" />
-                </div>
-            </div>
-
-            {/* Promotions */}
-            <div className="flex flex-col gap-1 text-sm text-gray-700">
-                <div className="flex items-center gap-2">
-                    <FaTags />
-                    <span>عروض/خصومات</span>
-                </div>
-                <div className="flex items-center gap-2">
-                    <FaPlusCircle />
-                    <span>أضيف حديثاً</span>
-                </div>
-            </div>
-
-            {/* Delivery Apps */}
             <div>
-                <p className="text-sm font-medium mb-1">تطبيقات التوصيل</p>
-                <div className="h-24 overflow-y-auto bg-white p-2 rounded-lg shadow-inner space-y-1">
-                    {["هنقرستيشن", "مرسول", "أوبر", "كريم", "جاهز"].map((app) => (
-                        <label key={app} className="flex justify-between items-center text-sm text-gray-700">
-                            <span>{app}</span>
-                            <input type="checkbox" className="checkbox checkbox-xs" />
-                        </label>
-                    ))}
-                </div>
+                <RatingFilter
+                    selectedRating={ratingRange?.min}
+                    setRatingRange={setRatingRange}
+                />
             </div>
 
-            {/* Meal Types */}
-            <div>
-                <p className="text-sm font-medium mb-1">نوع الوجبة</p>
-                <div className="bg-white p-2 rounded-lg shadow-inner space-y-1">
-                    {["فطور", "غداء", "عشاء"].map((meal) => (
-                        <label key={meal} className="flex justify-between items-center text-sm text-gray-700">
-                            <span>{meal}</span>
-                            <input type="checkbox" className="checkbox checkbox-xs" />
-                        </label>
-                    ))}
-                </div>
+            <div className="flex gap-2">
+                <button
+                    className="w-1/2 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg"
+                    onClick={handleSearch}
+                >
+                    عرض النتائج
+                </button>
+                <button
+                    className="w-1/2 border border-red-600 text-red-600 py-2 rounded-lg"
+                    onClick={() => {
+                        setSelectedRegion("");
+                        setSelectedCity("");
+                        setSelectedMeals({
+                            breakfast: false,
+                            lateBreakfast: false,
+                            lunch: false,
+                            dinner: false,
+                        });
+                        setSelectedOptions([]);
+                        setRatingRange(null);
+                        onSearch({});
+                        setSelectedDeliveryApps([]);
+                    }}
+                >
+                    الغاء التصفيات
+                </button>
             </div>
-
-            {/* Button */}
-            <button className="w-full bg-primary-1 hover:bg-hover_primary-1 text-white font-bold py-2 rounded-full text-sm">
-                عرض النتائج
-            </button>
         </div>
     );
 };

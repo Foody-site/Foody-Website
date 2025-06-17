@@ -1,9 +1,11 @@
-import React from 'react'
+import ImageWrapper from '../../components/common/ImageWrapper'
 import ChefPage from '../../components/once/ChefPage'
+import herobg from "/assets/home/herobg.png"
 
 const ChefProfile = () => {
     return (
         <div>
+            <ImageWrapper img={herobg} />
             <ChefPage />
         </div>
     )

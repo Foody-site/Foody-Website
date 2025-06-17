@@ -4,6 +4,7 @@ import { IoEyeOutline } from "react-icons/io5";
 import { LuPencilLine } from "react-icons/lu";
 import { Pagination } from "../../../components/shared/Pagination/Pagination";
 import { api_url } from "../../../utils/ApiClient";
+import { useNavigate } from "react-router";
 
 export const RecipesTable = forwardRef((props, ref) => {
   const { onRecipesChange, onLoadingChange } = props;
@@ -16,6 +17,7 @@ export const RecipesTable = forwardRef((props, ref) => {
   const [recipeToDelete, setRecipeToDelete] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [itemsPerPage] = useState(10); // You can make this configurable
+  const navigate = useNavigate();
 
   useImperativeHandle(ref, () => ({
     hasRecipes: () => recipes.length > 0,
@@ -33,8 +35,8 @@ export const RecipesTable = forwardRef((props, ref) => {
 
         // Add pagination parameters to the URL
         const url = new URL(`${api_url}/recipe/chef`);
-        url.searchParams.append('page', currentPage.toString());
-        url.searchParams.append('take', itemsPerPage.toString());
+        url.searchParams.append("page", currentPage.toString());
+        url.searchParams.append("take", itemsPerPage.toString());
 
         const response = await fetch(url.toString(), {
           headers: {
@@ -65,11 +67,17 @@ export const RecipesTable = forwardRef((props, ref) => {
             // Handle pagination data
             if (result.pagination) {
               setPagination(result.pagination);
-              setTotalPages(result.pagination.totalPages || Math.ceil(result.pagination.total / itemsPerPage));
+              setTotalPages(
+                result.pagination.totalPages ||
+                  Math.ceil(result.pagination.total / itemsPerPage)
+              );
             } else if (result.meta) {
               // Some APIs use 'meta' instead of 'pagination'
               setPagination(result.meta);
-              setTotalPages(result.meta.totalPages || Math.ceil(result.meta.total / itemsPerPage));
+              setTotalPages(
+                result.meta.totalPages ||
+                  Math.ceil(result.meta.total / itemsPerPage)
+              );
             } else {
               // If no pagination info is provided, assume single page
               setTotalPages(1);
@@ -88,11 +96,11 @@ export const RecipesTable = forwardRef((props, ref) => {
           if (onRecipesChange) {
             onRecipesChange(false);
           }
-          
+
           // Show error message if available
           if (result.message) {
-            const errorMessage = Array.isArray(result.message) 
-              ? result.message.join(', ') 
+            const errorMessage = Array.isArray(result.message)
+              ? result.message.join(", ")
               : result.message;
             console.error("API Error Message:", errorMessage);
           }
@@ -172,6 +180,10 @@ export const RecipesTable = forwardRef((props, ref) => {
     }
   };
 
+  const handleViewRecipe = (recipe) => {
+    navigate(`/recipe/view/${recipe.id}`);
+  };
+
   const handleDeleteCancel = () => {
     setShowDeleteModal(false);
     setRecipeToDelete(null);
@@ -229,6 +241,7 @@ export const RecipesTable = forwardRef((props, ref) => {
                         <TbTrash size={16} />
                       </button>
                       <button
+                        onClick={() => handleViewRecipe(recipe)} 
                         className="text-blue-500 bg-blue-100 hover:bg-blue-300 p-1 rounded-md transition-colors"
                         title="عرض تفاصيل الوصفة"
                       >
@@ -249,16 +262,13 @@ export const RecipesTable = forwardRef((props, ref) => {
                   </td>
 
                   {/* Recipe Types */}
-                   <td className="px-4 py-3 text-gray-700 text-sm text-right border border-gray-300">
+                  <td className="px-4 py-3 text-gray-700 text-sm text-right border border-gray-300">
                     {recipe?.recipeTypes &&
                     Array.isArray(recipe.recipeTypes) &&
                     recipe.recipeTypes.length > 0
-                      ? recipe.recipeTypes
-                          .map((type, index) => (
-                            <div key={index}>
-                              {type?.name?.ar || "غير محدد"}
-                            </div>
-                          ))
+                      ? recipe.recipeTypes.map((type, index) => (
+                          <div key={index}>{type?.name?.ar || "غير محدد"}</div>
+                        ))
                       : "غير محدد"}
                   </td>
 

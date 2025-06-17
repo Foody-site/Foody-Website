@@ -9,7 +9,7 @@ const SelectInput = ({ name, label, options, onChange, value }) => {
           name={name}
           value={value}
           onChange={onChange}
-          className="p-2 border border-gray-300 rounded-md bg-white w-full appearance-none pr-8"
+          className="p-2 border border-gray-300 rounded-md bg-white w-full appearance-none text-black pr-8"
         >
           <option value="" className="text-right">{label}</option>
           {options.map((option, index) => (

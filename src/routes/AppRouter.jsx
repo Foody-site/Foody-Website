@@ -1,5 +1,4 @@
 import { Route, Routes } from "react-router";
-import Home from "../pages/home/Home";
 import Layout from "../components/layout/Layout";
 import Login from "../components/Auth/Login";
 import Register from "../components/Auth/Register";
@@ -13,6 +12,11 @@ import Chef from "../pages/Chef/Chef";
 import Recipe from "../pages/Recipe/Recipe";
 import ChefProfile from "../pages/Chef/ChefProfile";
 import List from "../pages/Lists/List";
+import Home from "../pages/Home/Home";
+import UserProfile from "../components/once/UserProfile";
+import ViewStore from "../pages/Lists/StoresTable/ViewStore";
+import ViewChef from "../pages/Lists/ChefsTable/ViewChef";
+import ViewRecipe from "../pages/Lists/RecipesTable/ViewRecipe";
 
 const AppRouter = () => {
   return (
@@ -27,6 +31,11 @@ const AppRouter = () => {
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="/list" element={<List />} />
+        <Route path="/chef/view/:id" element={<ViewChef />} />
+        <Route path="/store/view/:id" element={<ViewStore />} />
+        <Route path="/recipe/view/:id" element={<ViewRecipe />} />
+        <Route path="/chef" element={<Chef />} />
+        <Route path="/user-profile" element={<UserProfile />} />
         <Route path="/chef" element={<Chef />} />
         <Route path="/chef/:id" element={<ChefProfile />} />
         <Route path="/add-chef" element={<AddChef />} />

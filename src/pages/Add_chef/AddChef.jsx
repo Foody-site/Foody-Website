@@ -391,7 +391,7 @@ const AddChef = () => {
                 name="socialMedia.facebook"
                 label="إضافة رابط فيسبوك"
                 type="text"
-                Icon={TiSocialFacebook}
+                Icon_2={TiSocialFacebook}
                 className="w-full h-12 px-6 text-xl py-4 placeholder:text-sm"
                 placeholder="قم بإضافة رابط فيسبوك هنا"
                 onChange={handleChange}
@@ -422,7 +422,7 @@ const AddChef = () => {
                 label="إضافة رقم واتساب"
                 placeholder="قم بإضافة رقم واتساب هنا"
                 type="text"
-                Icon={IoLogoWhatsapp}
+                Icon_2={IoLogoWhatsapp}
                 className="w-full h-12 px-6 text-xl py-4 placeholder:text-sm"
                 onChange={handleChange}
               />
@@ -431,7 +431,7 @@ const AddChef = () => {
                 label="إضافة رابط يوتيوب"
                 placeholder="قم بإضافة رابط يوتيوب هنا"
                 type="text"
-                Icon={FaYoutube}
+                Icon_2={FaYoutube}
                 className="w-full h-12 px-6 text-xl py-4 placeholder:text-sm"
                 onChange={handleChange}
               />
@@ -439,7 +439,7 @@ const AddChef = () => {
                 name="socialMedia.snapchat"
                 label="إضافة رابط سناب شات"
                 type="text"
-                Icon={FaSnapchatGhost}
+                Icon_2={FaSnapchatGhost}
                 className="w-full h-12 px-6 text-xl py-4 placeholder:text-sm"
                 placeholder="قم بإضافة رابط سناب شات هنا"
                 onChange={handleChange}
@@ -448,7 +448,7 @@ const AddChef = () => {
                 name="socialMedia.x"
                 label="إضافة رابط اكس"
                 type="text"
-                Icon={RiTwitterXFill}
+                Icon_2={RiTwitterXFill}
                 className="w-full h-12 px-6 text-xl py-4 placeholder:text-sm"
                 placeholder="قم بإضافة رابط اكس هنا"
                 onChange={handleChange}
@@ -457,7 +457,7 @@ const AddChef = () => {
                 name="socialMedia.instagram"
                 label="إضافة رابط انستغرام"
                 type="text"
-                Icon={GrInstagram}
+                Icon_2={GrInstagram}
                 className="w-full h-12 px-6 text-xl py-4 placeholder:text-sm"
                 placeholder="قم بإضافة رابط انستغرام هنا"
                 onChange={handleChange}
@@ -466,7 +466,7 @@ const AddChef = () => {
                 name="socialMedia.tiktok"
                 label="إضافة رابط  تيك توك"
                 type="text"
-                Icon={FaTiktok}
+                Icon_2={FaTiktok}
                 placeholder="قم بادخال إضافة رابط  تيك توك هنا"
                 className="w-full h-12 px-6 text-xl py-4 placeholder:text-sm"
                 onChange={handleChange}

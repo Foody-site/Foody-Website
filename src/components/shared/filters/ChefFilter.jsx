@@ -1,87 +1,72 @@
 import React from "react";
-import { FaSearch, FaStar, FaRegStar } from "react-icons/fa";
+import { FaSearch, FaHome, FaUtensils } from "react-icons/fa";
 
 const ChefFilter = () => {
     return (
-        <div className="bg-[#D9D9D9] p-4 rounded-xl w-72 space-y-5 text-right font-sans">
+        <div className="bg-[#FDF3F1] p-4 rounded-xl w-80 space-y-4 text-right font-sans text-sm">
+            {/* Header */}
+            <h2 className="font-bold text-md text-gray-800">البحث</h2>
 
             {/* Search */}
             <div className="relative">
                 <input
                     type="text"
-                    placeholder="ادخل اسم الشيف/الوصفة"
-                    className="w-full pr-10 pl-4 py-2 rounded-full text-sm border border-gray-300 focus:outline-none"
+                    placeholder="يتم كتابة اسم الشيف هنا"
+                    className="w-full pr-10 pl-4 py-2 rounded-md border border-gray-300 focus:outline-none"
                 />
-                <FaSearch className="absolute top-2.5 right-4 text-gray-500" />
+                <FaSearch className="absolute top-2.5 right-3 text-gray-400" />
             </div>
 
             {/* نوع الطعام */}
-            <div>
-                <label className="block text-sm font-medium text-gray-800 mb-1">نوع الطعام</label>
-                <select className="w-full py-2 px-3 rounded-full border border-gray-300 bg-white text-sm text-right">
-                    <option>نوع الطعام</option>
+            <div className="relative">
+                <label className="block text-gray-800 mb-1">نوع الطعام</label>
+                <select className="w-full pr-10 pl-3 py-2 rounded-md border border-gray-300 bg-white">
+                    <option>تم اختيار نوع الطعام</option>
                     <option>حلويات</option>
                     <option>أطباق رئيسية</option>
                     <option>مقبلات</option>
                 </select>
-            </div>
-
-            {/* التقييم */}
-            <div>
-                <label className="block text-sm font-medium text-gray-800 mb-1">التقييم</label>
-                <div className="flex flex-col gap-2">
-                    {[5, 4, 3, 2, 1].map((rating) => (
-                        <label key={rating} className="flex items-center gap-2 cursor-pointer">
-                            <input type="radio" name="rating" className="radio radio-sm" />
-                            <div className="flex gap-1">
-                                {[...Array(5)].map((_, i) =>
-                                    i < rating ? (
-                                        <FaStar key={i} className="text-yellow-400" />
-                                    ) : (
-                                        <FaRegStar key={i} className="text-gray-400" />
-                                    )
-                                )}
-                            </div>
-                        </label>
-                    ))}
-                </div>
+                <FaHome className="absolute top-9 right-3 text-gray-400" />
             </div>
 
             {/* المكونات الرئيسية */}
-            <div>
-                <label className="block text-sm font-medium text-gray-800 mb-1">المكونات الرئيسية</label>
-                <select className="w-full py-2 px-3 rounded-full border border-gray-300 bg-white text-sm text-right">
-                    <option>المكونات</option>
+            <div className="relative">
+                <label className="block text-gray-800 mb-1">المكونات الرئيسية</label>
+                <select className="w-full pr-10 pl-3 py-2 rounded-md border border-gray-300 bg-white">
+                    <option>تم اختيار المكونات الرئيسية</option>
                     <option>دجاج</option>
                     <option>لحم</option>
                     <option>خضروات</option>
                 </select>
+                <FaUtensils className="absolute top-9 right-3 text-gray-400" />
             </div>
 
-            {/* Checkboxes */}
-            <div className="space-y-2 text-sm text-gray-800">
-                <label className="flex items-center gap-2">
-                    <input type="checkbox" className="checkbox checkbox-sm" />
-                    <span>وصفات اليوم من فودي</span>
-                </label>
-                <label className="flex items-center gap-2">
-                    <input type="checkbox" className="checkbox checkbox-sm" />
-                    <span>إمكانية التواصل مع الشيف لحجز موعد مناسبة</span>
-                </label>
-                <label className="flex items-center gap-2">
-                    <input type="checkbox" className="checkbox checkbox-sm" />
-                    <span>أطباق لا تحتوي على مسببات الحساسية</span>
-                </label>
-                <label className="flex items-center gap-2">
-                    <input type="checkbox" className="checkbox checkbox-sm" />
-                    <span>وصفات سريعة التحضير (أقل من 45 دقيقة)</span>
-                </label>
+            {/* مزيد من التفاصيل */}
+            <h2 className="font-bold text-md text-gray-800">مزيد من التفاصيل</h2>
+
+            <div className="space-y-3 text-gray-700">
+                {[
+                    "وصفات اليوم من فودي",
+                    "إمكانية التواصل مع الشيف لحجز موعد مناسبة",
+                    "وصفات سريعة التحضير (أقل من 45 دقيقة)",
+                    "أطعمة لا تحتوي على مسببات الحساسية"
+                ].map((label, i) => (
+                    <label key={i} className="flex items-center justify-between bg-white px-3 py-2 rounded-md border border-gray-200 cursor-pointer">
+                        <span>{label}</span>
+                        <input type="checkbox" className="form-checkbox text-primary-1 w-4 h-4" />
+                    </label>
+                ))}
             </div>
 
-            {/* Button */}
-            <button className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 rounded-full text-sm">
-                عرض النتائج
-            </button>
+            {/* Buttons */}
+            <div className="flex gap-3 mt-4">
+                <button className="w-full bg-primary-1 hover:opacity-90 text-white font-bold py-2 rounded-md">
+                    عرض النتائج
+                </button>
+                <button className="w-full border border-primary-1 text-primary-1 font-bold py-2 rounded-md">
+                    الغاء التصفيات
+                </button>
+            </div>
         </div>
     );
 };

@@ -1,68 +1,91 @@
-import Logo from "../../assets/Group.png";
-import Instagram from "../../assets/Instagram.png";
-import Snapchat from "../../assets/Snapchat.png";
-import WhatsApp from "../../assets/WhatsApp.png";
-import X from "../../assets/X.png";
+import {
+  FaInstagram,
+  FaXTwitter,
+  FaWhatsapp,
+  FaSnapchat,
+} from "react-icons/fa6";
 import PageWrapper from "../common/PageWrapper";
+
 const Footer = () => {
   return (
-    <PageWrapper>
-      <footer className="w-full bg-gray-100 flex flex-col items-center justify-center border-t border-gray-200">
-        <div className="flex flex-col items-center">
-          <img src={Logo} alt="Foody Logo" className="h-10 mb-2" />
-          <div className="flex gap-4 mb-4">
+    <footer className="bg-[#970D0D] text-white text-sm font-sans max-w-full">
+      <PageWrapper>
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 text-center md:text-right mb-6">
+          <div className="md:col-span-1">
             <img
-              src={Snapchat}
-              alt="Snapchat"
-              className="h-6 w-6 cursor-pointer"
+              src="/assets/common/whitelogo.png"
+              alt="Foody Logo"
+              className="w-24 mx-auto md:mx-0 mb-2"
             />
-            <img
-              src={WhatsApp}
-              alt="WhatsApp"
-              className="h-6 w-6 cursor-pointer"
-            />
-            <img
-              src={Instagram}
-              alt="Instagram"
-              className="h-6 w-6 cursor-pointer"
-            />
-            <img src={X} alt="X" className="h-6 w-6 cursor-pointer" />
+            <p className="text-xs leading-relaxed text-justify md:text-right">
+              منصة فودي هي قاعدة بيانات للمطاعم والمتاجر بالمملكة العربية
+              السعودية وهي عبارة عن منصة اجتماعية تهدف لتقديم تغطية تفصيلية
+              وشاملة للمنتجات والخدمات والعروض التي تقدمها أشهر المطاعم
+              والكافيهات وتعكس كل ما هو مهم للمستهلك من المميزات (نقطة البيع)
+              وخدماتهم. وتسهل المنصة على استكشاف الطعام والمقارنات وتسريع من
+              قرار الشراء.
+            </p>
+          </div>
+
+          <div>
+            <h3 className="font-bold mb-2">الرئيسية</h3>
+            <ul className="space-y-3">
+              <li><a href="#" className="text-white no-underline">حسابي</a></li>
+              <li><a href="#" className="text-white no-underline">المفضلة</a></li>
+              <li><a href="#" className="text-white no-underline">العروض/الخصومات</a></li>
+              <li><a href="#" className="text-white no-underline">نص</a></li>
+            </ul>
+          </div>
+
+          {/* Column 3 */}
+          <div>
+            <h3 className="font-bold mb-2">من نحن</h3>
+            <ul className="space-y-3">
+              <li><a href="#" className="text-white no-underline">إخلاء المسؤولية</a></li>
+              <li><a href="#" className="text-white no-underline">سياسة الإستخدام</a></li>
+              <li><a href="#" className="text-white no-underline">الشروط والأحكام</a></li>
+              <li><a href="#" className="text-white no-underline">فريقنا</a></li>
+            </ul>
+          </div>
+
+          {/* Column 4 */}
+          <div>
+            <h3 className="font-bold mb-2">روابط سريعة</h3>
+            <ul className="space-y-3">
+              <li><a href="#" className="text-white no-underline">المدونة</a></li>
+              <li><a href="#" className="text-white no-underline">استطلاع الرأي</a></li>
+              <li><a href="#" className="text-white no-underline">آخر الأخبار</a></li>
+              <li><a href="#" className="text-white no-underline">مناسبات</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="font-bold mb-2">تواصل معنا</h3>
+            <p className="mb-4">تابعنا من خلال مواقع التواصل الاجتماعي</p>
+            <div className="flex justify-center md:justify-start gap-3 text-lg">
+              <div className="bg-white text-[#970D0D] p-2 rounded-md">
+                <FaInstagram />
+              </div>
+              <div className="bg-white text-[#970D0D] p-2 rounded-md">
+                <FaXTwitter />
+              </div>
+              <div className="bg-white text-[#970D0D] p-2 rounded-md">
+                <FaSnapchat />
+              </div>
+              <div className="bg-white text-[#970D0D] p-2 rounded-md">
+                <FaWhatsapp />
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="w-full max-w-[90%] 2xl:max-w-[85%] flex flex-wrap justify-between gap-10 2xl:gap-20 px-6 md:px-12 2xl:px-20 text-gray-600 text-sm">
-          <div className="flex flex-col gap-2 w-full md:w-auto text-center md:text-left">
-            <p>
-              عدد المتاجر: <span className="font-semibold">531</span>
-            </p>
-            <p>
-              عدد الزوار: <span className="font-semibold">1993</span>
-            </p>
-          </div>
+        <hr className="border-t border-white opacity-20 mb-4" />
 
-          <div className="flex flex-col gap-2 w-full md:w-auto text-center md:text-left">
-            <p className="font-semibold">سياسة الاستخدام</p>
-            <p className="cursor-pointer hover:text-gray-900">
-              الشروط والأحكام
-            </p>
-            <p className="cursor-pointer hover:text-gray-900">
-              إخلاء المسؤولية
-            </p>
-          </div>
-
-          <div className="flex flex-col gap-2 w-full md:w-auto text-center md:text-left">
-            <p className="font-semibold">من نحن</p>
-            <p className="cursor-pointer hover:text-gray-900">استطلاع الرأي</p>
-            <p className="cursor-pointer hover:text-gray-900">المدونة</p>
-          </div>
-
-          <div className="flex flex-col gap-2 w-full md:w-auto text-center md:text-left">
-            <p className="font-semibold">حسابي</p>
-            <p className="cursor-pointer hover:text-gray-900">المفضلة</p>
-          </div>
+        <div className="text-center py-4 text-xs" dir="rtl">
+          © 2025 Foody . جميع الحقوق محفوظة
         </div>
-      </footer>
-    </PageWrapper>
+      </PageWrapper>
+    </footer>
   );
 };
 
