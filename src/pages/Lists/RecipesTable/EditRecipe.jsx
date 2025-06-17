@@ -58,7 +58,6 @@ const EditRecipe = () => {
         const recipeData = response.data;
         console.log("Recipe data:", recipeData);
 
-        // معالجة أنواع الوصفات
         let selectedTypeIds = [];
         if (recipeData.recipeTypes && Array.isArray(recipeData.recipeTypes)) {
           selectedTypeIds = recipeData.recipeTypes.map(
@@ -67,7 +66,7 @@ const EditRecipe = () => {
         }
         console.log("Selected type IDs:", selectedTypeIds);
 
-        // تحويل بيانات الوصفة إلى شكل يتناسب مع formData
+        
         setFormData({
           name: recipeData.name || "",
           description: recipeData.description || "",
@@ -85,7 +84,7 @@ const EditRecipe = () => {
           mainIngredient: recipeData.mainIngredient || "",
         });
 
-        // حفظ رابط الصورة الحالية
+     
         if (recipeData.photo) {
           setCurrentPhoto(recipeData.photo);
         }
@@ -97,12 +96,11 @@ const EditRecipe = () => {
       }
     };
 
-    // جلب أنواع الوصفات
     const fetchRecipeTypes = async () => {
       try {
         const response = await axios.get(`${api_url}/chef/recipe/types`);
         const formattedData = response.data.map((item) => ({
-          value: item.id || item._id, // دعم كلا التنسيقين
+          value: item.id || item._id, 
           label: item.name.ar,
         }));
         setAvailableRecipeTypes(formattedData);
@@ -119,7 +117,7 @@ const EditRecipe = () => {
   }, [id]);
 
   const handleRemoveIngredient = (indexToRemove) => {
-    // التأكد من وجود مكون واحد على الأقل
+   
     if (formData.ingredients.length <= 1) {
       return;
     }
@@ -159,7 +157,6 @@ const EditRecipe = () => {
         selectedRecipeTypes: selectedTypeIds,
       }));
     } else if (type === "checkbox") {
-      // Handle checkbox inputs
       setFormData((prev) => ({
         ...prev,
         [name]: checked,
@@ -175,11 +172,11 @@ const EditRecipe = () => {
   const handleIngredientChange = (index, field, value) => {
     const updatedIngredients = [...formData.ingredients];
 
-    // إذا كان الحقل هو quantity، تحويله إلى رقم
+   
     if (field === "quantity") {
-      // تحويل القيمة إلى رقم صحيح
+    
       const numValue = parseInt(value, 10);
-      // التأكد من أن القيمة رقم صحيح وليست NaN
+     
       updatedIngredients[index][field] = !isNaN(numValue) ? numValue : "";
     } else {
       updatedIngredients[index][field] = value;
@@ -200,7 +197,7 @@ const EditRecipe = () => {
     }
   };
 
-  // Separate handlers for preparation and cooking time
+  
   const handlePrepTimeHourChange = (value) => {
     const hours = parseInt(value) || 0;
     setFormData((prev) => {
@@ -254,7 +251,7 @@ const EditRecipe = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    // التحقق من الحقول المطلوبة
+   
     if (!formData.name || formData.name.trim() === "")
       newErrors.name = "اسم الوصفة مطلوب";
     else if (formData.name.length > 200)
@@ -280,7 +277,7 @@ const EditRecipe = () => {
     if (!formData.mainIngredient || formData.mainIngredient.trim() === "")
       newErrors.mainIngredient = "المكون الرئيسي مطلوب";
 
-    // التحقق من المكونات
+  
     const ingredientErrors = [];
     formData.ingredients.forEach((ingredient, index) => {
       const itemErrors = {};
@@ -303,7 +300,7 @@ const EditRecipe = () => {
     e.preventDefault();
     console.log("Form data before submission:", formData);
 
-    // التحقق من صحة النموذج أولاً
+    
     if (!validateForm()) {
       console.error("يرجى تصحيح الأخطاء قبل الإرسال");
       return;
@@ -327,7 +324,7 @@ const EditRecipe = () => {
     data.append("isAllergenic", formData.isAllergenic);
     data.append("mainIngredient", formData.mainIngredient);
 
-    // معالجة أنواع الوصفات
+  
     if (
       formData.selectedRecipeTypes &&
       formData.selectedRecipeTypes.length > 0
@@ -341,16 +338,16 @@ const EditRecipe = () => {
       data.append("recipeTypes[]", "");
     }
 
-    // تحديد عدد خطوات التحضير بحد أقصى 20 خطوة
+   
     const limitedSteps = formData.preparationSteps.slice(0, 20);
     limitedSteps.forEach((step, index) =>
       data.append(`preparationSteps[${index}]`, step)
     );
 
-    // إضافة المكونات - مع تحويل quantity إلى رقم
+    
     formData.ingredients.forEach((ingredient, index) => {
       data.append(`ingredients[${index}][name]`, ingredient.name);
-      // تحويل quantity إلى رقم قبل الإرسال
+     
       data.append(
         `ingredients[${index}][quantity]`,
         parseInt(ingredient.quantity, 10)
@@ -358,13 +355,13 @@ const EditRecipe = () => {
       data.append(`ingredients[${index}][unit]`, ingredient.unit);
     });
 
-    // إضافة الصورة الجديدة فقط إذا تم اختيارها
+  
     if (photo) {
       data.append("photo", photo);
     }
 
     try {
-      // استخدام طلب PATCH لتحديث الوصفة
+    
       const response = await axios.patch(`${api_url}/recipe/${id}`, data, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -394,7 +391,7 @@ const EditRecipe = () => {
     );
   }
 
-  // حساب قيم الساعات والدقائق لعرضها في مكونات اختيار الوقت
+
   const getPrepTimeHours = () => Math.floor(formData.preparationTime / 60);
   const getPrepTimeMinutes = () => formData.preparationTime % 60;
   const getCookTimeHours = () => Math.floor(formData.cookingTime / 60);
@@ -599,7 +596,6 @@ const EditRecipe = () => {
                     error={errors.ingredients?.[index]?.quantity}
                   />
 
-                  {/* Add delete button */}
                   {formData.ingredients.length > 1 && (
                     <button
                       type="button"
