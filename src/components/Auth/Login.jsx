@@ -41,7 +41,10 @@ const Login = () => {
       );
 
       const token = loginResponse.data.accessToken;
+      const refreshToken = loginResponse.data.refreshToken;
+
       localStorage.setItem("token", token);
+      localStorage.setItem("refreshToken", refreshToken);
 
       const userResponse = await axios.get(`${api_url}/auth/me`, {
         headers: {
