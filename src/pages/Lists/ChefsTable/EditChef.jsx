@@ -17,7 +17,7 @@ import TextAreaInput from "../../../components/shared/inputs/TextAreaInput ";
 import Checkbox from "../../../components/shared/inputs/Checkbox";
 
 const EditChef = () => {
-  const { id } = useParams(); // استخراج معرّف الشيف من عنوان URL
+  const { id } = useParams(); 
   const [noContact, setNoContact] = useState(false);
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(true);
@@ -31,9 +31,7 @@ const EditChef = () => {
   const [currentCoverPicture, setCurrentCoverPicture] = useState(null);
   const [currentProfilePicture, setCurrentProfilePicture] = useState(null);
 
-  // Current date and user info
-  const currentDateTime = "2025-06-17 15:42:55";
-  const currentUser = "Amr3011";
+
 
   // Form data state
   const [formData, setFormData] = useState({
@@ -55,7 +53,7 @@ const EditChef = () => {
     favoriteConnection: [],
   });
 
-  // جلب بيانات الشيف عند تحميل المكون
+
   useEffect(() => {
     const fetchChefData = async () => {
       setFetchLoading(true);
@@ -71,7 +69,7 @@ const EditChef = () => {
         const chefData = response.data;
         console.log("Chef data:", chefData);
 
-        // استخراج أنواع الوصفات إذا كانت موجودة
+       
         let selectedRecipeTypeIds = [];
         if (chefData.recipeTypes && Array.isArray(chefData.recipeTypes)) {
           selectedRecipeTypeIds = chefData.recipeTypes.map(
@@ -79,11 +77,11 @@ const EditChef = () => {
           );
         }
 
-        // تحديد وسائل التواصل المفضلة
+     
         const favoriteConnection = chefData.favoriteConnection || [];
         setNoContact(favoriteConnection.length === 0);
 
-        // تحويل بيانات الشيف إلى شكل يتناسب مع formData
+      
         setFormData({
           selectedRecipeTypes: selectedRecipeTypeIds,
           description: chefData.description || "",
@@ -103,7 +101,7 @@ const EditChef = () => {
           favoriteConnection: favoriteConnection,
         });
 
-        // حفظ روابط الصور الحالية
+        
         if (chefData.coverPicture) {
           setCurrentCoverPicture(chefData.coverPicture);
         }
@@ -111,7 +109,7 @@ const EditChef = () => {
           setCurrentProfilePicture(chefData.profilePicture);
         }
 
-        // تحديث قائمة المدن إذا كانت الدولة معروفة
+      
         if (chefData.country) {
           updateCities(chefData.country);
         }
@@ -127,7 +125,7 @@ const EditChef = () => {
       try {
         const response = await axios.get(`${api_url}/chef/recipe/types`);
         const formattedData = response.data.map((item) => ({
-          value: item.id, // Make sure this is the MongoDB ID
+          value: item.id,
           label: item.name.ar,
         }));
         setAvailableRecipeTypes(formattedData);
@@ -143,7 +141,7 @@ const EditChef = () => {
     }
   }, [id]);
 
-  // دالة مساعدة لتحديث المدن عندما تتغير الدولة
+  
   const updateCities = (countryName) => {
     if (countryName) {
       const selectedCountry = countriesData.find(
@@ -161,7 +159,7 @@ const EditChef = () => {
     }
   };
 
-  // Update cities when country changes
+  
   useEffect(() => {
     updateCities(formData.country);
   }, [formData.country]);
@@ -257,7 +255,7 @@ const EditChef = () => {
     }
 
     try {
-      // سجل للتصحيح لتأكيد حالة الصور
+     
       console.log("Current cover picture URL:", currentCoverPicture);
       console.log("New cover picture selected:", coverPicture ? "Yes" : "No");
       console.log("Current profile picture URL:", currentProfilePicture);
@@ -266,17 +264,17 @@ const EditChef = () => {
         profilePicture ? "Yes" : "No"
       );
 
-      // إعداد البيانات للتحديث
+    
       const formDataToSend = new FormData();
 
-      // إضافة البيانات الأساسية
+     
       formDataToSend.append("name", formData.name);
       formDataToSend.append("description", formData.description);
       formDataToSend.append("country", formData.country);
       formDataToSend.append("city", formData.city);
       formDataToSend.append("phone", formData.phone);
 
-      // إضافة أنواع الوصفات
+     
       if (
         formData.selectedRecipeTypes &&
         formData.selectedRecipeTypes.length > 0
@@ -290,7 +288,7 @@ const EditChef = () => {
         formDataToSend.append("recipeTypes", "[]");
       }
 
-      // إضافة روابط وسائل التواصل الاجتماعي
+     
       Object.keys(formData.socialMedia).forEach((platform) => {
         if (formData.socialMedia[platform]) {
           formDataToSend.append(
@@ -300,12 +298,12 @@ const EditChef = () => {
         }
       });
 
-      // إضافة وسائل الاتصال المفضلة
+     
       formData.favoriteConnection.forEach((connection) => {
         formDataToSend.append("favoriteConnection[]", connection);
       });
 
-      // إضافة الصور فقط إذا تم تحديد صور جديدة
+      
       if (coverPicture) {
         console.log("Sending new cover picture in request");
         formDataToSend.append("coverPicture", coverPicture);
@@ -324,7 +322,7 @@ const EditChef = () => {
         );
       }
 
-      // إرسال طلب التعديل
+  
       const response = await axios.patch(
         `${api_url}/chef/${id}`,
         formDataToSend,
@@ -338,9 +336,9 @@ const EditChef = () => {
 
       console.log("استجابة الخادم:", response.data);
       alert("تم تعديل البيانات بنجاح!");
-      navigate("/list"); // الانتقال إلى قائمة الشيفات بعد التعديل
+      navigate("/list"); 
     } catch (error) {
-      // معالجة الخطأ...
+     
     } finally {
       setLoading(false);
     }
