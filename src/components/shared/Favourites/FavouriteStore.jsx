@@ -1,64 +1,35 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { FaHeart } from "react-icons/fa";
 import { api_url } from "../../../utils/ApiClient";
 
-const FavoriteButton = ({ itemId }) => {
+const FavoriteButton = ({ itemId, isInitiallyFavorited }) => {
     const [isLoading, setIsLoading] = useState(false);
-    const [isFavorited, setIsFavorited] = useState(false);
+    const [isFavorited, setIsFavorited] = useState(isInitiallyFavorited || false);
 
     const token = localStorage.getItem("token");
     const favoriteType = "Store";
 
-    useEffect(() => {
-        const checkFavoriteStatus = async () => {
-            if (!token) return;
-
-            try {
-                const res = await axios.get(`${api_url}/favorite/${favoriteType}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-
-                const isFav = res.data?.some((fav) => fav.itemId === itemId);
-                setIsFavorited(isFav);
-            } catch (error) {
-                console.error("Failed to fetch favorite status", error?.response?.data || error.message);
-            }
-        };
-
-        checkFavoriteStatus();
-    }, [itemId, token]);
-
     const handleFavorite = async () => {
+        if (!token) {
+            console.error("User is not authenticated");
+            return;
+        }
+
+        setIsLoading(true);
+
         try {
-            setIsLoading(true);
-
-            if (!token) throw new Error("User is not authenticated");
-
             if (!isFavorited) {
                 await axios.post(
                     `${api_url}/favorite`,
-                    {
-                        itemId,
-                        favoriteType,
-                    },
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
+                    { itemId, favoriteType },
+                    { headers: { Authorization: `Bearer ${token}` } }
                 );
                 setIsFavorited(true);
             } else {
                 await axios.delete(
                     `${api_url}/favorite/${itemId}/${favoriteType}`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
+                    { headers: { Authorization: `Bearer ${token}` } }
                 );
                 setIsFavorited(false);
             }
