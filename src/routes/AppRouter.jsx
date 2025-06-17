@@ -17,6 +17,7 @@ import UserProfile from "../components/once/UserProfile";
 import ViewStore from "../pages/Lists/StoresTable/ViewStore";
 import ViewChef from "../pages/Lists/ChefsTable/ViewChef";
 import ViewRecipe from "../pages/Lists/RecipesTable/ViewRecipe";
+import EditRecipe from "../pages/Lists/RecipesTable/EditRecipe";
 
 const AppRouter = () => {
   return (
@@ -34,6 +35,7 @@ const AppRouter = () => {
         <Route path="/chef/view/:id" element={<ViewChef />} />
         <Route path="/store/view/:id" element={<ViewStore />} />
         <Route path="/recipe/view/:id" element={<ViewRecipe />} />
+        <Route path="/recipe/edit/:id" element={<EditRecipe />} />
         <Route path="/chef" element={<Chef />} />
         <Route path="/user-profile" element={<UserProfile />} />
         <Route path="/chef" element={<Chef />} />

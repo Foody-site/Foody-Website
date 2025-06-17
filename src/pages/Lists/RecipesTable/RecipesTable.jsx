@@ -184,6 +184,10 @@ export const RecipesTable = forwardRef((props, ref) => {
     navigate(`/recipe/view/${recipe.id}`);
   };
 
+  const handleEditRecipe = (recipe) => {
+    navigate(`/recipe/edit/${recipe.id}`);
+  };
+
   const handleDeleteCancel = () => {
     setShowDeleteModal(false);
     setRecipeToDelete(null);
@@ -241,13 +245,14 @@ export const RecipesTable = forwardRef((props, ref) => {
                         <TbTrash size={16} />
                       </button>
                       <button
-                        onClick={() => handleViewRecipe(recipe)} 
+                        onClick={() => handleViewRecipe(recipe)}
                         className="text-blue-500 bg-blue-100 hover:bg-blue-300 p-1 rounded-md transition-colors"
                         title="عرض تفاصيل الوصفة"
                       >
                         <IoEyeOutline size={16} />
                       </button>
                       <button
+                        onClick={() => handleEditRecipe(recipe)} 
                         className="text-blue-500 bg-blue-100 hover:bg-blue-300 p-1 rounded-md transition-colors"
                         title="تعديل الوصفة"
                       >
