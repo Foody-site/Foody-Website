@@ -8,6 +8,7 @@ import { SiTiktok } from "react-icons/si";
 import { FaWhatsapp } from "react-icons/fa6";
 import RecipeChef from "../shared/RecipeChef/RecipeChef";
 import { MdVerified } from "react-icons/md";
+import FavouriteChef from "../shared/Favourites/FavouriteChef";
 
 const ChefPage = () => {
     const { id } = useParams();
@@ -114,9 +115,7 @@ const ChefPage = () => {
                         <div className="space-y-3">
                             {/* Likes Section */}
                             <div className="flex items-center gap-3">
-                                <div className="bg-primary-1 text-white w-10 h-10 flex items-center justify-center rounded-md text-lg">
-                                    <FaHeart />
-                                </div>
+                                <FavouriteChef itemId={chef.id} isInitiallyFavorited={chef.isFavorited} />
                                 <div className="flex justify-between items-center flex-1 border rounded-md p-3">
                                     <p className="text-[#808080] text-sm">الاعجابات</p>
                                     <span className="text-[#808080] font-semibold text-base">
