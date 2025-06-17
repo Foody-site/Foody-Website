@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaTrash } from "react-icons/fa";
 import { TbCameraPlus } from "react-icons/tb";
 import Inputs from "../../components/shared/inputs/Inputs";
 import CheckboxSelectInput from "../../components/shared/inputs/CheckboxSelectInput";
@@ -10,6 +10,8 @@ import PreparationSteps from "../../components/shared/inputs/PreparationSteps";
 import SelectInput from "../../components/shared/inputs/SelectInput";
 import Button from "../../components/shared/Buttons/Button";
 import allergy from "../../assets/allergy.jpg";
+import TextAreaInput from "../../components/shared/inputs/TextAreaInput ";
+import { useNavigate } from "react-router";
 
 const AddRecipe = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,6 +19,7 @@ const AddRecipe = () => {
   const [availableRecipeTypes, setAvailableRecipeTypes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -31,6 +34,20 @@ const AddRecipe = () => {
     selectedRecipeTypes: [], // Renamed for clarity
     mainIngredient: "",
   });
+
+  const handleRemoveIngredient = (indexToRemove) => {
+    // Make sure we always keep at least one ingredient
+    if (formData.ingredients.length <= 1) {
+      return;
+    }
+    const updatedIngredients = formData.ingredients.filter(
+      (_, index) => index !== indexToRemove
+    );
+    setFormData((prev) => ({
+      ...prev,
+      ingredients: updatedIngredients,
+    }));
+  };
 
   // Fetch recipe types on component mount
   useEffect(() => {
@@ -302,19 +319,19 @@ const AddRecipe = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100">
+    <div className="flex flex-col min-h-screen ">
       <div className="flex-grow flex justify-center items-center px-8 py-8">
-        <div className="w-full max-w-[70rem] p-16 bg-gray-100 rounded-xl ">
-          <h2 className="text-3xl font-bold text-gray-700 mb-10 text-center">
+        <div className="w-full max-w-[70rem] p-16  rounded-xl ">
+          <h2 className="text-3xl font-bold text-gray-700 mb-10 text-right">
             إضافة وصفة جديدة
           </h2>
 
-          <div className="relative mb-8 w-56 h-56 sm:w-64 sm:h-64 lg:w-72 lg:h-72 bg-gray-200 rounded-full border shadow-lg mt-4 mx-auto">
+          <div className="relative bg-gray-300 h-72 w-full rounded-lg flex justify-center items-center overflow-hidden mb-10">
             {photo && (
               <img
                 src={URL.createObjectURL(photo)}
                 alt="Recipe"
-                className="w-full h-full object-cover rounded-full"
+                className="w-full h-full object-cover"
               />
             )}
             <input
@@ -326,38 +343,44 @@ const AddRecipe = () => {
             />
             <label
               htmlFor="photo"
-              className="absolute bottom-2 right-2 cursor-pointer p-2 bg-white rounded-full shadow-md"
+              className="absolute bottom-5 left-5 px-5 py-2 border border-primary-1 rounded-md text-sm flex items-center cursor-pointer text-primary-1"
             >
-              <TbCameraPlus className="text-primary-1 text-2xl" />
+              <TbCameraPlus className="text-primary-1 text-2xl mr-2" /> إضافة
+              صورة الوصفة
             </label>
           </div>
           <form onSubmit={handleSubmit}>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-10 text-right">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-10 text-right">
               <CheckboxSelectInput
                 name="selectedRecipeTypes"
                 label="نوع الطعام"
                 options={availableRecipeTypes}
                 onChange={handleChange}
               />
-              <Inputs
-                name="description"
-                label="وصف مختصر للوصفة"
-                type="text"
-                className="w-full h-12 px-6 text-xl py-4"
-                value={formData.description}
-                onChange={handleChange}
-                error={errors.description}
-                maxLength={300}
-              />
+
               <Inputs
                 name="name"
                 label="اسم الوصفة"
+                placeholder="قم بادخال اسم الوصفة هنا"
                 type="text"
                 className="w-full h-12 px-6 text-xl py-4"
                 value={formData.name}
                 onChange={handleChange}
                 error={errors.name}
                 maxLength={200}
+              />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-1 gap-x-10 gap-y-10 text-right pt-10">
+              <TextAreaInput
+                name="description"
+                label="وصف مختصر للوصفة"
+                placeholder="قم بادخال وصف مختصر عن الوصفة هنا"
+                type="text"
+                className="w-full h-36 px-6 text-xl py-4 placeholder:text-sm"
+                value={formData.description}
+                onChange={handleChange}
+                error={errors.description}
+                maxLength={300}
               />
             </div>
 
@@ -376,83 +399,6 @@ const AddRecipe = () => {
                 className="w-[27%]"
                 error={errors.preparationTime}
               />
-            </div>
-
-            <div className="col-span-full w-full pt-10">
-              <PreparationSteps
-                onChange={handlePreparationStepsChange}
-                className="w-full"
-                maxSteps={20}
-                error={errors.preparationSteps}
-                currentSteps={formData.preparationSteps}
-              />
-              {errors.preparationSteps && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.preparationSteps}
-                </p>
-              )}
-            </div>
-
-            <div className="pt-8">
-              {formData.ingredients.map((ingredient, index) => (
-                <div
-                  key={index}
-                  className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-10 text-right mb-4"
-                >
-                  <SelectInput
-                    name={`ingredients[${index}].unit`}
-                    label="وحده الكميه"
-                    className="w-full px-6 text-xl py-4"
-                    value={ingredient.unit}
-                    onChange={(e) =>
-                      handleIngredientChange(index, "unit", e.target.value)
-                    }
-                    options={[
-                      { value: "Teaspoon", label: "ملعقة صغيرة" },
-                      { value: "Tablespoon", label: "ملعقة كبيرة" },
-                      { value: "Cup", label: "كوب" },
-                      { value: "Milliliter", label: "ملليلتر" },
-                      { value: "Liter", label: "لتر" },
-                      { value: "Gram", label: "غرام" },
-                      { value: "Kilogram", label: "كيلوغرام" },
-                    ]}
-                    error={errors.ingredients?.[index]?.unit}
-                  />
-                  <SelectInput
-                    name={`ingredients[${index}].quantity`}
-                    label="الكميه"
-                    className="w-full px-6 text-xl py-4"
-                    value={ingredient.quantity}
-                    onChange={(e) =>
-                      handleIngredientChange(index, "quantity", e.target.value)
-                    }
-                    options={Array.from({ length: 1024 }, (_, i) => ({
-                      value: (i + 1).toString(),
-                      label: (i + 1).toString(),
-                    }))}
-                    error={errors.ingredients?.[index]?.quantity}
-                  />
-                  <Inputs
-                    name={`ingredients[${index}].name`}
-                    label="المقادير"
-                    type="text"
-                    className="w-full h-12 px-6 text-xl py-4"
-                    value={ingredient.name}
-                    onChange={(e) =>
-                      handleIngredientChange(index, "name", e.target.value)
-                    }
-                    error={errors.ingredients?.[index]?.name}
-                  />
-                </div>
-              ))}
-              <button
-                type="button"
-                onClick={handleAddIngredient}
-                className="flex items-center text-primary-1 mt-4"
-              >
-                <FaPlus className="text-2xl" />
-                <span className="ml-2">أضف مكون جديد</span>
-              </button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-10 text-right mb-4 pt-8">
@@ -486,6 +432,102 @@ const AddRecipe = () => {
                     error={errors.youtubeLink}
                   />
                 </div>
+              </div>
+            </div>
+            <label className="block text-gray-700 font-medium mb-2 text-right pt-10">
+              خطوات التحضير للوصفة
+            </label>
+            <div className="col-span-full w-full pt-10 bg-gray-100 rounded-lg ">
+              <PreparationSteps
+                onChange={handlePreparationStepsChange}
+                className="w-full bg-gray-100 rounded-lg p-4"
+                maxSteps={20}
+                error={errors.preparationSteps}
+                currentSteps={formData.preparationSteps}
+              />
+              {errors.preparationSteps && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.preparationSteps}
+                </p>
+              )}
+            </div>
+            <label className="block text-gray-700 font-medium mb-2 text-right pt-10">
+              الكمية و المقادير{" "}
+            </label>
+            <div className="pt-8 bg-gray-100 rounded-lg p-4 px-16 mx-[-40px]">
+              {formData.ingredients.map((ingredient, index) => (
+                <div
+                  key={index}
+                  className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-10 text-right mb-4 relative"
+                >
+                  <Inputs
+                    name={`ingredients[${index}].name`}
+                    placeholder="قم بادخال المقادير هنا"
+                    label="المقادير"
+                    type="text"
+                    className="w-full h-12 px-6 text-xl py-4"
+                    value={ingredient.name}
+                    onChange={(e) =>
+                      handleIngredientChange(index, "name", e.target.value)
+                    }
+                    error={errors.ingredients?.[index]?.name}
+                  />
+                  <SelectInput
+                    name={`ingredients[${index}].unit`}
+                    label="وحده الكميه"
+                    className="w-full px-6 text-xl py-4"
+                    value={ingredient.unit}
+                    onChange={(e) =>
+                      handleIngredientChange(index, "unit", e.target.value)
+                    }
+                    options={[
+                      { value: "Teaspoon", label: "ملعقة صغيرة" },
+                      { value: "Tablespoon", label: "ملعقة كبيرة" },
+                      { value: "Cup", label: "كوب" },
+                      { value: "Milliliter", label: "ملليلتر" },
+                      { value: "Liter", label: "لتر" },
+                      { value: "Gram", label: "غرام" },
+                      { value: "Kilogram", label: "كيلوغرام" },
+                    ]}
+                    error={errors.ingredients?.[index]?.unit}
+                  />
+                  <SelectInput
+                    name={`ingredients[${index}].quantity`}
+                    label="الكميه"
+                    className="w-full px-6 text-xl py-4"
+                    value={ingredient.quantity}
+                    onChange={(e) =>
+                      handleIngredientChange(index, "quantity", e.target.value)
+                    }
+                    options={Array.from({ length: 1024 }, (_, i) => ({
+                      value: (i + 1).toString(),
+                      label: (i + 1).toString(),
+                    }))}
+                    error={errors.ingredients?.[index]?.quantity}
+                  />
+
+                  {/* Add delete button */}
+                  {formData.ingredients.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveIngredient(index)}
+                      className="absolute left-[-40px] top-[30px] text-primary-1 p-2 hover:text-red-600 transition-colors"
+                      aria-label="حذف المكون"
+                    >
+                      <FaTrash className="text-xl" />
+                    </button>
+                  )}
+                </div>
+              ))}
+              <div className="w-full flex justify-end mt-4">
+                <button
+                  type="button"
+                  onClick={handleAddIngredient}
+                  className="flex flex-row-reverse items-center text-primary-1"
+                >
+                  <FaPlus className="text-2xl" />
+                  <span className="ml-2">أضف مكون جديد</span>
+                </button>
               </div>
             </div>
 
@@ -545,12 +587,20 @@ const AddRecipe = () => {
             </div>
 
             <div className="flex justify-center mt-12">
-              <Button
-                type="submit"
-                label={loading ? "جاري الاضافه ...." : "إضافة وصفة"}
-                disabled={loading}
-                className="max-w-[350px] bg-primary-1 hover:bg-hover_primary-1 text-white py-2 rounded-md text-lg font-semibold"
-              />
+              <div className="flex gap-4 w-full max-w-xs justify-center">
+                <Button
+                  label="الغاء"
+                  className="w-[600px] h-[55px] !text-primary-1 font-medium border border-primary-1 hover:bg-primary-1 hover:!text-white transition"
+                  type="button"
+                  onClick={() => navigate("/list")}
+                />
+                <Button
+                  type="submit"
+                  label={loading ? "جاري الاضافه ...." : "إضافة وصفة"}
+                  disabled={loading}
+                  className="w-[600px] h-[55px] bg-primary-1 hover:bg-hover_primary-1 text-white rounded-md text-lg font-semibold"
+                />
+              </div>
             </div>
           </form>
         </div>
