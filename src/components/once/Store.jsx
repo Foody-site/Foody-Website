@@ -3,7 +3,7 @@ import axios from "axios";
 import CategoryTabs from "../shared/category/CategoryTabs";
 import FoodCard from "../shared/cards/FoodCard";
 import { api_url } from "../../utils/ApiClient";
-import Pagination from "../common/Pagination";
+import Pagination2 from "../common/Pagination2";
 
 const Store = ({ searchTerm }) => {
     const [stores, setStores] = useState([]);
@@ -22,6 +22,7 @@ const Store = ({ searchTerm }) => {
 
     const fetchStores = async () => {
         try {
+            const token = localStorage.getItem("token");
             const baseParams = {
                 page,
                 take: 9,
@@ -39,20 +40,21 @@ const Store = ({ searchTerm }) => {
                     familySessions,
                     hasDelivery,
                     isOpen,
+                    longitude,
+                    latitude,
                     newStore,
                     preBooking,
                     breakfast,
                     lateBreakfast,
                     lunch,
                     dinner,
-                    meals
+                    meals,
                 } = searchTerm;
 
                 if (name) baseParams.name = name;
                 if (rating) baseParams.rate = rating;
                 if (city) baseParams.city = city;
                 if (region) baseParams.region = region;
-
                 if (indoorSessions) baseParams.indoorSessions = true;
                 if (outdoorSessions) baseParams.outdoorSessions = true;
                 if (familySessions) baseParams.familySessions = true;
@@ -60,12 +62,14 @@ const Store = ({ searchTerm }) => {
                 if (isOpen) baseParams.isOpen = true;
                 if (newStore) baseParams.newStore = true;
                 if (preBooking) baseParams.preBooking = true;
-
+                if (longitude && latitude) {
+                    baseParams.longitude = longitude;
+                    baseParams.latitude = latitude;
+                }
                 if (breakfast) baseParams.breakfast = true;
                 if (lateBreakfast) baseParams.lateBreakfast = true;
                 if (lunch) baseParams.lunch = true;
                 if (dinner) baseParams.dinner = true;
-
                 if (Array.isArray(meals) && meals.length > 0) {
                     baseParams.meals = meals.join(",");
                 }
@@ -80,7 +84,11 @@ const Store = ({ searchTerm }) => {
                 });
             }
 
-            const response = await axios.get(`${api_url}/store`, { params: baseParams });
+            const response = await axios.get(`${api_url}/store`, {
+                params: baseParams,
+                headers: token ? { Authorization: `Bearer ${token}` } : {},
+            });
+
             const data = response?.data?.data || [];
             const pag = response?.data?.pagination || {};
 
@@ -110,7 +118,11 @@ const Store = ({ searchTerm }) => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
                 {stores.length > 0 ? (
                     stores.map((store) => (
-                        <FoodCard key={store._id} store={store} />
+                        <FoodCard
+                            key={store._id}
+                            store={store}
+                            isFavorited={store.isFavorited === true}
+                        />
                     ))
                 ) : (
                     <p className="text-center w-full mt-4">
@@ -119,7 +131,7 @@ const Store = ({ searchTerm }) => {
                 )}
             </div>
 
-            <Pagination pagination={pagination} setPage={setPage} />
+            <Pagination2 pagination={pagination} setPage={setPage} />
         </div>
     );
 };
