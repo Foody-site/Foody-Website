@@ -219,6 +219,7 @@ export const ChefsTable = forwardRef((props, ref) => {
                       <IoEyeOutline size={16} />
                     </button>
                     <button
+                      onClick={() => navigate(`/chef/edit/${chef.id}`)}
                       className="text-blue-500 bg-blue-100 hover:bg-blue-300 p-1 rounded-md transition-colors"
                       title="تعديل الشيف"
                     >
