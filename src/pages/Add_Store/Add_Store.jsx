@@ -60,6 +60,37 @@ const timeOptions = [
   { label: "11:00 م", value: "2025-06-12T23:00:00.000Z" },
 ];
 
+// مكون شاشة التأكيد
+const ConfirmationModal = ({ isOpen, onClose, onConfirm }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
+      <div className="bg-white rounded-xl p-6 shadow-xl max-w-md w-full mx-4 relative">
+        <h3 className="text-xl font-bold text-center mb-4">تنبيه</h3>
+        <p className="text-center text-gray-700 mb-6">
+          لو عايز تعمل توثيق للحساب يفضل تضيف كل الداتا
+        </p>
+
+        <div className="flex justify-center gap-4">
+          <Button
+            label="إلغاء"
+            className="!text-primary-1 font-medium border border-primary-1 hover:bg-primary-1 hover:!text-white transition px-6 py-2"
+            type="button"
+            onClick={onClose}
+          />
+          <Button
+            label="إضافة"
+            className="bg-primary-1 hover:bg-hover_primary-1 text-white px-6 py-2"
+            type="button"
+            onClick={onConfirm}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Add_Store = () => {
   const navigate = useNavigate();
 
@@ -82,6 +113,10 @@ const Add_Store = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  // حالة شاشة التأكيد
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const formRef = useRef(null);
 
   // Form states
   const [workTimeType, setWorkTimeType] = useState("");
@@ -151,34 +186,88 @@ const Add_Store = () => {
       return [31.0999884, 29.9699776];
     }
   }
-  const handleSubmit = async (e) => {
+
+  // المعالج الأولي للنموذج - يفتح شاشة التأكيد
+  const handleFormSubmit = (e) => {
     e.preventDefault();
+    // التحقق من الحقول الإلزامية قبل فتح شاشة التأكيد
+    const name = e.target.querySelector('input[name="name"]')?.value || "";
+    const description =
+      e.target.querySelector('textarea[name="description"]')?.value || "";
+    const type = e.target.querySelector('select[name="type"]')?.value || "";
+    const contactPhone =
+      e.target.querySelector('input[name="contactPhone"]')?.value || "";
+    const deliveryPhone =
+      e.target.querySelector('input[name="deliveryPhone"]')?.value || "";
+    const city = e.target.querySelector('select[name="city"]')?.value || "";
+    const region = e.target.querySelector('select[name="region"]')?.value || "";
+
+    const requiredFields = {
+      name,
+      description,
+      type,
+      contactPhone,
+      deliveryPhone,
+      city,
+      region,
+    };
+
+    const missingFields = Object.entries(requiredFields)
+      .filter(([_, value]) => !value)
+      .map(([key, _]) => key);
+
+    if (missingFields.length > 0 || selectedMealTimes.length === 0) {
+      let errorMessage = "";
+
+      if (missingFields.length > 0) {
+        errorMessage = `يرجى ملء الحقول الإلزامية التالية: ${missingFields.join(
+          ", "
+        )}`;
+      }
+
+      if (selectedMealTimes.length === 0) {
+        errorMessage += errorMessage ? " و " : "";
+        errorMessage += "يرجى اختيار نوع وجبة واحدة على الأقل";
+      }
+
+      setError(errorMessage);
+      return;
+    }
+
+    // حفظ مرجع النموذج وفتح شاشة التأكيد
+    formRef.current = e.target;
+    setShowConfirmation(true);
+  };
+
+  // المعالج الثانوي - يتم تنفيذه بعد تأكيد المستخدم
+  const handleSubmit = async () => {
+    if (!formRef.current) return;
+
     setLoading(true);
     setError("");
     setSuccess("");
+    setShowConfirmation(false);
 
     try {
+      const e = formRef.current;
+
       // جمع البيانات من النموذج
-      const name = e.target.querySelector('input[name="name"]')?.value || "";
+      const name = e.querySelector('input[name="name"]')?.value || "";
       const description =
-        e.target.querySelector('textarea[name="description"]')?.value || "";
-      const type = e.target.querySelector('select[name="type"]')?.value || "";
+        e.querySelector('textarea[name="description"]')?.value || "";
+      const type = e.querySelector('select[name="type"]')?.value || "";
       const contactPhone =
-        e.target.querySelector('input[name="contactPhone"]')?.value || "";
+        e.querySelector('input[name="contactPhone"]')?.value || "";
       const deliveryPhone =
-        e.target.querySelector('input[name="deliveryPhone"]')?.value || "";
-      const city = e.target.querySelector('select[name="city"]')?.value || "";
-      const region =
-        e.target.querySelector('select[name="region"]')?.value || "";
-      const mapLink =
-        e.target.querySelector('input[name="mapLink"]')?.value || "";
+        e.querySelector('input[name="deliveryPhone"]')?.value || "";
+      const city = e.querySelector('select[name="city"]')?.value || "";
+      const region = e.querySelector('select[name="region"]')?.value || "";
+      const mapLink = e.querySelector('input[name="mapLink"]')?.value || "";
 
       // تحويل القيم إلى الأنواع المناسبة
-      const taxNumber = e.target.querySelector(
-        'input[name="taxNumber"]'
-      )?.value;
+      const taxNumber = e.querySelector('input[name="taxNumber"]')?.value;
       // تحويل since إلى رقم بدلاً من سلسلة نصية
-      const sinceValue = e.target.querySelector('input[name="since"]')?.value;
+      const sinceValue = e.querySelector('input[name="since"]')?.value;
       const since = sinceValue
         ? parseInt(sinceValue)
         : new Date().getFullYear();
@@ -196,40 +285,6 @@ const Add_Store = () => {
         outdoorSessions: selectedAdditionalInfo.includes("outdoorSessions"),
         preBooking: selectedAdditionalInfo.includes("preBooking"),
       };
-
-      // التحقق من الحقول الإلزامية
-      const requiredFields = {
-        name,
-        description,
-        type,
-        contactPhone,
-        deliveryPhone,
-        city,
-        region,
-      };
-      const missingFields = Object.entries(requiredFields)
-        .filter(([_, value]) => !value)
-        .map(([key, _]) => key);
-
-      if (missingFields.length > 0 || selectedMealTimes.length === 0) {
-        // تعريف متغير errorMessage هنا
-        let errorMessage = "";
-
-        if (missingFields.length > 0) {
-          errorMessage = `يرجى ملء الحقول الإلزامية التالية: ${missingFields.join(
-            ", "
-          )}`;
-        }
-
-        if (selectedMealTimes.length === 0) {
-          errorMessage += errorMessage ? " و " : "";
-          errorMessage += "يرجى اختيار نوع وجبة واحدة على الأقل";
-        }
-
-        setError(errorMessage);
-        setLoading(false);
-        return;
-      }
 
       // دالة للتحقق من صحة الروابط
       const validateAndFixUrl = (url) => {
@@ -263,14 +318,13 @@ const Add_Store = () => {
       if (profilePicture) formData.append("profilePicture", profilePicture);
 
       // الحصول على الملفات الأخرى إذا كانت متوفرة
-      const licenseFile = e.target.querySelector('input[name="licenseFile"]')
+      const licenseFile = e.querySelector('input[name="licenseFile"]')
         ?.files[0];
-      const nationalAddressFile = e.target.querySelector(
+      const nationalAddressFile = e.querySelector(
         'input[name="nationalAddressFile"]'
       )?.files[0];
-      const menuPhoto = e.target.querySelector('input[name="menuPhoto"]')
-        ?.files[0];
-      const commercialRegisterPhoto = e.target.querySelector(
+      const menuPhoto = e.querySelector('input[name="menuPhoto"]')?.files[0];
+      const commercialRegisterPhoto = e.querySelector(
         'input[name="commercialRegisterPhoto"]'
       )?.files[0];
 
@@ -447,6 +501,13 @@ const Add_Store = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
+      {/* شاشة التأكيد */}
+      <ConfirmationModal
+        isOpen={showConfirmation}
+        onClose={() => setShowConfirmation(false)}
+        onConfirm={handleSubmit}
+      />
+
       <div className="flex-grow flex justify-center items-center px-8 py-8">
         <div className="w-full max-w-[90rem] p-16 rounded-xl">
           <h2 className="text-3xl font-bold text-right text-gray-700 mb-10">
@@ -515,7 +576,7 @@ const Add_Store = () => {
           </div>
 
           <form
-            onSubmit={handleSubmit}
+            onSubmit={handleFormSubmit}
             className="pt-6 space-y-14 mx-auto max-w-full"
             encType="multipart/form-data"
           >
@@ -586,7 +647,10 @@ const Add_Store = () => {
                 name="city"
                 label="المدينة"
                 className="w-full h-12 px-6 text-xl py-4"
-                options={[{ value: "Mecca", label: "مكة المكرمة" }]}
+                options={[
+                  { value: "Al-Kharj", label: "الخرج" },
+                  { value: "Al-Badayea", label: "البدائع" },
+                ]}
                 required
               />
               <SelectInput
