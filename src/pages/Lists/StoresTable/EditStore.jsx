@@ -19,6 +19,31 @@ import DeliveryForm from "../../../components/shared/form/DeliveryForm";
 import CheckBoxWorkRange from "../../../components/shared/inputs/CheckBoxWorkRange";
 import { api_url } from "../../../utils/ApiClient";
 
+// دالة لإزالة مقدمة +966 من رقم الهاتف للعرض
+const formatPhoneForDisplay = (phone) => {
+  if (!phone) return "";
+
+  // إذا كان الرقم يبدأ بـ +966، قم بإزالته
+  if (phone.startsWith("+966")) {
+    return phone.substring(4);
+  }
+  return phone;
+};
+
+// دالة لإضافة مقدمة +966 للرقم عند الإرسال
+const formatPhoneForSubmit = (phone) => {
+  if (!phone) return "";
+
+  // تنظيف الرقم من أي مسافات
+  const trimmedPhone = phone.trim();
+
+  // إذا كان الرقم لا يبدأ بـ +966، قم بإضافته
+  if (!trimmedPhone.startsWith("+966")) {
+    return `+966${trimmedPhone}`;
+  }
+  return trimmedPhone;
+};
+
 const timeOptions = [
   { label: "12:00 ص", value: "2025-06-12T00:00:00.000Z" },
   { label: "1:00 ص", value: "2025-06-12T01:00:00.000Z" },
@@ -177,13 +202,13 @@ const EditStore = () => {
           mainDeliveryApp: storeData.mainDeliveryApp || "",
         };
 
-        // تعيين حالة النموذج
+        // تعيين حالة النموذج مع تنسيق أرقام الهواتف
         setFormData({
           name: storeData.name || "",
           description: storeData.description || "",
           type: storeData.type || "",
-          contactPhone: storeData.contactPhone || "",
-          deliveryPhone: storeData.deliveryPhone || "",
+          contactPhone: formatPhoneForDisplay(storeData.contactPhone) || "",
+          deliveryPhone: formatPhoneForDisplay(storeData.deliveryPhone) || "",
           city: storeData.city || "",
           region: storeData.region || "",
           mapLink: storeData.mapLink || "",
@@ -208,15 +233,28 @@ const EditStore = () => {
               ? storeData.shifts[1].endTime
               : "",
           additionalInfo: additionalInfoArray,
-          socialMediaLinks: storeData.socialMediaLinks || {
-            whatsappNumber: "",
-            facebook: "",
-            snapchat: "",
-            x: "",
-            instagram: "",
-            tiktok: "",
-            website: "",
-          },
+          socialMediaLinks: storeData.socialMediaLinks
+            ? {
+                whatsappNumber:
+                  formatPhoneForDisplay(
+                    storeData.socialMediaLinks.whatsappNumber
+                  ) || "",
+                facebook: storeData.socialMediaLinks.facebook || "",
+                snapchat: storeData.socialMediaLinks.snapchat || "",
+                x: storeData.socialMediaLinks.x || "",
+                instagram: storeData.socialMediaLinks.instagram || "",
+                tiktok: storeData.socialMediaLinks.tiktok || "",
+                website: storeData.socialMediaLinks.website || "",
+              }
+            : {
+                whatsappNumber: "",
+                facebook: "",
+                snapchat: "",
+                x: "",
+                instagram: "",
+                tiktok: "",
+                website: "",
+              },
           deliveryData: deliveryData,
         });
 
@@ -445,6 +483,15 @@ const EditStore = () => {
         return;
       }
 
+      // إضافة المقدمة +966 لرقمي الاتصال قبل الإرسال
+      const contactPhoneForSubmit = formatPhoneForSubmit(formData.contactPhone);
+      const deliveryPhoneForSubmit = formatPhoneForSubmit(
+        formData.deliveryPhone
+      );
+      const whatsappNumberForSubmit = formData.socialMediaLinks.whatsappNumber
+        ? formatPhoneForSubmit(formData.socialMediaLinks.whatsappNumber)
+        : "";
+
       // إنشاء كائن additionalInfo
       const additionalInfo = {
         indoorSessions: formData.additionalInfo.includes("indoorSessions"),
@@ -465,8 +512,8 @@ const EditStore = () => {
       formDataToSend.append("name", formData.name);
       formDataToSend.append("description", formData.description);
       formDataToSend.append("type", formData.type);
-      formDataToSend.append("contactPhone", formData.contactPhone);
-      formDataToSend.append("deliveryPhone", formData.deliveryPhone);
+      formDataToSend.append("contactPhone", contactPhoneForSubmit);
+      formDataToSend.append("deliveryPhone", deliveryPhoneForSubmit);
       formDataToSend.append("city", formData.city);
       formDataToSend.append("region", formData.region);
       formDataToSend.append("mapLink", formData.mapLink);
@@ -488,11 +535,21 @@ const EditStore = () => {
         formDataToSend.append("taxNumber", formData.taxNumber);
 
       // إضافة روابط وسائل التواصل الاجتماعي
+      // أولاً إضافة رقم الواتساب مع المقدمة +966 إذا كان متوفراً
+      if (whatsappNumberForSubmit) {
+        formDataToSend.append(
+          "socialMediaLinks[whatsappNumber]",
+          whatsappNumberForSubmit
+        );
+      }
+
+      // ثم إضافة باقي الروابط الاجتماعية
       Object.entries(formData.socialMediaLinks).forEach(([key, value]) => {
-        if (value && value.trim() !== "") {
-          const finalValue =
-            key === "whatsappNumber" ? value : validateAndFixUrl(value);
-          formDataToSend.append(`socialMediaLinks[${key}]`, finalValue);
+        if (key !== "whatsappNumber" && value && value.trim() !== "") {
+          formDataToSend.append(
+            `socialMediaLinks[${key}]`,
+            validateAndFixUrl(value)
+          );
         }
       });
 
@@ -579,9 +636,20 @@ const EditStore = () => {
         formDataToSend.append(`additionalInfo[${key}]`, value);
       });
 
-      // طباعة البيانات للتحقق (اختياري)
+      // طباعة البيانات للتحقق
       console.log("FormData being sent for update to store ID:", storeId);
       console.log("API URL:", `${api_url}/store/${storeId}`);
+
+      // طباعة قيم الهاتف للتحقق
+      console.log("Original contactPhone:", formData.contactPhone);
+      console.log("Formatted contactPhone:", contactPhoneForSubmit);
+      console.log("Original deliveryPhone:", formData.deliveryPhone);
+      console.log("Formatted deliveryPhone:", deliveryPhoneForSubmit);
+      console.log(
+        "Original whatsappNumber:",
+        formData.socialMediaLinks.whatsappNumber
+      );
+      console.log("Formatted whatsappNumber:", whatsappNumberForSubmit);
 
       // إرسال البيانات
       const token = localStorage.getItem("token");

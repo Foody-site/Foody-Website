@@ -6,16 +6,16 @@ import { Pagination } from "../../../components/shared/Pagination/Pagination";
 import { api_url } from "../../../utils/ApiClient";
 import { useNavigate } from "react-router";
 
-// Helper function to format phone number (remove +20 prefix if exists)
+// Helper function to format phone number (remove +966 prefix if exists)
 const formatPhoneNumber = (phoneNumber) => {
   if (!phoneNumber) return "غير محدد";
 
-  // If the phone number starts with +20, remove it
-  if (phoneNumber.startsWith("+2")) {
-    return phoneNumber.substring(2); // Remove first 3 characters (+20)
+  // If the phone number starts with +966, remove it
+  if (phoneNumber.startsWith("+966")) {
+    return phoneNumber.substring(4); 
   }
 
-  return phoneNumber; // Return as is if not starting with +20
+  return phoneNumber; 
 };
 
 export const StoresTable = forwardRef((props, ref) => {
