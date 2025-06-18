@@ -18,6 +18,7 @@ import { useNavigate, useParams, useLocation } from "react-router";
 import DeliveryForm from "../../../components/shared/form/DeliveryForm";
 import CheckBoxWorkRange from "../../../components/shared/inputs/CheckBoxWorkRange";
 import { api_url } from "../../../utils/ApiClient";
+import Alert from './../../../components/shared/Alert/Alert';
 
 // دالة لإزالة مقدمة +966 من رقم الهاتف للعرض
 const formatPhoneForDisplay = (phone) => {
@@ -42,6 +43,18 @@ const formatPhoneForSubmit = (phone) => {
     return `+966${trimmedPhone}`;
   }
   return trimmedPhone;
+};
+
+// دالة للتحقق من صحة رابط خرائط Google
+const isValidGoogleMapsUrl = (url) => {
+  // التحقق من أن الرابط ليس فارغًا
+  if (!url || url.trim() === "") return true; // نسمح بقيمة فارغة إذا لم يكن الحقل إلزاميًا
+
+  // استخدام تعبير منتظم للتحقق من أن الرابط يبدأ بنطاق Google Maps
+  const googleMapsRegex = /^https?:\/\/(www\.)?google\.[a-z]+\/maps\//i;
+
+  // التحقق من صحة الرابط
+  return googleMapsRegex.test(url);
 };
 
 const timeOptions = [
@@ -82,9 +95,15 @@ const EditStore = () => {
 
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+
+  // إزالة حالة الخطأ والنجاح القديمة واستبدالها بحالات Alert
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertType, setAlertType] = useState("success");
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertSubMessage, setAlertSubMessage] = useState("");
+
   const [cities, setCities] = useState([]);
+  const [mapLinkError, setMapLinkError] = useState("");
 
   // حالات الصور
   const [coverPicture, setCoverPicture] = useState(null);
@@ -123,6 +142,16 @@ const EditStore = () => {
     deliveryData: null,
   });
 
+  // معالج إغلاق التنبيه
+  const handleAlertClose = () => {
+    setAlertOpen(false);
+
+    // إذا كان التنبيه للنجاح، نقوم بالانتقال إلى صفحة القائمة
+    if (alertType === "success") {
+      navigate("/list");
+    }
+  };
+
   // تحديد معرف المتجر من المعلمات المختلفة المتاحة
   useEffect(() => {
     // محاولة الحصول على معرف المتجر من مصادر متعددة
@@ -137,10 +166,31 @@ const EditStore = () => {
       setStoreId(validId);
     } else {
       console.error("No store ID found in URL parameters or location state!");
-      setError("معرف المتجر غير متوفر! يرجى التأكد من الرابط الصحيح.");
+      setAlertMessage("خطأ في معرف المتجر");
+      setAlertSubMessage(
+        "معرف المتجر غير متوفر! يرجى التأكد من الرابط الصحيح."
+      );
+      setAlertType("error");
+      setAlertOpen(true);
       setFetchLoading(false);
     }
   }, [paramStoreId, id, location]);
+
+  // معالج تغيير رابط الخريطة
+  const handleMapLinkChange = (e) => {
+    const { name, value } = e.target;
+
+    // التحقق من صحة رابط الخريطة إذا كان الحقل هو mapLink
+    if (name === "mapLink") {
+      if (value && !isValidGoogleMapsUrl(value)) {
+        setMapLinkError("يرجى إدخال رابط صحيح من خرائط جوجل");
+      } else {
+        setMapLinkError("");
+      }
+    }
+
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   // جلب بيانات المتجر بعد تحديد المعرف
   useEffect(() => {
@@ -148,7 +198,6 @@ const EditStore = () => {
 
     const fetchStoreData = async () => {
       setFetchLoading(true);
-      setError("");
 
       try {
         console.log(`Fetching store data for ID: ${storeId}`);
@@ -276,9 +325,12 @@ const EditStore = () => {
         }
       } catch (error) {
         console.error("Error fetching store data:", error);
-        setError(
+        setAlertMessage("خطأ في جلب البيانات");
+        setAlertSubMessage(
           `فشل في جلب بيانات المتجر: ${error.message || "خطأ غير معروف"}`
         );
+        setAlertType("error");
+        setAlertOpen(true);
       } finally {
         setFetchLoading(false);
       }
@@ -291,16 +343,47 @@ const EditStore = () => {
   const updateCities = (region) => {
     switch (region) {
       case "Riyadh":
-        setCities([{ value: "Riyadh", label: "الرياض" }]);
+        setCities([
+          { value: "Al-Kharj", label: "الخرج" },
+        ]);
+        break;
+      case "Al-Qassim":
+        setCities([
+          { value: "Al-Badayea", label: "البدائع" },
+        ]);
         break;
       case "Mecca":
         setCities([{ value: "Mecca", label: "مكة المكرمة" }]);
         break;
       case "Eastern":
-        setCities([
-          { value: "Dammam", label: "الدمام" },
-          { value: "Khobar", label: "الخبر" },
-        ]);
+        setCities([{ value: "Eastern", label: "الشرقية" }]);
+        break;
+      case "Medina":
+        setCities([{ value: "Medina", label: "المدينة المنورة" }]);
+        break;
+      case "Asir":
+        setCities([{ value: "Asir", label: "عسير" }]);
+        break;
+      case "Tabuk":
+        setCities([{ value: "Tabuk", label: "تبوك" }]);
+        break;
+      case "Hail":
+        setCities([{ value: "Hail", label: "حائل" }]);
+        break;
+      case "Northern Borders":
+        setCities([{ value: "Northern Borders", label: "الحدود الشمالية" }]);
+        break;
+      case "Jizan":
+        setCities([{ value: "Jizan", label: "جازان" }]);
+        break;
+      case "Najran":
+        setCities([{ value: "Najran", label: "نجران" }]);
+        break;
+      case "Al-Bahah":
+        setCities([{ value: "Al-Bahah", label: "الباحة" }]);
+        break;
+      case "Al-Jouf":
+        setCities([{ value: "Al-Jouf", label: "الجوف" }]);
         break;
       default:
         setCities([]);
@@ -321,7 +404,10 @@ const EditStore = () => {
       setCoverPicture(file);
       setCurrentCoverPicture(URL.createObjectURL(file));
     } else {
-      setError("الرجاء اختيار صورة صحيحة للغلاف!");
+      setAlertMessage("خطأ في تحميل الصورة");
+      setAlertSubMessage("الرجاء اختيار صورة صحيحة للغلاف!");
+      setAlertType("error");
+      setAlertOpen(true);
     }
   };
 
@@ -332,7 +418,10 @@ const EditStore = () => {
       setProfilePicture(file);
       setCurrentProfilePicture(URL.createObjectURL(file));
     } else {
-      setError("الرجاء اختيار صورة صحيحة للملف الشخصي!");
+      setAlertMessage("خطأ في تحميل الصورة");
+      setAlertSubMessage("الرجاء اختيار صورة صحيحة للملف الشخصي!");
+      setAlertType("error");
+      setAlertOpen(true);
     }
   };
 
@@ -440,13 +529,23 @@ const EditStore = () => {
     e.preventDefault();
 
     if (!storeId) {
-      setError("معرف المتجر غير متوفر، لا يمكن إكمال عملية التحديث!");
+      setAlertMessage("خطأ في معرف المتجر");
+      setAlertSubMessage("معرف المتجر غير متوفر، لا يمكن إكمال عملية التحديث!");
+      setAlertType("error");
+      setAlertOpen(true);
+      return;
+    }
+
+    // التحقق من صحة رابط الخريطة
+    if (formData.mapLink && !isValidGoogleMapsUrl(formData.mapLink)) {
+      setAlertMessage("خطأ في رابط الخريطة");
+      setAlertSubMessage("يرجى إدخال رابط صحيح من خرائط جوجل");
+      setAlertType("error");
+      setAlertOpen(true);
       return;
     }
 
     setLoading(true);
-    setError("");
-    setSuccess("");
 
     try {
       // التحقق من الحقول الإلزامية
@@ -465,20 +564,24 @@ const EditStore = () => {
         .map(([key, _]) => key);
 
       if (missingFields.length > 0 || formData.selectedMealTimes.length === 0) {
-        let errorMessage = "";
+        let errorMessage = "بيانات ناقصة";
+        let subMessage = "";
 
         if (missingFields.length > 0) {
-          errorMessage = `يرجى ملء الحقول الإلزامية التالية: ${missingFields.join(
+          subMessage = `يرجى ملء الحقول الإلزامية التالية: ${missingFields.join(
             ", "
           )}`;
         }
 
         if (formData.selectedMealTimes.length === 0) {
-          errorMessage += errorMessage ? " و " : "";
-          errorMessage += "يرجى اختيار نوع وجبة واحدة على الأقل";
+          subMessage += subMessage ? " و " : "";
+          subMessage += "يرجى اختيار نوع وجبة واحدة على الأقل";
         }
 
-        setError(errorMessage);
+        setAlertMessage(errorMessage);
+        setAlertSubMessage(subMessage);
+        setAlertType("error");
+        setAlertOpen(true);
         setLoading(false);
         return;
       }
@@ -664,30 +767,34 @@ const EditStore = () => {
         }
       );
 
-      setSuccess("تم تعديل المتجر بنجاح!");
+      setAlertMessage("تم تعديل المتجر");
+      setAlertSubMessage(
+        "تم تعديل المتجر بنجاح! سيتم توجيهك إلى صفحة القائمة."
+      );
+      setAlertType("success");
+      setAlertOpen(true);
       console.log("استجابة الخادم:", response.data);
-
-      // إعادة التوجيه بعد النجاح
-      setTimeout(() => {
-        navigate("/list");
-      }, 2000);
     } catch (error) {
       console.error("خطأ في تحديث البيانات:", error);
 
-      let errorMessage = "حدث خطأ أثناء تعديل المتجر، يرجى المحاولة مرة أخرى";
+      let errorMessage = "خطأ في تعديل المتجر";
+      let subMessage = "حدث خطأ أثناء تعديل المتجر، يرجى المحاولة مرة أخرى";
 
       if (error.response?.data?.message) {
         if (Array.isArray(error.response.data.message)) {
           console.log("رسائل الخطأ الكاملة:", error.response.data.message);
-          errorMessage = error.response.data.message.join("\n");
+          subMessage = error.response.data.message.join(", ");
         } else {
-          errorMessage = error.response.data.message;
+          subMessage = error.response.data.message;
         }
       } else if (error.message) {
-        errorMessage = error.message;
+        subMessage = error.message;
       }
 
-      setError(errorMessage);
+      setAlertMessage(errorMessage);
+      setAlertSubMessage(subMessage);
+      setAlertType("error");
+      setAlertOpen(true);
     } finally {
       setLoading(false);
     }
@@ -717,10 +824,7 @@ const EditStore = () => {
         <div className="flex-grow flex flex-col justify-center items-center p-6">
           <div className="bg-red-100 text-red-700 p-6 rounded-lg text-center max-w-md">
             <h2 className="text-xl font-bold mb-2">خطأ في معرف المتجر</h2>
-            <p>
-              {error ||
-                "معرف المتجر غير متوفر أو غير صالح. يرجى التحقق من الرابط."}
-            </p>
+            <p>معرف المتجر غير متوفر أو غير صالح. يرجى التحقق من الرابط.</p>
             <button
               onClick={() => navigate("/list")}
               className="mt-4 px-6 py-2 bg-primary-1 text-white rounded-md hover:bg-red-600"
@@ -735,23 +839,20 @@ const EditStore = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
+      {/* مكون التنبيه */}
+      <Alert
+        message={alertMessage}
+        subMessage={alertSubMessage}
+        isOpen={alertOpen}
+        onClose={handleAlertClose}
+        type={alertType}
+      />
+
       <div className="flex-grow flex justify-center items-center px-8 py-8">
         <div className="w-full max-w-[90rem] p-16 rounded-xl">
           <h2 className="text-3xl font-bold text-right text-gray-700 mb-10">
             تعديل المتجر
           </h2>
-
-          {/* رسائل النجاح والخطأ */}
-          {error && (
-            <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-md text-right">
-              {error}
-            </div>
-          )}
-          {success && (
-            <div className="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-md text-right">
-              {success}
-            </div>
-          )}
 
           <div className="mb-10 relative">
             <div className="relative bg-gray-300 h-72 w-full rounded-lg flex justify-center items-center overflow-hidden">
@@ -1068,15 +1169,22 @@ const EditStore = () => {
                 }}
               />
               <div className="md:col-start-2 md:col-span-2 flex justify-end space-x-10">
-                <Inputs
-                  name="mapLink"
-                  Icon_2={MdOutlineLocationOn}
-                  label="رابط المتجر علي خريطة جوجل"
-                  type="text"
-                  className="w-full h-12 px-6 text-xl py-4"
-                  value={formData.mapLink}
-                  onChange={handleChange}
-                />
+                <div className="w-full">
+                  <Inputs
+                    name="mapLink"
+                    Icon_2={MdOutlineLocationOn}
+                    label="رابط المتجر علي خريطة جوجل"
+                    type="text"
+                    className="w-full h-12 px-6 text-xl py-4"
+                    value={formData.mapLink}
+                    onChange={handleMapLinkChange}
+                  />
+                  {mapLinkError && (
+                    <p className="text-primary-1 text-sm mt-1 text-right">
+                      {mapLinkError}
+                    </p>
+                  )}
+                </div>
                 <Inputs
                   name="socialMediaLinks.website"
                   Icon_2={PiGlobeThin}

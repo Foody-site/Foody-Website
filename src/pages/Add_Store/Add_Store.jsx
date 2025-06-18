@@ -18,6 +18,7 @@ import { useNavigate } from "react-router";
 import DeliveryForm from "../../components/shared/form/DeliveryForm";
 import CheckBoxWorkRange from "../../components/shared/inputs/CheckBoxWorkRange";
 import { api_url } from "../../utils/ApiClient";
+import Alert from "../../components/shared/Alert/Alert";
 
 // دالة لإضافة مقدمة +966 للرقم عند الإرسال
 const formatPhoneForSubmit = (phone) => {
@@ -111,8 +112,12 @@ const Add_Store = () => {
 
   // Loading state
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+
+  // Alert states
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertType, setAlertType] = useState("success");
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertSubMessage, setAlertSubMessage] = useState("");
 
   // حالة شاشة التأكيد
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -136,7 +141,10 @@ const Add_Store = () => {
     if (file && file.type.startsWith("image/")) {
       setCoverPicture(file);
     } else {
-      setError("الرجاء اختيار صورة صحيحة للغلاف!");
+      setAlertMessage("خطأ");
+      setAlertSubMessage("الرجاء اختيار صورة صحيحة للغلاف!");
+      setAlertType("error");
+      setAlertOpen(true);
     }
   };
 
@@ -145,7 +153,10 @@ const Add_Store = () => {
     if (file && file.type.startsWith("image/")) {
       setProfilePicture(file);
     } else {
-      setError("الرجاء اختيار صورة صحيحة للملف الشخصي!");
+      setAlertMessage("خطأ");
+      setAlertSubMessage("الرجاء اختيار صورة صحيحة للملف الشخصي!");
+      setAlertType("error");
+      setAlertOpen(true);
     }
   };
 
@@ -187,6 +198,43 @@ const Add_Store = () => {
     }
   }
 
+  // أولاً، أضف دالة التحقق من صحة رابط خرائط Google
+  const isValidGoogleMapsUrl = (url) => {
+    // التحقق من أن الرابط ليس فارغًا
+    if (!url || url.trim() === "") return true; // نسمح بقيمة فارغة إذا لم يكن الحقل إلزاميًا
+
+    // استخدام تعبير منتظم للتحقق من أن الرابط يبدأ بنطاق Google Maps
+    const googleMapsRegex = /^https?:\/\/(www\.)?google\.[a-z]+\/maps\//i;
+
+    // أو التحقق بطريقة أبسط للتأكد من وجود "google" و "maps" في الرابط
+    return googleMapsRegex.test(url);
+  };
+
+  // ثم في داخل مكون Add_Store، أضف حالة للتحقق من صحة الرابط
+  const [mapLinkError, setMapLinkError] = useState("");
+
+  // دالة للتعامل مع تغيير قيمة حقل رابط الخريطة
+  const handleMapLinkChange = (e) => {
+    const value = e.target.value;
+
+    // التحقق من صحة الرابط عند تغييره
+    if (value && !isValidGoogleMapsUrl(value)) {
+      setMapLinkError("يرجى إدخال رابط صحيح من خرائط جوجل");
+    } else {
+      setMapLinkError("");
+    }
+  };
+
+  // معالج إغلاق التنبيه
+  const handleAlertClose = () => {
+    setAlertOpen(false);
+
+    // إذا كان التنبيه للنجاح، نقوم بالانتقال إلى صفحة القائمة
+    if (alertType === "success") {
+      navigate("/list");
+    }
+  };
+
   // المعالج الأولي للنموذج - يفتح شاشة التأكيد
   const handleFormSubmit = (e) => {
     e.preventDefault();
@@ -201,6 +249,18 @@ const Add_Store = () => {
       e.target.querySelector('input[name="deliveryPhone"]')?.value || "";
     const city = e.target.querySelector('select[name="city"]')?.value || "";
     const region = e.target.querySelector('select[name="region"]')?.value || "";
+    // التقاط قيمة رابط الخريطة
+    const mapLink =
+      e.target.querySelector('input[name="mapLink"]')?.value || "";
+
+    // التحقق من صحة الرابط إذا كان موجودًا
+    if (mapLink && !isValidGoogleMapsUrl(mapLink)) {
+      setAlertMessage("خطأ في رابط الخريطة");
+      setAlertSubMessage("يرجى إدخال رابط صحيح من خرائط جوجل");
+      setAlertType("error");
+      setAlertOpen(true);
+      return;
+    }
 
     const requiredFields = {
       name,
@@ -217,20 +277,24 @@ const Add_Store = () => {
       .map(([key, _]) => key);
 
     if (missingFields.length > 0 || selectedMealTimes.length === 0) {
-      let errorMessage = "";
+      let errorMessage = "بيانات ناقصة";
+      let subMessage = "";
 
       if (missingFields.length > 0) {
-        errorMessage = `يرجى ملء الحقول الإلزامية التالية: ${missingFields.join(
+        subMessage = `يرجى ملء الحقول الإلزامية التالية: ${missingFields.join(
           ", "
         )}`;
       }
 
       if (selectedMealTimes.length === 0) {
-        errorMessage += errorMessage ? " و " : "";
-        errorMessage += "يرجى اختيار نوع وجبة واحدة على الأقل";
+        subMessage += subMessage ? " و " : "";
+        subMessage += "يرجى اختيار نوع وجبة واحدة على الأقل";
       }
 
-      setError(errorMessage);
+      setAlertMessage(errorMessage);
+      setAlertSubMessage(subMessage);
+      setAlertType("error");
+      setAlertOpen(true);
       return;
     }
 
@@ -244,8 +308,6 @@ const Add_Store = () => {
     if (!formRef.current) return;
 
     setLoading(true);
-    setError("");
-    setSuccess("");
     setShowConfirmation(false);
 
     try {
@@ -434,29 +496,6 @@ const Add_Store = () => {
         formData.append(`additionalInfo[${key}]`, value);
       });
 
-      // طباعة البيانات للتحقق (اختياري)
-      console.log("FormData being sent:");
-      for (let pair of formData.entries()) {
-        console.log(pair[0], pair[1]);
-      }
-
-      // طباعة قيم الهاتف للتحقق
-      console.log("Original contactPhone:", contactPhone);
-      console.log("Formatted contactPhone:", contactPhoneForSubmit);
-      console.log("Original deliveryPhone:", deliveryPhone);
-      console.log("Formatted deliveryPhone:", deliveryPhoneForSubmit);
-
-      const whatsappValue = document.querySelector(
-        'input[name="socialMediaLinks[whatsappNumber]"]'
-      )?.value;
-      if (whatsappValue) {
-        console.log("Original whatsappNumber:", whatsappValue);
-        console.log(
-          "Formatted whatsappNumber:",
-          formatPhoneForSubmit(whatsappValue)
-        );
-      }
-
       // إرسال البيانات
       const token = localStorage.getItem("token");
       const response = await axios.post(`${api_url}/store`, formData, {
@@ -466,30 +505,36 @@ const Add_Store = () => {
         },
       });
 
-      setSuccess("تم إضافة المتجر بنجاح!");
-      console.log("تم إرسال البيانات بنجاح:", response.data);
+      // عرض رسالة النجاح
+      setAlertMessage("تم إضافة المتجر");
+      setAlertSubMessage(
+        "تم إضافة المتجر بنجاح! سيتم توجيهك إلى صفحة القائمة."
+      );
+      setAlertType("success");
+      setAlertOpen(true);
 
-      // إعادة التوجيه بعد النجاح
-      setTimeout(() => {
-        navigate("/list");
-      }, 2000);
+      console.log("تم إرسال البيانات بنجاح:", response.data);
     } catch (error) {
       console.error("خطأ في إرسال البيانات:", error);
 
-      let errorMessage = "حدث خطأ أثناء إضافة المتجر، يرجى المحاولة مرة أخرى";
+      let errorMessage = "خطأ في إضافة المتجر";
+      let subMessage = "حدث خطأ أثناء إضافة المتجر، يرجى المحاولة مرة أخرى";
 
       if (error.response?.data?.message) {
         if (Array.isArray(error.response.data.message)) {
           console.log("رسائل الخطأ الكاملة:", error.response.data.message);
-          errorMessage = error.response.data.message.join("\n");
+          subMessage = error.response.data.message.join("، ");
         } else {
-          errorMessage = error.response.data.message;
+          subMessage = error.response.data.message;
         }
       } else if (error.message) {
-        errorMessage = error.message;
+        subMessage = error.message;
       }
 
-      setError(errorMessage);
+      setAlertMessage(errorMessage);
+      setAlertSubMessage(subMessage);
+      setAlertType("error");
+      setAlertOpen(true);
 
       if (error.response?.data) {
         console.error("بيانات الخطأ من الخادم:", error.response.data);
@@ -508,23 +553,20 @@ const Add_Store = () => {
         onConfirm={handleSubmit}
       />
 
+      {/* مكون التنبيه */}
+      <Alert
+        message={alertMessage}
+        subMessage={alertSubMessage}
+        isOpen={alertOpen}
+        onClose={handleAlertClose}
+        type={alertType}
+      />
+
       <div className="flex-grow flex justify-center items-center px-8 py-8">
         <div className="w-full max-w-[90rem] p-16 rounded-xl">
           <h2 className="text-3xl font-bold text-right text-gray-700 mb-10">
             اضافة متجر جديد
           </h2>
-
-          {/* رسائل النجاح والخطأ */}
-          {error && (
-            <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-md text-right">
-              {error}
-            </div>
-          )}
-          {success && (
-            <div className="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-md text-right">
-              {success}
-            </div>
-          )}
 
           <div className="mb-10 relative">
             <div className="relative bg-gray-300 h-72 w-full rounded-lg flex justify-center items-center overflow-hidden">
@@ -748,17 +790,26 @@ const Add_Store = () => {
                 className="w-full h-12 px-6 text-xl py-4"
               />
               <div className="md:col-start-2 md:col-span-2 flex justify-end space-x-10">
-                <Inputs
-                  name="mapLink"
-                  Icon_2={MdOutlineLocationOn}
-                  label="رابط المتجر علي خريطة جوجل"
-                  type="text"
-                  className="w-full h-12 px-6 text-xl py-4"
-                />
+                <div className="w-full">
+                  <Inputs
+                    name="mapLink"
+                    Icon_2={MdOutlineLocationOn}
+                    label="رابط المتجر علي خريطة جوجل"
+                    type="text"
+                    className="w-full h-12 px-6 text-xl py-4"
+                    onChange={handleMapLinkChange}
+                  />
+                  {mapLinkError && (
+                    <p className="text-primary-1 text-sm mt-1 text-right">
+                      {mapLinkError}
+                    </p>
+                  )}
+                </div>
+
                 <Inputs
                   name="socialMediaLinks[website]"
                   Icon_2={PiGlobeThin}
-                  label="رابط  الموقع  الإلكتروني"
+                  label="رابط الموقع الإلكتروني"
                   type="text"
                   className="w-full h-12 px-6 text-xl py-4"
                 />
