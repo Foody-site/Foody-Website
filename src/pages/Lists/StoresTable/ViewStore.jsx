@@ -345,7 +345,11 @@ const ViewStore = () => {
                   المنطقة
                 </label>
                 <div className="w-full h-12 px-6 py-3 bg-gray-50 border border-gray-300 rounded-md">
-                  {store.region || "غير محدد"}
+                  {store.region === "Riyadh"
+                    ? "الرياض"
+                    : store.region === "Al-Qassim"
+                    ? "القصيم"
+                    : store.region || "غير محدد"}{" "}
                 </div>
               </div>
 
@@ -355,7 +359,11 @@ const ViewStore = () => {
                   المدينة
                 </label>
                 <div className="w-full h-12 px-6 py-3 bg-gray-50 border border-gray-300 rounded-md">
-                  {store.city || "غير محدد"}
+                  {store.city === "Al-Kharj"
+                    ? "الخرج"
+                    : store.city === "Al-Badayea"
+                    ? "البدائع"
+                    : store.city || "غير محدد"}{" "}
                 </div>
               </div>
 

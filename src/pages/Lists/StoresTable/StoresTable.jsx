@@ -5,7 +5,7 @@ import { LuPencilLine } from "react-icons/lu";
 import { Pagination } from "../../../components/shared/Pagination/Pagination";
 import { api_url } from "../../../utils/ApiClient";
 import { useNavigate } from "react-router";
-import Alert from './../../../components/shared/Alert/Alert';
+import Alert from "./../../../components/shared/Alert/Alert";
 
 // Helper function to format phone number (remove +966 prefix if exists)
 const formatPhoneNumber = (phoneNumber) => {
@@ -17,6 +17,46 @@ const formatPhoneNumber = (phoneNumber) => {
   }
 
   return phoneNumber;
+};
+
+// دالة لتحويل نوع المتجر إلى النص المناسب بالعربية
+const formatStoreType = (type) => {
+  switch (type) {
+    case "restaurant":
+      return "مطعم";
+    case "patisserie":
+      return "معجنات";
+    case "health":
+      return "صحي";
+    case "icecream":
+      return "ايس كريم";
+    default:
+      return "غير محدد";
+  }
+};
+
+// دالة لتحويل المدينة إلى النص المناسب بالعربية
+const formatCity = (city) => {
+  switch (city) {
+    case "Al-Kharj":
+      return "الخرج";
+    case "Al-Badayea":
+      return "البدائع";
+    default:
+      return "غير محدد";
+  }
+};
+
+// دالة لتحويل المنطقة إلى النص المناسب بالعربية
+const formatRegion = (region) => {
+  switch (region) {
+    case "Riyadh":
+      return "الرياض";
+    case "Al-Qassim":
+      return "القصيم";
+    default:
+      return "غير محدد";
+  }
 };
 
 export const StoresTable = forwardRef((props, ref) => {
@@ -342,19 +382,19 @@ export const StoresTable = forwardRef((props, ref) => {
                     {formatPhoneNumber(store?.contactPhone)}
                   </td>
 
-                  {/* Location/Area */}
+                  {/* Location/Area - تم تعديلها لاستخدام دالة التنسيق للمنطقة */}
                   <td className="px-4 py-3 text-gray-700 text-sm text-right border border-gray-300">
-                    {store?.region || "غير محدد"}
+                    {formatRegion(store?.region)}
                   </td>
 
-                  {/* city */}
+                  {/* city - تم تعديلها لاستخدام دالة التنسيق للمدينة */}
                   <td className="px-4 py-3 text-gray-700 text-sm text-right border border-gray-300">
-                    {store?.location?.city || store?.city || "غير محدد"}
+                    {formatCity(store?.location?.city || store?.city)}
                   </td>
 
                   {/* Store Type */}
                   <td className="px-4 py-3 text-gray-700 text-sm text-right border border-gray-300">
-                    {store?.type || "غير محدد"}
+                    {formatStoreType(store?.type)}
                   </td>
 
                   {/* Store Name */}
