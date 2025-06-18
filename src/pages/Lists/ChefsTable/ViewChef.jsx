@@ -404,7 +404,7 @@ const ViewChef = () => {
                           ? "البريد الإلكتروني"
                           : method === "whatsapp"
                           ? "رقم الواتساب"
-                          : method === "phone"
+                          : method === "Phone"
                           ? "رقم الجوال"
                           : method}
                       </div>

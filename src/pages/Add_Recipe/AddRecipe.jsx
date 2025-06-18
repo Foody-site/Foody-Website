@@ -12,6 +12,7 @@ import Button from "../../components/shared/Buttons/Button";
 import allergy from "../../assets/allergy.jpg";
 import TextAreaInput from "../../components/shared/inputs/TextAreaInput ";
 import { useNavigate } from "react-router";
+import Alert from "../../components/shared/Alert/Alert"; // استيراد مكون Alert
 
 const AddRecipe = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,6 +21,12 @@ const AddRecipe = () => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+
+  // حالات التنبيه
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertType, setAlertType] = useState("success");
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertSubMessage, setAlertSubMessage] = useState("");
 
   const [formData, setFormData] = useState({
     name: "",
@@ -34,6 +41,24 @@ const AddRecipe = () => {
     selectedRecipeTypes: [], // Renamed for clarity
     mainIngredient: "",
   });
+
+  // معالج إغلاق التنبيه
+  const handleAlertClose = () => {
+    setAlertOpen(false);
+
+    // إذا كان التنبيه من نوع "success" قم بإعادة توجيه المستخدم
+    if (alertType === "success") {
+      navigate("/list");
+    }
+  };
+
+  // دالة لعرض التنبيه
+  const showAlert = (message, subMessage, type = "success") => {
+    setAlertMessage(message);
+    setAlertSubMessage(subMessage);
+    setAlertType(type);
+    setAlertOpen(true);
+  };
 
   const handleRemoveIngredient = (indexToRemove) => {
     // Make sure we always keep at least one ingredient
@@ -62,6 +87,12 @@ const AddRecipe = () => {
         console.log("Available recipe types:", formattedData); // Debug
       } catch (error) {
         console.error("Error fetching recipe types:", error);
+        // عرض تنبيه بخطأ تحميل البيانات
+        showAlert(
+          "خطأ في تحميل البيانات",
+          "حدث خطأ أثناء جلب أنواع الوصفات",
+          "error"
+        );
       }
     };
     fetchRecipeTypes();
@@ -71,8 +102,9 @@ const AddRecipe = () => {
     const file = event.target.files[0];
     if (file && file.type.startsWith("image/")) {
       setPhoto(file);
-    } else {
-      console.error("الرجاء اختيار صورة صحيحة!");
+    } else if (file) {
+      // عرض تنبيه بخطأ في تحميل الصورة
+      showAlert("خطأ في تحميل الصورة", "الرجاء اختيار صورة صحيحة!", "error");
     }
   };
 
@@ -231,14 +263,20 @@ const AddRecipe = () => {
 
     // Validate form first
     if (!validateForm()) {
-      console.error("يرجى تصحيح الأخطاء قبل الإرسال");
+      // عرض تنبيه بوجود أخطاء في النموذج
+      showAlert(
+        "يرجى تصحيح الأخطاء",
+        "يرجى التأكد من تعبئة جميع الحقول المطلوبة بشكل صحيح",
+        "error"
+      );
       return;
     }
 
     setLoading(true);
     const token = localStorage.getItem("token");
     if (!token) {
-      console.error("لا يوجد توكن، يرجى تسجيل الدخول.");
+      // عرض تنبيه بعدم وجود توكن
+      showAlert("خطأ في المصادقة", "لا يوجد توكن، يرجى تسجيل الدخول.", "error");
       setLoading(false);
       return;
     }
@@ -293,7 +331,10 @@ const AddRecipe = () => {
         },
       });
 
-      alert("تمت الإضافة بنجاح");
+      // عرض تنبيه بنجاح الإضافة
+      showAlert("تمت الإضافة", "تمت إضافة الوصفة بنجاح", "success");
+
+      // إعادة تعيين النموذج
       setFormData({
         name: "",
         description: "",
@@ -311,7 +352,9 @@ const AddRecipe = () => {
     } catch (error) {
       const errorMessage =
         error.response?.data?.message || "حدث خطأ أثناء الإرسال";
-      alert(errorMessage);
+
+      // عرض تنبيه بخطأ في الإضافة
+      showAlert("خطأ في إضافة الوصفة", errorMessage, "error");
       console.error("API Error:", error.response?.data || error.message);
     } finally {
       setLoading(false);
@@ -320,6 +363,16 @@ const AddRecipe = () => {
 
   return (
     <div className="flex flex-col min-h-screen ">
+      {/* مكون Alert */}
+      <Alert
+        message={alertMessage}
+        subMessage={alertSubMessage}
+        isOpen={alertOpen}
+        onClose={handleAlertClose}
+        type={alertType}
+        autoClose={false}
+      />
+
       <div className="flex-grow flex justify-center items-center px-8 py-8">
         <div className="w-full max-w-[70rem] p-16  rounded-xl ">
           <h2 className="text-3xl font-bold text-gray-700 mb-10 text-right">
