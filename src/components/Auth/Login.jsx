@@ -143,7 +143,7 @@ const Login = () => {
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
                 <Inputs
-                  label="رقم الجوال/البريد الالكتروني"
+                  label=" البريد الالكتروني"
                   type="text"
                   name="email"
                   value={formData.email}
