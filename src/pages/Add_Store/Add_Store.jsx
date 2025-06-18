@@ -18,6 +18,21 @@ import { useNavigate } from "react-router";
 import DeliveryForm from "../../components/shared/form/DeliveryForm";
 import CheckBoxWorkRange from "../../components/shared/inputs/CheckBoxWorkRange";
 import { api_url } from "../../utils/ApiClient";
+import Alert from "../../components/shared/Alert/Alert";
+
+// دالة لإضافة مقدمة +966 للرقم عند الإرسال
+const formatPhoneForSubmit = (phone) => {
+  if (!phone) return "";
+
+  // تنظيف الرقم من أي مسافات
+  const trimmedPhone = phone.trim();
+
+  // إذا كان الرقم لا يبدأ بـ +966، قم بإضافته
+  if (!trimmedPhone.startsWith("+966")) {
+    return `+966${trimmedPhone}`;
+  }
+  return trimmedPhone;
+};
 
 const timeOptions = [
   { label: "12:00 ص", value: "2025-06-12T00:00:00.000Z" },
@@ -46,6 +61,37 @@ const timeOptions = [
   { label: "11:00 م", value: "2025-06-12T23:00:00.000Z" },
 ];
 
+// مكون شاشة التأكيد
+const ConfirmationModal = ({ isOpen, onClose, onConfirm }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
+      <div className="bg-white rounded-xl p-6 shadow-xl max-w-md w-full mx-4 relative">
+        <h3 className="text-xl font-bold text-center mb-4">تنبيه</h3>
+        <p className="text-center text-gray-700 mb-6">
+          لو عايز تعمل توثيق للحساب يفضل تضيف كل الداتا
+        </p>
+
+        <div className="flex justify-center gap-4">
+          <Button
+            label="إلغاء"
+            className="!text-primary-1 font-medium border border-primary-1 hover:bg-primary-1 hover:!text-white transition px-6 py-2"
+            type="button"
+            onClick={onClose}
+          />
+          <Button
+            label="إضافة"
+            className="bg-primary-1 hover:bg-hover_primary-1 text-white px-6 py-2"
+            type="button"
+            onClick={onConfirm}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Add_Store = () => {
   const navigate = useNavigate();
 
@@ -66,8 +112,16 @@ const Add_Store = () => {
 
   // Loading state
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+
+  // Alert states
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertType, setAlertType] = useState("success");
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertSubMessage, setAlertSubMessage] = useState("");
+
+  // حالة شاشة التأكيد
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const formRef = useRef(null);
 
   // Form states
   const [workTimeType, setWorkTimeType] = useState("");
@@ -87,7 +141,10 @@ const Add_Store = () => {
     if (file && file.type.startsWith("image/")) {
       setCoverPicture(file);
     } else {
-      setError("الرجاء اختيار صورة صحيحة للغلاف!");
+      setAlertMessage("خطأ");
+      setAlertSubMessage("الرجاء اختيار صورة صحيحة للغلاف!");
+      setAlertType("error");
+      setAlertOpen(true);
     }
   };
 
@@ -96,7 +153,10 @@ const Add_Store = () => {
     if (file && file.type.startsWith("image/")) {
       setProfilePicture(file);
     } else {
-      setError("الرجاء اختيار صورة صحيحة للملف الشخصي!");
+      setAlertMessage("خطأ");
+      setAlertSubMessage("الرجاء اختيار صورة صحيحة للملف الشخصي!");
+      setAlertType("error");
+      setAlertOpen(true);
     }
   };
 
@@ -137,37 +197,146 @@ const Add_Store = () => {
       return [31.0999884, 29.9699776];
     }
   }
-  const handleSubmit = async (e) => {
+
+  // أولاً، أضف دالة التحقق من صحة رابط خرائط Google
+  const isValidGoogleMapsUrl = (url) => {
+    // التحقق من أن الرابط ليس فارغًا
+    if (!url || url.trim() === "") return true; // نسمح بقيمة فارغة إذا لم يكن الحقل إلزاميًا
+
+    // استخدام تعبير منتظم للتحقق من أن الرابط يبدأ بنطاق Google Maps
+    const googleMapsRegex = /^https?:\/\/(www\.)?google\.[a-z]+\/maps\//i;
+
+    // أو التحقق بطريقة أبسط للتأكد من وجود "google" و "maps" في الرابط
+    return googleMapsRegex.test(url);
+  };
+
+  // ثم في داخل مكون Add_Store، أضف حالة للتحقق من صحة الرابط
+  const [mapLinkError, setMapLinkError] = useState("");
+
+  // دالة للتعامل مع تغيير قيمة حقل رابط الخريطة
+  const handleMapLinkChange = (e) => {
+    const value = e.target.value;
+
+    // التحقق من صحة الرابط عند تغييره
+    if (value && !isValidGoogleMapsUrl(value)) {
+      setMapLinkError("يرجى إدخال رابط صحيح من خرائط جوجل");
+    } else {
+      setMapLinkError("");
+    }
+  };
+
+  // معالج إغلاق التنبيه
+  const handleAlertClose = () => {
+    setAlertOpen(false);
+
+    // إذا كان التنبيه للنجاح، نقوم بالانتقال إلى صفحة القائمة
+    if (alertType === "success") {
+      navigate("/list");
+    }
+  };
+
+  // المعالج الأولي للنموذج - يفتح شاشة التأكيد
+  const handleFormSubmit = (e) => {
     e.preventDefault();
+    // التحقق من الحقول الإلزامية قبل فتح شاشة التأكيد
+    const name = e.target.querySelector('input[name="name"]')?.value || "";
+    const description =
+      e.target.querySelector('textarea[name="description"]')?.value || "";
+    const type = e.target.querySelector('select[name="type"]')?.value || "";
+    const contactPhone =
+      e.target.querySelector('input[name="contactPhone"]')?.value || "";
+    const deliveryPhone =
+      e.target.querySelector('input[name="deliveryPhone"]')?.value || "";
+    const city = e.target.querySelector('select[name="city"]')?.value || "";
+    const region = e.target.querySelector('select[name="region"]')?.value || "";
+    // التقاط قيمة رابط الخريطة
+    const mapLink =
+      e.target.querySelector('input[name="mapLink"]')?.value || "";
+
+    // التحقق من صحة الرابط إذا كان موجودًا
+    if (mapLink && !isValidGoogleMapsUrl(mapLink)) {
+      setAlertMessage("خطأ في رابط الخريطة");
+      setAlertSubMessage("يرجى إدخال رابط صحيح من خرائط جوجل");
+      setAlertType("error");
+      setAlertOpen(true);
+      return;
+    }
+
+    const requiredFields = {
+      name,
+      description,
+      type,
+      contactPhone,
+      deliveryPhone,
+      city,
+      region,
+    };
+
+    const missingFields = Object.entries(requiredFields)
+      .filter(([_, value]) => !value)
+      .map(([key, _]) => key);
+
+    if (missingFields.length > 0 || selectedMealTimes.length === 0) {
+      let errorMessage = "بيانات ناقصة";
+      let subMessage = "";
+
+      if (missingFields.length > 0) {
+        subMessage = `يرجى ملء الحقول الإلزامية التالية: ${missingFields.join(
+          ", "
+        )}`;
+      }
+
+      if (selectedMealTimes.length === 0) {
+        subMessage += subMessage ? " و " : "";
+        subMessage += "يرجى اختيار نوع وجبة واحدة على الأقل";
+      }
+
+      setAlertMessage(errorMessage);
+      setAlertSubMessage(subMessage);
+      setAlertType("error");
+      setAlertOpen(true);
+      return;
+    }
+
+    // حفظ مرجع النموذج وفتح شاشة التأكيد
+    formRef.current = e.target;
+    setShowConfirmation(true);
+  };
+
+  // المعالج الثانوي - يتم تنفيذه بعد تأكيد المستخدم
+  const handleSubmit = async () => {
+    if (!formRef.current) return;
+
     setLoading(true);
-    setError("");
-    setSuccess("");
+    setShowConfirmation(false);
 
     try {
+      const e = formRef.current;
+
       // جمع البيانات من النموذج
-      const name = e.target.querySelector('input[name="name"]')?.value || "";
+      const name = e.querySelector('input[name="name"]')?.value || "";
       const description =
-        e.target.querySelector('textarea[name="description"]')?.value || "";
-      const type = e.target.querySelector('select[name="type"]')?.value || "";
+        e.querySelector('textarea[name="description"]')?.value || "";
+      const type = e.querySelector('select[name="type"]')?.value || "";
       const contactPhone =
-        e.target.querySelector('input[name="contactPhone"]')?.value || "";
+        e.querySelector('input[name="contactPhone"]')?.value || "";
       const deliveryPhone =
-        e.target.querySelector('input[name="deliveryPhone"]')?.value || "";
-      const city = e.target.querySelector('select[name="city"]')?.value || "";
-      const region =
-        e.target.querySelector('select[name="region"]')?.value || "";
-      const mapLink =
-        e.target.querySelector('input[name="mapLink"]')?.value || "";
+        e.querySelector('input[name="deliveryPhone"]')?.value || "";
+      const city = e.querySelector('select[name="city"]')?.value || "";
+      const region = e.querySelector('select[name="region"]')?.value || "";
+      const mapLink = e.querySelector('input[name="mapLink"]')?.value || "";
 
       // تحويل القيم إلى الأنواع المناسبة
-      const taxNumber = e.target.querySelector(
-        'input[name="taxNumber"]'
-      )?.value;
+      const taxNumber = e.querySelector('input[name="taxNumber"]')?.value;
       // تحويل since إلى رقم بدلاً من سلسلة نصية
-      const sinceValue = e.target.querySelector('input[name="since"]')?.value;
+      const sinceValue = e.querySelector('input[name="since"]')?.value;
       const since = sinceValue
         ? parseInt(sinceValue)
         : new Date().getFullYear();
+
+      // إضافة المقدمة +966 لأرقام الهواتف
+      const contactPhoneForSubmit = formatPhoneForSubmit(contactPhone);
+      const deliveryPhoneForSubmit = formatPhoneForSubmit(deliveryPhone);
 
       // إنشاء كائن additionalInfo مع قيم بوليان (لأننا سنحول الكائن إلى FormData لاحقًا)
       const additionalInfo = {
@@ -178,40 +347,6 @@ const Add_Store = () => {
         outdoorSessions: selectedAdditionalInfo.includes("outdoorSessions"),
         preBooking: selectedAdditionalInfo.includes("preBooking"),
       };
-
-      // التحقق من الحقول الإلزامية
-      const requiredFields = {
-        name,
-        description,
-        type,
-        contactPhone,
-        deliveryPhone,
-        city,
-        region,
-      };
-      const missingFields = Object.entries(requiredFields)
-        .filter(([_, value]) => !value)
-        .map(([key, _]) => key);
-
-      if (missingFields.length > 0 || selectedMealTimes.length === 0) {
-        // تعريف متغير errorMessage هنا
-        let errorMessage = "";
-
-        if (missingFields.length > 0) {
-          errorMessage = `يرجى ملء الحقول الإلزامية التالية: ${missingFields.join(
-            ", "
-          )}`;
-        }
-
-        if (selectedMealTimes.length === 0) {
-          errorMessage += errorMessage ? " و " : "";
-          errorMessage += "يرجى اختيار نوع وجبة واحدة على الأقل";
-        }
-
-        setError(errorMessage);
-        setLoading(false);
-        return;
-      }
 
       // دالة للتحقق من صحة الروابط
       const validateAndFixUrl = (url) => {
@@ -233,8 +368,8 @@ const Add_Store = () => {
       formData.append("name", name);
       formData.append("description", description);
       formData.append("type", type);
-      formData.append("contactPhone", contactPhone);
-      formData.append("deliveryPhone", deliveryPhone);
+      formData.append("contactPhone", contactPhoneForSubmit); // استخدام الرقم المنسق
+      formData.append("deliveryPhone", deliveryPhoneForSubmit); // استخدام الرقم المنسق
       formData.append("city", city);
       formData.append("region", region);
       formData.append("mapLink", mapLink);
@@ -245,14 +380,13 @@ const Add_Store = () => {
       if (profilePicture) formData.append("profilePicture", profilePicture);
 
       // الحصول على الملفات الأخرى إذا كانت متوفرة
-      const licenseFile = e.target.querySelector('input[name="licenseFile"]')
+      const licenseFile = e.querySelector('input[name="licenseFile"]')
         ?.files[0];
-      const nationalAddressFile = e.target.querySelector(
+      const nationalAddressFile = e.querySelector(
         'input[name="nationalAddressFile"]'
       )?.files[0];
-      const menuPhoto = e.target.querySelector('input[name="menuPhoto"]')
-        ?.files[0];
-      const commercialRegisterPhoto = e.target.querySelector(
+      const menuPhoto = e.querySelector('input[name="menuPhoto"]')?.files[0];
+      const commercialRegisterPhoto = e.querySelector(
         'input[name="commercialRegisterPhoto"]'
       )?.files[0];
 
@@ -293,8 +427,12 @@ const Add_Store = () => {
       socialInputs.forEach(({ key, selector }) => {
         const value = document.querySelector(selector)?.value;
         if (value && value.trim() !== "") {
+          // إذا كان الحقل هو رقم واتساب، نضيف المقدمة +966
           const finalValue =
-            key === "whatsappNumber" ? value : validateAndFixUrl(value);
+            key === "whatsappNumber"
+              ? formatPhoneForSubmit(value)
+              : validateAndFixUrl(value);
+
           formData.append(`socialMediaLinks[${key}]`, finalValue);
         }
       });
@@ -358,12 +496,6 @@ const Add_Store = () => {
         formData.append(`additionalInfo[${key}]`, value);
       });
 
-      // طباعة البيانات للتحقق (اختياري)
-      console.log("FormData being sent:");
-      for (let pair of formData.entries()) {
-        console.log(pair[0], pair[1]);
-      }
-
       // إرسال البيانات
       const token = localStorage.getItem("token");
       const response = await axios.post(`${api_url}/store`, formData, {
@@ -373,30 +505,36 @@ const Add_Store = () => {
         },
       });
 
-      setSuccess("تم إضافة المتجر بنجاح!");
-      console.log("تم إرسال البيانات بنجاح:", response.data);
+      // عرض رسالة النجاح
+      setAlertMessage("تم إضافة المتجر");
+      setAlertSubMessage(
+        "تم إضافة المتجر بنجاح! سيتم توجيهك إلى صفحة القائمة."
+      );
+      setAlertType("success");
+      setAlertOpen(true);
 
-      // إعادة التوجيه بعد النجاح
-      setTimeout(() => {
-        navigate("/list");
-      }, 2000);
+      console.log("تم إرسال البيانات بنجاح:", response.data);
     } catch (error) {
       console.error("خطأ في إرسال البيانات:", error);
 
-      let errorMessage = "حدث خطأ أثناء إضافة المتجر، يرجى المحاولة مرة أخرى";
+      let errorMessage = "خطأ في إضافة المتجر";
+      let subMessage = "حدث خطأ أثناء إضافة المتجر، يرجى المحاولة مرة أخرى";
 
       if (error.response?.data?.message) {
         if (Array.isArray(error.response.data.message)) {
           console.log("رسائل الخطأ الكاملة:", error.response.data.message);
-          errorMessage = error.response.data.message.join("\n");
+          subMessage = error.response.data.message.join("، ");
         } else {
-          errorMessage = error.response.data.message;
+          subMessage = error.response.data.message;
         }
       } else if (error.message) {
-        errorMessage = error.message;
+        subMessage = error.message;
       }
 
-      setError(errorMessage);
+      setAlertMessage(errorMessage);
+      setAlertSubMessage(subMessage);
+      setAlertType("error");
+      setAlertOpen(true);
 
       if (error.response?.data) {
         console.error("بيانات الخطأ من الخادم:", error.response.data);
@@ -405,25 +543,30 @@ const Add_Store = () => {
       setLoading(false);
     }
   };
+
   return (
     <div className="flex flex-col min-h-screen">
+      {/* شاشة التأكيد */}
+      <ConfirmationModal
+        isOpen={showConfirmation}
+        onClose={() => setShowConfirmation(false)}
+        onConfirm={handleSubmit}
+      />
+
+      {/* مكون التنبيه */}
+      <Alert
+        message={alertMessage}
+        subMessage={alertSubMessage}
+        isOpen={alertOpen}
+        onClose={handleAlertClose}
+        type={alertType}
+      />
+
       <div className="flex-grow flex justify-center items-center px-8 py-8">
         <div className="w-full max-w-[90rem] p-16 rounded-xl">
           <h2 className="text-3xl font-bold text-right text-gray-700 mb-10">
             اضافة متجر جديد
           </h2>
-
-          {/* رسائل النجاح والخطأ */}
-          {error && (
-            <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-md text-right">
-              {error}
-            </div>
-          )}
-          {success && (
-            <div className="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-md text-right">
-              {success}
-            </div>
-          )}
 
           <div className="mb-10 relative">
             <div className="relative bg-gray-300 h-72 w-full rounded-lg flex justify-center items-center overflow-hidden">
@@ -475,7 +618,7 @@ const Add_Store = () => {
           </div>
 
           <form
-            onSubmit={handleSubmit}
+            onSubmit={handleFormSubmit}
             className="pt-6 space-y-14 mx-auto max-w-full"
             encType="multipart/form-data"
           >
@@ -527,18 +670,7 @@ const Add_Store = () => {
                 className="w-full h-12 px-6 text-xl py-4"
                 options={[
                   { value: "Riyadh", label: "الرياض" },
-                  { value: "Mecca", label: "مكة المكرمة" },
-                  { value: "Eastern", label: "الشرقية" },
-                  { value: "Medina", label: "المدينة المنورة" },
-                  { value: "Asir", label: "عسير" },
                   { value: "Al-Qassim", label: "القصيم" },
-                  { value: "Tabuk", label: "تبوك" },
-                  { value: "Hail", label: "حائل" },
-                  { value: "Northern Borders", label: "الحدود الشمالية" },
-                  { value: "Jizan", label: "جازان" },
-                  { value: "Najran", label: "نجران" },
-                  { value: "Al-Bahah", label: "الباحة" },
-                  { value: "Al-Jouf", label: "الجوف" },
                 ]}
                 required
               />
@@ -546,7 +678,10 @@ const Add_Store = () => {
                 name="city"
                 label="المدينة"
                 className="w-full h-12 px-6 text-xl py-4"
-                options={[{ value: "Mecca", label: "مكة المكرمة" }]}
+                options={[
+                  { value: "Al-Kharj", label: "الخرج" },
+                  { value: "Al-Badayea", label: "البدائع" },
+                ]}
                 required
               />
               <SelectInput
@@ -644,17 +779,26 @@ const Add_Store = () => {
                 className="w-full h-12 px-6 text-xl py-4"
               />
               <div className="md:col-start-2 md:col-span-2 flex justify-end space-x-10">
-                <Inputs
-                  name="mapLink"
-                  Icon_2={MdOutlineLocationOn}
-                  label="رابط المتجر علي خريطة جوجل"
-                  type="text"
-                  className="w-full h-12 px-6 text-xl py-4"
-                />
+                <div className="w-full">
+                  <Inputs
+                    name="mapLink"
+                    Icon_2={MdOutlineLocationOn}
+                    label="رابط المتجر علي خريطة جوجل"
+                    type="text"
+                    className="w-full h-12 px-6 text-xl py-4"
+                    onChange={handleMapLinkChange}
+                  />
+                  {mapLinkError && (
+                    <p className="text-primary-1 text-sm mt-1 text-right">
+                      {mapLinkError}
+                    </p>
+                  )}
+                </div>
+
                 <Inputs
                   name="socialMediaLinks[website]"
                   Icon_2={PiGlobeThin}
-                  label="رابط  الموقع  الإلكتروني"
+                  label="رابط الموقع الإلكتروني"
                   type="text"
                   className="w-full h-12 px-6 text-xl py-4"
                 />

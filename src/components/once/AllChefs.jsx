@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { api_url } from "../../utils/ApiClient";
-import PageWrapper from "../common/PageWrapper";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { Link } from "react-router";
 import CategoryTabs from "../shared/category/CategoryTabs";
@@ -44,7 +43,7 @@ const AllChefs = () => {
     const totalPages = Math.ceil(total / pageSize);
 
     return (
-        <PageWrapper>
+        <div>
             <div>
                 {loading && <p className="text-center">...جاري تحميل الطهاة</p>}
                 {error && <p className="text-center text-red-500">{error}</p>}
@@ -54,33 +53,43 @@ const AllChefs = () => {
             <div className="grid md:grid-cols-4 grid-cols-2 gap-6">
                 {Array.isArray(chefs) &&
                     chefs.map((chef) => (
-                        <div key={chef.id} className="bg-white p-4 rounded-lg shadow-md text-center border">
-                            <div className="flex flex-col items-center">
+                        <div
+                            key={chef.id}
+                            className="bg-white p-4 rounded-lg shadow-md border flex flex-col gap-4"
+                        >
+                            <div className="flex items-center border-b pb-4 gap-4">
                                 <img
-                                    src={chef.profilePicture || `https://ui-avatars.com/api/?name=${encodeURIComponent(chef.name)}&background=D71313&color=fff&size=130`}
+                                    src={
+                                        chef.profilePicture ||
+                                        `https://ui-avatars.com/api/?name=${encodeURIComponent(chef.name)}&background=D71313&color=fff&size=130`
+                                    }
                                     alt={chef.name}
-                                    className="w-24 h-24 rounded-full object-cover mb-2"
+                                    className="w-24 h-24 rounded-md object-cover"
                                 />
-                                <h2 className="text-lg font-semibold">{chef.name}</h2>
-                                <p className="text-gray-500 text-sm">أنواع وصفات الطبخ هنا</p>
-                            </div>
-
-                            <div className="flex justify-between text-center mt-4 text-sm border-t pt-4">
-                                <div>
-                                    <p className="font-semibold text-lg text-[#D71313]">120</p>
-                                    <p className="text-gray-600">عدد الزوار</p>
-                                </div>
-                                <div>
-                                    <p className="font-semibold text-lg text-[#D71313]">1700+</p>
-                                    <p className="text-gray-600">عدد المتابعين</p>
-                                </div>
-                                <div>
-                                    <p className="font-semibold text-lg text-[#D71313]">90</p>
-                                    <p className="text-gray-600">عدد الوصفات</p>
+                                <div className="flex-1 text-right">
+                                    <h2 className="text-lg font-semibold">{chef.name}</h2>
+                                    <p className="text-gray-500 text-sm mt-1">
+                                        أنواع وصفات الطبخ هنا
+                                    </p>
                                 </div>
                             </div>
 
-                            <div className="flex justify-between mt-4 gap-2">
+                            <div className="flex justify-around text-center text-sm text-gray-600 border-b pb-4">
+                                <div className="px-2 border-l last:border-l-0">
+                                    <p className="font-bold text-lg text-[#D71313]">90</p>
+                                    <p>عدد الوصفات</p>
+                                </div>
+                                <div className="px-2 border-l">
+                                    <p className="font-bold text-lg text-[#D71313]">1700+</p>
+                                    <p>عدد المتابعين</p>
+                                </div>
+                                <div className="px-2">
+                                    <p className="font-bold text-lg text-[#D71313]">120</p>
+                                    <p>عدد الزوار</p>
+                                </div>
+                            </div>
+
+                            <div className="flex justify-between gap-2 mt-2">
                                 <button className="w-1/2 border border-[#D71313] text-[#D71313] rounded-md py-2 hover:bg-[#D71313] hover:text-white transition">
                                     المتابعة
                                 </button>
@@ -93,7 +102,6 @@ const AllChefs = () => {
                             </div>
                         </div>
                     ))}
-
             </div>
 
             {totalPages > 0 && (
@@ -133,7 +141,7 @@ const AllChefs = () => {
                     </div>
                 </div>
             )}
-        </PageWrapper>
+        </div>
     );
 };
 

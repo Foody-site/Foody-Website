@@ -9,16 +9,16 @@ import { GrInstagram } from "react-icons/gr";
 import { api_url } from "../../../utils/ApiClient";
 import axios from "axios";
 
-// Helper function to format phone number (remove +20 prefix if exists)
+// Helper function to format phone number (remove +966 prefix if exists)
 const formatPhoneNumber = (phoneNumber) => {
   if (!phoneNumber) return "غير محدد";
 
-  // If the phone number starts with +20, remove it
-  if (phoneNumber.startsWith("+20")) {
-    return phoneNumber.substring(3); // Remove first 3 characters (+20)
+  // If the phone number starts with +966, remove it
+  if (phoneNumber.startsWith("+966")) {
+    return phoneNumber.substring(4); // Remove first 4 characters (+966)
   }
 
-  return phoneNumber; // Return as is if not starting with +20
+  return phoneNumber; // Return as is if not starting with +966 or +2
 };
 
 const ViewChef = () => {
@@ -92,17 +92,6 @@ const ViewChef = () => {
   const favoriteConnection = chef.favoriteConnection || [];
   const noContact = favoriteConnection.length === 0;
 
-  // Helper function to format phone number (remove +20 prefix if exists)
-  const formatPhoneNumber = (phoneNumber) => {
-    if (!phoneNumber) return "غير محدد";
-
-    // If the phone number starts with +20, remove it
-    if (phoneNumber.startsWith("+2")) {
-      return phoneNumber.substring(2); // Remove first 3 characters (+20)
-    }
-
-    return phoneNumber; // Return as is if not starting with +20
-  };
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex-grow flex justify-center items-center px-8 py-8">
@@ -143,7 +132,7 @@ const ViewChef = () => {
 
           <div className="pt-6 space-y-14 mx-auto max-w-full">
             {/* البيانات الأساسية */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-10 text-right">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-right">
               {/* أنواع وصفات الطبخ */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
@@ -201,7 +190,7 @@ const ViewChef = () => {
             </div>
 
             {/* المعلومات الإضافية */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-10 text-right">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-right">
               {/* رابط فيسبوك */}
               {chef.socialMedia?.facebook && (
                 <div>
@@ -379,7 +368,10 @@ const ViewChef = () => {
                   <div className="w-full h-12 px-6 py-3 bg-gray-50 border border-gray-300 rounded-md flex items-center">
                     <div className="flex justify-between items-center w-full">
                       <a
-                        href={chef.socialMedia.whatsapp}
+                        href={`https://wa.me/${chef.socialMedia.whatsapp.replace(
+                          /\+/g,
+                          ""
+                        )}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-blue-500 hover:underline truncate text-left pl-4"
@@ -408,9 +400,9 @@ const ViewChef = () => {
                         key={method}
                         className="bg-primary-1 text-white px-3 py-1 rounded-md"
                       >
-                        {method === "Email"
+                        {method === "email"
                           ? "البريد الإلكتروني"
-                          : method === "WhatsApp"
+                          : method === "whatsapp"
                           ? "رقم الواتساب"
                           : method === "Phone"
                           ? "رقم الجوال"

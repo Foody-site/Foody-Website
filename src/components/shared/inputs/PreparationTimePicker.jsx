@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { IoChevronDownOutline } from "react-icons/io5";
 
 const PreparationTimePicker = ({
@@ -6,9 +6,27 @@ const PreparationTimePicker = ({
   onHourChange,
   onMinuteChange,
   className = "",
+  error,
+  hourValue, // قيمة افتراضية للساعات
+  minuteValue, // قيمة افتراضية للدقائق
 }) => {
-  const [hours, setHours] = useState(0);
-  const [minutes, setMinutes] = useState(0);
+  const [hours, setHours] = useState(hourValue !== undefined ? hourValue : 0);
+  const [minutes, setMinutes] = useState(
+    minuteValue !== undefined ? minuteValue : 0
+  );
+
+  // تحديث القيم المحلية عندما تتغير القيم الخارجية
+  useEffect(() => {
+    if (hourValue !== undefined) {
+      setHours(hourValue);
+    }
+  }, [hourValue]);
+
+  useEffect(() => {
+    if (minuteValue !== undefined) {
+      setMinutes(minuteValue);
+    }
+  }, [minuteValue]);
 
   const handleHourChange = (value) => {
     const newHours = parseInt(value, 10);
@@ -74,6 +92,7 @@ const PreparationTimePicker = ({
           </div>
         </div>
       </div>
+      {error && <p className="text-red-500 text-sm mt-1 text-right">{error}</p>}
     </div>
   );
 };

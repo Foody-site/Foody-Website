@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { FaArrowLeft, FaArrowRight, FaHeart, FaShareAlt } from "react-icons/fa";
-import { useParams } from "react-router";
+import { Link, useParams } from "react-router";
 import { api_url } from "../../../utils/ApiClient";
+import FavouriteRecipe from "../Favourites/FavouriteRecipe";
 
 const RecipeChef = () => {
     const { id } = useParams();
@@ -17,7 +18,7 @@ const RecipeChef = () => {
         setLoading(true);
         try {
             const token = localStorage.getItem("token");
-            const response = await axios.get(`${api_url}/recipe`, {
+            const response = await axios.get(`${api_url}/chef/${id}/recipes`, {
                 params: {
                     page,
                     take,
@@ -28,6 +29,8 @@ const RecipeChef = () => {
             });
 
             const data = response.data;
+            console.log(data);
+
             setRecipes(data.data || []);
             setPagination({
                 totalPages: data.pagination?.totalPages || 1,
@@ -91,16 +94,26 @@ const RecipeChef = () => {
                                 </div>
                             </div>
 
+                            <div>
+                                <p className="text-[#C7C7C7] border border-[#C7C7C7] p-2 rounded-md text-[16px] my-2">
+                                    {recipe.isAllergenic === true ? "تحتوي هذه الوصفة علي احد مسببات حساسية" : ""}
+                                </p>
+                            </div>
+
                             <div className="flex justify-between items-center gap-2">
-                                <button className="w-10 h-10 flex items-center justify-center border border-primary-1 rounded-lg text-primary-1">
-                                    <FaHeart />
-                                </button>
-                                <button className="flex-1 bg-primary-1 hover:bg-red-700 text-white py-2 rounded-lg text-sm">
-                                    عرض التفاصيل
-                                </button>
-                                <button className="w-10 h-10 flex items-center justify-center border border-primary-1 rounded-lg text-primary-1">
+                                <FavouriteRecipe itemId={recipe.id} isInitiallyFavorited={recipe.isFavorited} />
+
+                                {/* Navigate Button */}
+                                <Link to={`/recipe/${recipe.id}`} className="flex-1">
+                                    <div className="bg-primary-1 hover:bg-red-700 text-white py-2 rounded-lg text-sm text-center w-full">
+                                        عرض التفاصيل
+                                    </div>
+                                </Link>
+
+                                {/* Share Button */}
+                                <div className="w-10 h-10 flex items-center justify-center border border-primary-1 rounded-lg text-primary-1">
                                     <FaShareAlt />
-                                </button>
+                                </div>
                             </div>
                         </div>
                     </div>

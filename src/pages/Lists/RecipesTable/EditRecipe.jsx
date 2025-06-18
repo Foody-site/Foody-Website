@@ -1,29 +1,30 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router";
 import { FaPlus, FaTrash } from "react-icons/fa";
 import { TbCameraPlus } from "react-icons/tb";
-import Inputs from "../../components/shared/inputs/Inputs";
-import CheckboxSelectInput from "../../components/shared/inputs/CheckboxSelectInput";
-import { api_url } from "../../utils/ApiClient";
+import Inputs from "../../../components/shared/inputs/Inputs";
+import CheckboxSelectInput from "../../../components/shared/inputs/CheckboxSelectInput";
 import axios from "axios";
-import PreparationTimePicker from "../../components/shared/inputs/PreparationTimePicker";
-import PreparationSteps from "../../components/shared/inputs/PreparationSteps";
-import SelectInput from "../../components/shared/inputs/SelectInput";
-import Button from "../../components/shared/Buttons/Button";
-import allergy from "../../assets/allergy.jpg";
-import TextAreaInput from "../../components/shared/inputs/TextAreaInput ";
-import { useNavigate } from "react-router";
-import Alert from "../../components/shared/Alert/Alert";
+import PreparationTimePicker from "../../../components/shared/inputs/PreparationTimePicker";
+import PreparationSteps from "../../../components/shared/inputs/PreparationSteps";
+import SelectInput from "../../../components/shared/inputs/SelectInput";
+import allergy from "../../../assets/allergy.jpg";
+import TextAreaInput from "../../../components/shared/inputs/TextAreaInput ";
+import { api_url } from "../../../utils/ApiClient";
+import Button from "../../../components/shared/Buttons/Button";
+import Alert from "../../../components/shared/Alert/Alert";
 
-const AddRecipe = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [photo, setPhoto] = useState(null);
-  const [availableRecipeTypes, setAvailableRecipeTypes] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState({});
+const EditRecipe = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
 
-  // مرجع للتتبع
-  const recipeTypeRef = useRef(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [photo, setPhoto] = useState(null);
+  const [currentPhoto, setCurrentPhoto] = useState(null);
+  const [availableRecipeTypes, setAvailableRecipeTypes] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [fetchLoading, setFetchLoading] = useState(true);
+  const [errors, setErrors] = useState({});
 
   // حالات التنبيه
   const [alertOpen, setAlertOpen] = useState(false);
@@ -41,7 +42,7 @@ const AddRecipe = () => {
     preparationSteps: [],
     ingredients: [{ name: "", quantity: "", unit: "" }],
     isAllergenic: false,
-    selectedRecipeTypes: [], // Renamed for clarity
+    selectedRecipeTypes: [],
     mainIngredient: "",
   });
 
@@ -49,6 +50,7 @@ const AddRecipe = () => {
   const handleAlertClose = () => {
     setAlertOpen(false);
 
+    // إذا كان التنبيه من نوع "success" قم بإعادة توجيه المستخدم
     if (alertType === "success") {
       navigate("/list");
     }
@@ -62,8 +64,87 @@ const AddRecipe = () => {
     setAlertOpen(true);
   };
 
+  useEffect(() => {
+    const fetchRecipe = async () => {
+      setFetchLoading(true);
+      try {
+        const token = localStorage.getItem("token");
+
+        const response = await axios.get(`${api_url}/recipe/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const recipeData = response.data;
+        console.log("Recipe data:", recipeData);
+
+        let selectedTypeIds = [];
+        if (recipeData.recipeTypes && Array.isArray(recipeData.recipeTypes)) {
+          selectedTypeIds = recipeData.recipeTypes.map(
+            (type) => type.id || type._id || type.value
+          );
+        }
+        console.log("Selected type IDs:", selectedTypeIds);
+
+        setFormData({
+          name: recipeData.name || "",
+          description: recipeData.description || "",
+          youtubeLink: recipeData.youtubeLink || "",
+          preparationTime: recipeData.preparationTime || 0,
+          cookingTime: recipeData.cookingTime || 0,
+          totalTime: recipeData.totalTime || 0,
+          preparationSteps: recipeData.preparationSteps || [],
+          ingredients:
+            recipeData.ingredients && recipeData.ingredients.length > 0
+              ? recipeData.ingredients
+              : [{ name: "", quantity: "", unit: "" }],
+          isAllergenic: recipeData.isAllergenic || false,
+          selectedRecipeTypes: selectedTypeIds,
+          mainIngredient: recipeData.mainIngredient || "",
+        });
+
+        if (recipeData.photo) {
+          setCurrentPhoto(recipeData.photo);
+        }
+      } catch (error) {
+        console.error("Error fetching recipe details:", error);
+        showAlert(
+          "خطأ في جلب البيانات",
+          "حدث خطأ أثناء جلب بيانات الوصفة",
+          "error"
+        );
+      } finally {
+        setFetchLoading(false);
+      }
+    };
+
+    const fetchRecipeTypes = async () => {
+      try {
+        const response = await axios.get(`${api_url}/chef/recipe/types`);
+        const formattedData = response.data.map((item) => ({
+          value: item.id || item._id,
+          label: item.name.ar,
+        }));
+        setAvailableRecipeTypes(formattedData);
+        console.log("Available recipe types:", formattedData);
+      } catch (error) {
+        console.error("Error fetching recipe types:", error);
+        showAlert(
+          "خطأ في جلب أنواع الطعام",
+          "حدث خطأ أثناء جلب أنواع الوصفات",
+          "error"
+        );
+      }
+    };
+
+    if (id) {
+      fetchRecipe();
+      fetchRecipeTypes();
+    }
+  }, [id]);
+
   const handleRemoveIngredient = (indexToRemove) => {
-    // Make sure we always keep at least one ingredient
     if (formData.ingredients.length <= 1) {
       return;
     }
@@ -76,35 +157,16 @@ const AddRecipe = () => {
     }));
   };
 
-  // Fetch recipe types on component mount
-  useEffect(() => {
-    const fetchRecipeTypes = async () => {
-      try {
-        const response = await axios.get(`${api_url}/chef/recipe/types`);
-        const formattedData = response.data.map((item) => ({
-          value: item.id, // Make sure this is the MongoDB ID
-          label: item.name.ar,
-        }));
-        setAvailableRecipeTypes(formattedData);
-        console.log("Available recipe types:", formattedData);
-      } catch (error) {
-        console.error("Error fetching recipe types:", error);
-        showAlert(
-          "خطأ في تحميل البيانات",
-          "حدث خطأ أثناء جلب أنواع الوصفات",
-          "error"
-        );
-      }
-    };
-    fetchRecipeTypes();
-  }, []);
-
   const handlePhotoChange = (event) => {
     const file = event.target.files[0];
     if (file && file.type.startsWith("image/")) {
       setPhoto(file);
     } else if (file) {
-      showAlert("خطأ في تحميل الصورة", "الرجاء اختيار صورة صحيحة!", "error");
+      showAlert(
+        "صورة غير صالحة",
+        "الرجاء اختيار صورة صحيحة بصيغة مدعومة",
+        "error"
+      );
     }
   };
 
@@ -115,48 +177,16 @@ const AddRecipe = () => {
     }));
   };
 
-  // معالج مخصص لتغيير أنواع الوصفات
-  const handleRecipeTypesChange = (e) => {
-    console.log("handleRecipeTypesChange called with:", e.target.value);
-
-    try {
-      // تحديد نوع القيمة المستلمة
-      let selectedValues = [];
-
-      // إذا كانت القيمة مصفوفة، استخدمها مباشرة
-      if (Array.isArray(e.target.value)) {
-        selectedValues = e.target.value.map(String); // تحويل كل القيم إلى نصوص
-      }
-      // إذا كانت القيمة نصًا، قد تكون مقسمة بفواصل
-      else if (
-        typeof e.target.value === "string" &&
-        e.target.value.includes(",")
-      ) {
-        selectedValues = e.target.value.split(",").map((v) => v.trim());
-      }
-      // إذا كانت قيمة واحدة
-      else if (e.target.value) {
-        selectedValues = [String(e.target.value)];
-      }
-
-      console.log("Selected values processed:", selectedValues);
-
-      // تحديث حالة النموذج
-      setFormData((prev) => ({
-        ...prev,
-        selectedRecipeTypes: selectedValues,
-      }));
-    } catch (error) {
-      console.error("Error processing recipe types:", error);
-    }
-  };
-
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
     if (name === "selectedRecipeTypes") {
-      // استخدام المعالج المخصص لأنواع الوصفات
-      handleRecipeTypesChange(e);
+      const selectedTypeIds = Array.isArray(value) ? value : [value];
+
+      setFormData((prev) => ({
+        ...prev,
+        selectedRecipeTypes: selectedTypeIds,
+      }));
     } else if (type === "checkbox") {
       setFormData((prev) => ({
         ...prev,
@@ -170,11 +200,17 @@ const AddRecipe = () => {
     }
   };
 
-  // Rest of your handlers...
-
   const handleIngredientChange = (index, field, value) => {
     const updatedIngredients = [...formData.ingredients];
-    updatedIngredients[index][field] = value;
+
+    if (field === "quantity") {
+      const numValue = parseInt(value, 10);
+
+      updatedIngredients[index][field] = !isNaN(numValue) ? numValue : "";
+    } else {
+      updatedIngredients[index][field] = value;
+    }
+
     setFormData((prev) => ({
       ...prev,
       ingredients: updatedIngredients,
@@ -190,7 +226,6 @@ const AddRecipe = () => {
     }
   };
 
-  // Time handlers...
   const handlePrepTimeHourChange = (value) => {
     const hours = parseInt(value) || 0;
     setFormData((prev) => {
@@ -244,7 +279,6 @@ const AddRecipe = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    // Check required fields
     if (!formData.name || formData.name.trim() === "")
       newErrors.name = "اسم الوصفة مطلوب";
     else if (formData.name.length > 200)
@@ -270,16 +304,6 @@ const AddRecipe = () => {
     if (!formData.mainIngredient || formData.mainIngredient.trim() === "")
       newErrors.mainIngredient = "المكون الرئيسي مطلوب";
 
-    // اختياري: التحقق من وجود نوع طعام واحد على الأقل
-    if (
-      !formData.selectedRecipeTypes ||
-      formData.selectedRecipeTypes.length === 0
-    ) {
-      newErrors.selectedRecipeTypes =
-        "يرجى اختيار نوع واحد على الأقل من أنواع الطعام";
-    }
-
-    // Check ingredients
     const ingredientErrors = [];
     formData.ingredients.forEach((ingredient, index) => {
       const itemErrors = {};
@@ -302,26 +326,23 @@ const AddRecipe = () => {
     e.preventDefault();
     console.log("Form data before submission:", formData);
 
-    // Validate form
     if (!validateForm()) {
       showAlert(
         "يرجى تصحيح الأخطاء",
-        "يرجى التأكد من تعبئة جميع الحقول المطلوبة بشكل صحيح",
+        "يرجى التأكد من تعبئة جميع الحقول المطلوبة",
         "error"
       );
       return;
     }
 
-    // Form data preparation and submission code...
     setLoading(true);
     const token = localStorage.getItem("token");
     if (!token) {
-      showAlert("خطأ في المصادقة", "لا يوجد توكن، يرجى تسجيل الدخول.", "error");
+      showAlert("خطأ في المصادقة", "لا يوجد توكن، يرجى تسجيل الدخول", "error");
       setLoading(false);
       return;
     }
 
-    // Rest of your form submission code...
     const data = new FormData();
     data.append("name", formData.name);
     data.append("description", formData.description);
@@ -332,31 +353,31 @@ const AddRecipe = () => {
     data.append("isAllergenic", formData.isAllergenic);
     data.append("mainIngredient", formData.mainIngredient);
 
-    // Handle recipe types
     if (
       formData.selectedRecipeTypes &&
       formData.selectedRecipeTypes.length > 0
     ) {
       formData.selectedRecipeTypes.forEach((typeId) => {
-        if (typeId && String(typeId).trim() !== "") {
+        if (typeId) {
           data.append("recipeTypes[]", typeId);
-          console.log("Adding recipe type:", typeId);
         }
       });
     } else {
       data.append("recipeTypes[]", "");
     }
 
-    // Add preparation steps
     const limitedSteps = formData.preparationSteps.slice(0, 20);
     limitedSteps.forEach((step, index) =>
       data.append(`preparationSteps[${index}]`, step)
     );
 
-    // Add ingredients
     formData.ingredients.forEach((ingredient, index) => {
       data.append(`ingredients[${index}][name]`, ingredient.name);
-      data.append(`ingredients[${index}][quantity]`, ingredient.quantity);
+
+      data.append(
+        `ingredients[${index}][quantity]`,
+        parseInt(ingredient.quantity, 10)
+      );
       data.append(`ingredients[${index}][unit]`, ingredient.unit);
     });
 
@@ -365,39 +386,40 @@ const AddRecipe = () => {
     }
 
     try {
-      const response = await axios.post(`${api_url}/recipe`, data, {
+      const response = await axios.patch(`${api_url}/recipe/${id}`, data, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
       });
 
-      showAlert("تمت الإضافة", "تمت إضافة الوصفة بنجاح", "success");
+      showAlert("تم تعديل الوصفة", "تم تعديل الوصفة بنجاح", "success");
 
-      // Reset form
-      setFormData({
-        name: "",
-        description: "",
-        youtubeLink: "",
-        preparationTime: 0,
-        cookingTime: 0,
-        totalTime: 0,
-        preparationSteps: [],
-        ingredients: [{ name: "", quantity: "", unit: "" }],
-        isAllergenic: false,
-        selectedRecipeTypes: [],
-        mainIngredient: "",
-      });
-      setPhoto(null);
+      // التنقل سيتم في handleAlertClose عندما يكون نوع التنبيه هو success
     } catch (error) {
       const errorMessage =
-        error.response?.data?.message || "حدث خطأ أثناء الإرسال";
-      showAlert("خطأ في إضافة الوصفة", errorMessage, "error");
+        error.response?.data?.message || "حدث خطأ أثناء تعديل الوصفة";
+      showAlert("خطأ في تعديل الوصفة", errorMessage, "error");
       console.error("API Error:", error.response?.data || error.message);
     } finally {
       setLoading(false);
     }
   };
+
+  if (fetchLoading) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <div className="flex-grow flex justify-center items-center">
+          <div className="text-xl">جاري تحميل بيانات الوصفة...</div>
+        </div>
+      </div>
+    );
+  }
+
+  const getPrepTimeHours = () => Math.floor(formData.preparationTime / 60);
+  const getPrepTimeMinutes = () => formData.preparationTime % 60;
+  const getCookTimeHours = () => Math.floor(formData.cookingTime / 60);
+  const getCookTimeMinutes = () => formData.cookingTime % 60;
 
   return (
     <div className="flex flex-col min-h-screen ">
@@ -412,19 +434,25 @@ const AddRecipe = () => {
       />
 
       <div className="flex-grow flex justify-center items-center px-8 py-8">
-        <div className="w-full max-w-[70rem] p-16  rounded-xl ">
+        <div className="w-full max-w-[70rem] p-16 rounded-xl">
           <h2 className="text-3xl font-bold text-gray-700 mb-10 text-right">
-            إضافة وصفة جديدة
+            تعديل الوصفة
           </h2>
 
           <div className="relative bg-gray-300 h-72 w-full rounded-lg flex justify-center items-center overflow-hidden mb-10">
-            {photo && (
+            {photo ? (
               <img
                 src={URL.createObjectURL(photo)}
                 alt="Recipe"
                 className="w-full h-full object-cover"
               />
-            )}
+            ) : currentPhoto ? (
+              <img
+                src={currentPhoto}
+                alt="Current Recipe"
+                className="w-full h-full object-cover"
+              />
+            ) : null}
             <input
               type="file"
               accept="image/*"
@@ -436,39 +464,19 @@ const AddRecipe = () => {
               htmlFor="photo"
               className="absolute bottom-5 left-5 px-5 py-2 border border-primary-1 rounded-md text-sm flex items-center cursor-pointer text-primary-1"
             >
-              <TbCameraPlus className="text-primary-1 text-2xl mr-2" /> إضافة
+              <TbCameraPlus className="text-primary-1 text-2xl mr-2" /> تغيير
               صورة الوصفة
             </label>
           </div>
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-10 text-right">
-              <div>
-                <label className="block text-gray-700 font-medium mb-2 text-right">
-                  نوع الطعام
-                </label>
-                <div className="relative">
-                  {availableRecipeTypes.length > 0 ? (
-                    <CheckboxSelectInput
-                      name="selectedRecipeTypes"
-                      label=""
-                      options={availableRecipeTypes}
-                      onChange={handleRecipeTypesChange}
-                      value={formData.selectedRecipeTypes}
-                      ref={recipeTypeRef}
-                      key="recipe-types-input"
-                    />
-                  ) : (
-                    <div className="text-gray-500">
-                      جاري تحميل أنواع الطعام...
-                    </div>
-                  )}
-                  {errors.selectedRecipeTypes && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.selectedRecipeTypes}
-                    </p>
-                  )}
-                </div>
-              </div>
+              <CheckboxSelectInput
+                name="selectedRecipeTypes"
+                label="نوع الطعام"
+                options={availableRecipeTypes}
+                onChange={handleChange}
+                value={formData.selectedRecipeTypes}
+              />
 
               <Inputs
                 name="name"
@@ -482,8 +490,6 @@ const AddRecipe = () => {
                 maxLength={200}
               />
             </div>
-
-            {/* باقي النموذج كما هو */}
             <div className="grid grid-cols-1 md:grid-cols-1 gap-x-10 gap-y-10 text-right pt-10">
               <TextAreaInput
                 name="description"
@@ -498,7 +504,6 @@ const AddRecipe = () => {
               />
             </div>
 
-            {/* أوقات التحضير والطهي */}
             <div className="flex justify-end gap-x-8 col-span-full pt-10">
               <PreparationTimePicker
                 label="وقت الطبخ"
@@ -506,6 +511,8 @@ const AddRecipe = () => {
                 onMinuteChange={handleCookTimeMinuteChange}
                 className="w-[27%]"
                 error={errors.cookingTime}
+                hourValue={getCookTimeHours()}
+                minuteValue={getCookTimeMinutes()}
               />
               <PreparationTimePicker
                 label="وقت الإعداد"
@@ -513,6 +520,8 @@ const AddRecipe = () => {
                 onMinuteChange={handlePrepTimeMinuteChange}
                 className="w-[27%]"
                 error={errors.preparationTime}
+                hourValue={getPrepTimeHours()}
+                minuteValue={getPrepTimeMinutes()}
               />
             </div>
 
@@ -621,7 +630,6 @@ const AddRecipe = () => {
                     error={errors.ingredients?.[index]?.quantity}
                   />
 
-                  {/* Add delete button */}
                   {formData.ingredients.length > 1 && (
                     <button
                       type="button"
@@ -671,7 +679,7 @@ const AddRecipe = () => {
                 >
                   مسببات الحساسية
                 </button>
-                لمعرفة المذيد عن مسببات الحساسية يرجى الضعط على الرابط التالي{" "}
+                لمعرفة المزيد عن مسببات الحساسية يرجى الضغط على الرابط التالي{" "}
               </p>
 
               {isOpen && (
@@ -704,14 +712,14 @@ const AddRecipe = () => {
             <div className="flex justify-center mt-12">
               <div className="flex gap-4 w-full max-w-xs justify-center">
                 <Button
-                  label="الغاء"
+                  label="إلغاء"
                   className="w-[600px] h-[55px] !text-primary-1 font-medium border border-primary-1 hover:bg-primary-1 hover:!text-white transition"
                   type="button"
                   onClick={() => navigate("/list")}
                 />
                 <Button
                   type="submit"
-                  label={loading ? "جاري الاضافه ...." : "إضافة وصفة"}
+                  label={loading ? "جاري التعديل..." : "حفظ التعديلات"}
                   disabled={loading}
                   className="w-[600px] h-[55px] bg-primary-1 hover:bg-hover_primary-1 text-white rounded-md text-lg font-semibold"
                 />
@@ -724,4 +732,4 @@ const AddRecipe = () => {
   );
 };
 
-export default AddRecipe;
+export default EditRecipe;

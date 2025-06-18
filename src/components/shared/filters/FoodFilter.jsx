@@ -26,6 +26,7 @@ const FoodFilter = ({ onSearch }) => {
     const [selectedRegion, setSelectedRegion] = useState("");
     const [selectedCity, setSelectedCity] = useState("");
     const [selectedDeliveryApps, setSelectedDeliveryApps] = useState([]);
+    const [coordinates, setCoordinates] = useState(null);
 
     const handleSearch = () => {
         const deliveryAppParams = selectedDeliveryApps.reduce((acc, app) => {
@@ -48,14 +49,42 @@ const FoodFilter = ({ onSearch }) => {
             return acc;
         }, {});
 
-        onSearch({
-            ...deliveryAppParams,
-            region: selectedRegion,
-            city: selectedCity,
-            rating: ratingRange?.min,
-            ...optionsObj,
-            ...mealParams,
-        });
+        if (selectedOptions.includes("الاقرب اليك")) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    onSearch({
+                        ...deliveryAppParams,
+                        region: selectedRegion,
+                        city: selectedCity,
+                        rating: ratingRange?.min,
+                        ...optionsObj,
+                        ...mealParams,
+                        longitude: position.coords.longitude,
+                        latitude: position.coords.latitude,
+                    });
+                },
+                (error) => {
+                    console.error("Error getting location", error);
+                    onSearch({
+                        ...deliveryAppParams,
+                        region: selectedRegion,
+                        city: selectedCity,
+                        rating: ratingRange?.min,
+                        ...optionsObj,
+                        ...mealParams,
+                    });
+                }
+            );
+        } else {
+            onSearch({
+                ...deliveryAppParams,
+                region: selectedRegion,
+                city: selectedCity,
+                rating: ratingRange?.min,
+                ...optionsObj,
+                ...mealParams,
+            });
+        }
     };
 
     return (
@@ -97,6 +126,7 @@ const FoodFilter = ({ onSearch }) => {
                 <MoreChoicesFilter
                     selectedOptions={selectedOptions}
                     setSelectedOptions={setSelectedOptions}
+                    setCoordinates={setCoordinates}
                 />
             </div>
 

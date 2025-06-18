@@ -5,6 +5,7 @@ import { LuPencilLine } from "react-icons/lu";
 import { Pagination } from "../../../components/shared/Pagination/Pagination";
 import { api_url } from "../../../utils/ApiClient";
 import { useNavigate } from "react-router";
+import Alert from './../../../components/shared/Alert/Alert';
 
 export const RecipesTable = forwardRef((props, ref) => {
   const { onRecipesChange, onLoadingChange } = props;
@@ -19,9 +20,28 @@ export const RecipesTable = forwardRef((props, ref) => {
   const [itemsPerPage] = useState(10); // You can make this configurable
   const navigate = useNavigate();
 
+  // حالات التنبيه
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertType, setAlertType] = useState("success");
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertSubMessage, setAlertSubMessage] = useState("");
+
   useImperativeHandle(ref, () => ({
     hasRecipes: () => recipes.length > 0,
   }));
+
+  // معالج إغلاق التنبيه
+  const handleAlertClose = () => {
+    setAlertOpen(false);
+  };
+
+  // دالة لعرض التنبيه
+  const showAlert = (message, subMessage, type = "success") => {
+    setAlertMessage(message);
+    setAlertSubMessage(subMessage);
+    setAlertType(type);
+    setAlertOpen(true);
+  };
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -103,6 +123,7 @@ export const RecipesTable = forwardRef((props, ref) => {
               ? result.message.join(", ")
               : result.message;
             console.error("API Error Message:", errorMessage);
+            showAlert("خطأ في تحميل البيانات", errorMessage, "error");
           }
         }
       } catch (error) {
@@ -111,6 +132,7 @@ export const RecipesTable = forwardRef((props, ref) => {
         if (onRecipesChange) {
           onRecipesChange(false);
         }
+        showAlert("خطأ في تحميل البيانات", "حدث خطأ أثناء جلب الوصفات", "error");
       } finally {
         setLoading(false);
         if (onLoadingChange) {
@@ -166,15 +188,30 @@ export const RecipesTable = forwardRef((props, ref) => {
           setCurrentPage(currentPage - 1);
         }
 
-        alert("تم حذف الوصفة بنجاح");
+        // استخدام مكون Alert بدلاً من دالة alert
+        showAlert("تم الحذف بنجاح", `تم حذف الوصفة (${recipeToDelete.name}) بنجاح`, "success");
       } else {
         const errorData = await response.json().catch(() => null);
         console.error("خطأ في حذف الوصفة:", errorData);
-        alert(errorData?.message || "حدث خطأ أثناء حذف الوصفة");
+        
+        // استخدام مكون Alert بدلاً من دالة alert
+        showAlert(
+          "خطأ في الحذف",
+          errorData?.message || "حدث خطأ أثناء حذف الوصفة",
+          "error"
+        );
+        
+        setShowDeleteModal(false);
+        setRecipeToDelete(null);
       }
     } catch (error) {
       console.error("خطأ في حذف الوصفة:", error);
-      alert("حدث خطأ أثناء حذف الوصفة");
+      
+      // استخدام مكون Alert بدلاً من دالة alert
+      showAlert("خطأ في الحذف", "حدث خطأ أثناء حذف الوصفة", "error");
+      
+      setShowDeleteModal(false);
+      setRecipeToDelete(null);
     } finally {
       setDeleteLoading(false);
     }
@@ -182,6 +219,10 @@ export const RecipesTable = forwardRef((props, ref) => {
 
   const handleViewRecipe = (recipe) => {
     navigate(`/recipe/view/${recipe.id}`);
+  };
+
+  const handleEditRecipe = (recipe) => {
+    navigate(`/recipe/edit/${recipe.id}`);
   };
 
   const handleDeleteCancel = () => {
@@ -202,11 +243,22 @@ export const RecipesTable = forwardRef((props, ref) => {
 
   return (
     <div>
+      {/* مكون Alert */}
+      <Alert
+        message={alertMessage}
+        subMessage={alertSubMessage}
+        isOpen={alertOpen}
+        onClose={handleAlertClose}
+        type={alertType}
+        autoClose={true}
+        autoCloseTime={5000}
+      />
+
       <div className="overflow-hidden rounded-lg border border-gray-300">
         <table className="w-full table-fixed border-collapse border border-gray-300">
           <thead>
-            <tr className="text-right text-gray-700">
-              <th className="px-4 py-3 font-medium text-center border border-gray-300">
+            <tr className="text-right text-gray-700 bg-gray-100">
+              <th className="px-4 py-3 font-medium text-center border border-gray-300 w-[120px]">
                 مزيد من التفاصيل
               </th>
               <th className="px-4 py-3 font-medium text-right border border-gray-300">
@@ -241,13 +293,14 @@ export const RecipesTable = forwardRef((props, ref) => {
                         <TbTrash size={16} />
                       </button>
                       <button
-                        onClick={() => handleViewRecipe(recipe)} 
+                        onClick={() => handleViewRecipe(recipe)}
                         className="text-blue-500 bg-blue-100 hover:bg-blue-300 p-1 rounded-md transition-colors"
                         title="عرض تفاصيل الوصفة"
                       >
                         <IoEyeOutline size={16} />
                       </button>
                       <button
+                        onClick={() => handleEditRecipe(recipe)} 
                         className="text-blue-500 bg-blue-100 hover:bg-blue-300 p-1 rounded-md transition-colors"
                         title="تعديل الوصفة"
                       >

@@ -5,17 +5,58 @@ import { LuPencilLine } from "react-icons/lu";
 import { Pagination } from "../../../components/shared/Pagination/Pagination";
 import { api_url } from "../../../utils/ApiClient";
 import { useNavigate } from "react-router";
+import Alert from "./../../../components/shared/Alert/Alert";
 
-// Helper function to format phone number (remove +20 prefix if exists)
+// Helper function to format phone number (remove +966 prefix if exists)
 const formatPhoneNumber = (phoneNumber) => {
   if (!phoneNumber) return "غير محدد";
 
-  // If the phone number starts with +20, remove it
-  if (phoneNumber.startsWith("+2")) {
-    return phoneNumber.substring(2); // Remove first 3 characters (+20)
+  // If the phone number starts with +966, remove it
+  if (phoneNumber.startsWith("+966")) {
+    return phoneNumber.substring(4);
   }
 
-  return phoneNumber; // Return as is if not starting with +20
+  return phoneNumber;
+};
+
+// دالة لتحويل نوع المتجر إلى النص المناسب بالعربية
+const formatStoreType = (type) => {
+  switch (type) {
+    case "restaurant":
+      return "مطعم";
+    case "patisserie":
+      return "معجنات";
+    case "health":
+      return "صحي";
+    case "icecream":
+      return "ايس كريم";
+    default:
+      return "غير محدد";
+  }
+};
+
+// دالة لتحويل المدينة إلى النص المناسب بالعربية
+const formatCity = (city) => {
+  switch (city) {
+    case "Al-Kharj":
+      return "الخرج";
+    case "Al-Badayea":
+      return "البدائع";
+    default:
+      return "غير محدد";
+  }
+};
+
+// دالة لتحويل المنطقة إلى النص المناسب بالعربية
+const formatRegion = (region) => {
+  switch (region) {
+    case "Riyadh":
+      return "الرياض";
+    case "Al-Qassim":
+      return "القصيم";
+    default:
+      return "غير محدد";
+  }
 };
 
 export const StoresTable = forwardRef((props, ref) => {
@@ -30,6 +71,12 @@ export const StoresTable = forwardRef((props, ref) => {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [itemsPerPage] = useState(10);
   const navigate = useNavigate();
+
+  // الحالات الجديدة للتنبيه
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertType, setAlertType] = useState("success");
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertSubMessage, setAlertSubMessage] = useState("");
 
   useImperativeHandle(ref, () => ({
     hasStores: () => stores.length > 0,
@@ -46,7 +93,7 @@ export const StoresTable = forwardRef((props, ref) => {
         const token = localStorage.getItem("token");
 
         // Add pagination parameters to the URL
-        const url = new URL(`${api_url}/store/user`); // تغيير الـ endpoint حسب API الخاص بك
+        const url = new URL(`${api_url}/store/user`);
         url.searchParams.append("page", currentPage.toString());
         url.searchParams.append("take", itemsPerPage.toString());
 
@@ -115,6 +162,12 @@ export const StoresTable = forwardRef((props, ref) => {
               ? result.message.join(", ")
               : result.message;
             console.error("API Error Message:", errorMessage);
+
+            // عرض رسالة الخطأ بتنبيه Alert
+            setAlertMessage("خطأ في جلب البيانات");
+            setAlertSubMessage(errorMessage);
+            setAlertType("error");
+            setAlertOpen(true);
           }
         }
       } catch (error) {
@@ -123,6 +176,14 @@ export const StoresTable = forwardRef((props, ref) => {
         if (onStoresChange) {
           onStoresChange(false);
         }
+
+        // عرض رسالة الخطأ بتنبيه Alert
+        setAlertMessage("خطأ في الاتصال");
+        setAlertSubMessage(
+          "حدث خطأ أثناء محاولة الاتصال بالخادم. يرجى المحاولة لاحقاً."
+        );
+        setAlertType("error");
+        setAlertOpen(true);
       } finally {
         setLoading(false);
         if (onLoadingChange) {
@@ -143,6 +204,19 @@ export const StoresTable = forwardRef((props, ref) => {
   const handleDeleteClick = (store) => {
     setStoreToDelete(store);
     setShowDeleteModal(true);
+  };
+
+  const handleViewStore = (store) => {
+    navigate(`/store/view/${store.id}`);
+  };
+
+  const handleEditStore = (store) => {
+    navigate(`/store/edit/${store.id}`);
+  };
+
+  // معالج إغلاق التنبيه
+  const handleAlertClose = () => {
+    setAlertOpen(false);
   };
 
   const handleDeleteConfirm = async () => {
@@ -178,15 +252,41 @@ export const StoresTable = forwardRef((props, ref) => {
           setCurrentPage(currentPage - 1);
         }
 
-        alert("تم حذف المتجر بنجاح");
+        // استخدام Alert بدلاً من alert
+        setAlertMessage("تم حذف المتجر");
+        setAlertSubMessage(`تم حذف المتجر (${storeToDelete?.name}) بنجاح`);
+        setAlertType("success");
+        setAlertOpen(true);
       } else {
         const errorData = await response.json().catch(() => null);
         console.error("خطأ في حذف المتجر:", errorData);
-        alert(errorData?.message || "حدث خطأ أثناء حذف المتجر");
+
+        // استخدام Alert بدلاً من alert
+        setAlertMessage("خطأ في الحذف");
+        setAlertSubMessage(
+          errorData?.message || "حدث خطأ أثناء محاولة حذف المتجر"
+        );
+        setAlertType("error");
+        setAlertOpen(true);
+
+        // إغلاق نافذة تأكيد الحذف
+        setShowDeleteModal(false);
+        setStoreToDelete(null);
       }
     } catch (error) {
       console.error("خطأ في حذف المتجر:", error);
-      alert("حدث خطأ أثناء حذف المتجر");
+
+      // استخدام Alert بدلاً من alert
+      setAlertMessage("خطأ في الحذف");
+      setAlertSubMessage(
+        "حدث خطأ أثناء محاولة حذف المتجر. يرجى المحاولة مرة أخرى."
+      );
+      setAlertType("error");
+      setAlertOpen(true);
+
+      // إغلاق نافذة تأكيد الحذف
+      setShowDeleteModal(false);
+      setStoreToDelete(null);
     } finally {
       setDeleteLoading(false);
     }
@@ -210,11 +310,20 @@ export const StoresTable = forwardRef((props, ref) => {
 
   return (
     <div>
+      {/* مكون Alert */}
+      <Alert
+        message={alertMessage}
+        subMessage={alertSubMessage}
+        isOpen={alertOpen}
+        onClose={handleAlertClose}
+        type={alertType}
+      />
+
       <div className="overflow-hidden rounded-lg border border-gray-300">
         <table className="w-full table-fixed border-collapse border border-gray-300">
           <thead>
-            <tr className="text-right text-gray-700">
-              <th className="px-4 py-3 font-medium text-center border border-gray-300">
+            <tr className="text-right text-gray-700 bg-gray-100">
+              <th className="px-4 py-3 font-medium text-center border border-gray-300 w-[120px]">
                 مزيد من التفاصيل
               </th>
               <th className="px-4 py-3 font-medium text-right border border-gray-300">
@@ -252,13 +361,14 @@ export const StoresTable = forwardRef((props, ref) => {
                         <TbTrash size={16} />
                       </button>
                       <button
-                        onClick={() => navigate(`/store/view/${store.id}`)}
+                        onClick={() => handleViewStore(store)}
                         className="text-blue-500 bg-blue-100 hover:bg-blue-300 p-1 rounded-md transition-colors"
                         title="عرض تفاصيل المتجر"
                       >
                         <IoEyeOutline size={16} />
                       </button>
                       <button
+                        onClick={() => handleEditStore(store)}
                         className="text-blue-500 bg-blue-100 hover:bg-blue-300 p-1 rounded-md transition-colors"
                         title="تعديل المتجر"
                       >
@@ -272,19 +382,19 @@ export const StoresTable = forwardRef((props, ref) => {
                     {formatPhoneNumber(store?.contactPhone)}
                   </td>
 
-                  {/* Location/Area */}
+                  {/* Location/Area - تم تعديلها لاستخدام دالة التنسيق للمنطقة */}
                   <td className="px-4 py-3 text-gray-700 text-sm text-right border border-gray-300">
-                    {store?.region || "غير محدد"}
+                    {formatRegion(store?.region)}
                   </td>
 
-                  {/* city */}
+                  {/* city - تم تعديلها لاستخدام دالة التنسيق للمدينة */}
                   <td className="px-4 py-3 text-gray-700 text-sm text-right border border-gray-300">
-                    {store?.location?.city || store?.city || "غير محدد"}
+                    {formatCity(store?.location?.city || store?.city)}
                   </td>
 
                   {/* Store Type */}
                   <td className="px-4 py-3 text-gray-700 text-sm text-right border border-gray-300">
-                    {store?.type || "غير محدد"}
+                    {formatStoreType(store?.type)}
                   </td>
 
                   {/* Store Name */}
@@ -306,7 +416,7 @@ export const StoresTable = forwardRef((props, ref) => {
         />
       )}
 
-      {/* Delete Confirmation Modal */}
+      {/* Delete Confirmation Modal - نحتفظ بها للتأكيد الأولي قبل استخدام Alert */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
@@ -314,9 +424,8 @@ export const StoresTable = forwardRef((props, ref) => {
               تأكيد الحذف
             </h3>
             <p className="text-gray-600 mb-6 text-right">
-              هل أنت متأكد من حذف المتجر ( {storeToDelete?.name} )؟
-              <br />
-              لا يمكن التراجع عن هذا الإجراء.
+              ؟ ( {storeToDelete?.name} ) هل أنت متأكد من حذف المتجر
+              <br />. لا يمكن التراجع عن هذا الإجراء{" "}
             </p>
             <div className="flex gap-3 justify-end">
               <button

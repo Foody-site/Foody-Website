@@ -5,6 +5,7 @@ import { LuPencilLine } from "react-icons/lu";
 import { Pagination } from "../../../components/shared/Pagination/Pagination";
 import { api_url } from "../../../utils/ApiClient";
 import { useNavigate } from "react-router";
+import Alert from "../../../components/shared/Alert/Alert";
 
 export const ChefsTable = forwardRef((props, ref) => {
   const { onChefsChange, onLoadingChange } = props;
@@ -17,6 +18,12 @@ export const ChefsTable = forwardRef((props, ref) => {
   const [chefToDelete, setChefToDelete] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const navigate = useNavigate();
+
+  // Add these states for the Alert component
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertSubMessage, setAlertSubMessage] = useState("");
+  const [alertType, setAlertType] = useState("success");
 
   const handleViewChef = (chef) => {
     // توجيه المستخدم إلى صفحة عرض بيانات الشيف
@@ -140,15 +147,29 @@ export const ChefsTable = forwardRef((props, ref) => {
           setCurrentPage(currentPage - 1);
         }
 
-        alert("تم حذف الشيف بنجاح");
+        // Replace the alert with the custom Alert component
+        setAlertMessage("تم حذف الشيف");
+        setAlertSubMessage(`تم حذف الشيف ${chefToDelete?.name} بنجاح`);
+        setAlertType("success");
+        setShowAlert(true);
       } else {
         const errorData = await response.json().catch(() => null);
         console.error("خطأ في حذف الشيف:", errorData);
-        alert(errorData?.message || "حدث خطأ أثناء حذف الشيف");
+
+        // Show error alert
+        setAlertMessage("حدث خطأ");
+        setAlertSubMessage(errorData?.message || "حدث خطأ أثناء حذف الشيف");
+        setAlertType("error");
+        setShowAlert(true);
       }
     } catch (error) {
       console.error("خطأ في حذف الشيف:", error);
-      alert("حدث خطأ أثناء حذف الشيف");
+
+      // Show error alert
+      setAlertMessage("حدث خطأ");
+      setAlertSubMessage("حدث خطأ أثناء حذف الشيف");
+      setAlertType("error");
+      setShowAlert(true);
     } finally {
       setDeleteLoading(false);
     }
@@ -175,8 +196,8 @@ export const ChefsTable = forwardRef((props, ref) => {
       <div className="overflow-hidden rounded-lg border border-gray-300">
         <table className="w-full table-fixed border-collapse border border-gray-300">
           <thead>
-            <tr className="text-right text-gray-700">
-              <th className="px-4 py-3 font-medium text-center border border-gray-300">
+            <tr className="text-right text-gray-700 bg-gray-100">
+              <th className="px-4 py-3 font-medium text-center border border-gray-300 w-[120px]">
                 مزيد من التفاصيل
               </th>
               <th className="px-4 py-3 font-medium text-right border border-gray-300">
@@ -212,13 +233,14 @@ export const ChefsTable = forwardRef((props, ref) => {
                       <TbTrash size={16} />
                     </button>
                     <button
-                      onClick={() => handleViewChef(chef)} // إضافة معالج الحدث هنا
+                      onClick={() => handleViewChef(chef)}
                       className="text-blue-500 bg-blue-100 hover:bg-blue-300 p-1 rounded-md transition-colors"
                       title="عرض تفاصيل الشيف"
                     >
                       <IoEyeOutline size={16} />
                     </button>
                     <button
+                      onClick={() => navigate(`/chef/edit/${chef.id}`)}
                       className="text-blue-500 bg-blue-100 hover:bg-blue-300 p-1 rounded-md transition-colors"
                       title="تعديل الشيف"
                     >
@@ -297,6 +319,17 @@ export const ChefsTable = forwardRef((props, ref) => {
           </div>
         </div>
       )}
+
+      {/* Custom Alert Component */}
+      <Alert
+        message={alertMessage}
+        subMessage={alertSubMessage}
+        isOpen={showAlert}
+        onClose={() => setShowAlert(false)}
+        autoClose={true}
+        autoCloseTime={5000}
+        type={alertType}
+      />
     </div>
   );
 });

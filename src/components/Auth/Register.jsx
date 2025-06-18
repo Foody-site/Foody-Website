@@ -92,6 +92,7 @@ const Register = () => {
     e.preventDefault();
     setLoading(true);
     if (!validateForm()) {
+      setLoading(false);
       return;
     }
 
@@ -103,6 +104,8 @@ const Register = () => {
     };
 
     try {
+      console.log("Registering with role:", updatedData.role);
+
       const res = await axios.post(`${api_url}/auth/register`, updatedData);
       const token = res.data.accessToken;
       localStorage.setItem("token", token);
@@ -113,7 +116,10 @@ const Register = () => {
         },
       });
 
-      localStorage.setItem("user", JSON.stringify(userResponse.data));
+      const userData = userResponse.data;
+      localStorage.setItem("user", JSON.stringify(userData));
+
+      console.log("User registration successful:", userData);
 
       setAlertType("success");
       setAlertMessage("تم تسجيل حسابك ");
@@ -121,7 +127,22 @@ const Register = () => {
         "شكرًا لانضمامك إلى منصه فودي , يمكنك الآن التمتع بخدمات المنصه."
       );
       setAlertOpen(true);
+
+     
+      const userRole = userData.role || formData.role;
+      const isApproved = userData.status === "APPROVED" || !userData.status;
+
+      let redirectPath = "/";
+      if (userRole === "BUSINESS") {
+        redirectPath = isApproved ? "/list" : "/pending-approval";
+      } else if (userRole === "CUSTOMER") {
+        redirectPath = "/";
+      }
+
+      localStorage.setItem("redirectAfterRegister", redirectPath);
     } catch (err) {
+      console.error("Registration error:", err);
+
       setAlertType("error");
       setAlertMessage("خطأ في التسجيل");
       setAlertSubMessage(
@@ -133,6 +154,42 @@ const Register = () => {
     }
   };
 
+ 
+  const handleAlertClose = () => {
+    setAlertOpen(false);
+
+    if (alertType === "success") {
+      try {
+      
+        const redirectPath =
+          localStorage.getItem("redirectAfterRegister") || "/";
+      
+        navigate(redirectPath);
+      } catch (error) {
+        console.error("Error during navigation:", error);
+
+        
+        try {
+          const userData = JSON.parse(localStorage.getItem("user")) || {};
+          const role = userData.role || formData.role;
+
+          if (role === "BUSINESS") {
+            const isApproved =
+              userData.status === "APPROVED" || !userData.status;
+            navigate(isApproved ? "/list" : "/pending-approval");
+          } else if (role === "CUSTOMER") {
+            navigate("/");
+          } else {
+            navigate("/");
+          }
+        } catch (innerError) {
+          console.error("Fallback navigation error:", innerError);
+          navigate("/");
+        }
+      }
+    }
+  };
+
   return (
     <>
       <Alert
@@ -140,12 +197,7 @@ const Register = () => {
         subMessage={alertSubMessage}
         isOpen={alertOpen}
         type={alertType}
-        onClose={() => {
-          setAlertOpen(false);
-          if (alertType === "success") {
-            window.location.href = "/";
-          }
-        }}
+        onClose={handleAlertClose} 
       />
 
       <div className="flex min-h-screen justify-center items-center bg-gray-100 p-6">

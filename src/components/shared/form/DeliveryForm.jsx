@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import SelectInput from "../inputs/SelectInput";
 import DeliveryApps from "./../inputs/DeliveryApps";
 
-const DeliveryForm = ({ onDataChange }) => {
-  const [apps, setApps] = useState([
+const DeliveryForm = ({ onDataChange, initialData }) => {
+  const defaultApps = [
     { name: "keeta", label: "كيتا", checked: false, link: "" },
     { name: "jahez", label: "جاهز", checked: false, link: "" },
     { name: "hungerStation", label: "هنقرستيشن", checked: false, link: "" },
@@ -16,12 +16,50 @@ const DeliveryForm = ({ onDataChange }) => {
     { name: "other", label: "أخرى", checked: false, link: "" },
     { name: "careem", label: "كريم", checked: false, link: "" },
     { name: "shgardi", label: "شقر دي", checked: false, link: "" },
-  ]);
+  ];
 
+  
+  const [initialized, setInitialized] = useState(false);
+
+  const [apps, setApps] = useState(defaultApps);
   const [mainDeliveryApp, setMainDeliveryApp] = useState("");
 
-  // مرجع لتخزين البيانات السابقة لمنع الاستدعاءات المتكررة
+
   const prevDataRef = useRef(null);
+
+ 
+  useEffect(() => {
+    
+    if (initialData && !initialized) {
+    
+      setInitialized(true);
+
+      console.log("Initializing DeliveryForm with data:", initialData);
+
+      
+      if (initialData.mainDeliveryApp) {
+        setMainDeliveryApp(initialData.mainDeliveryApp);
+      }
+
+     
+      if (initialData.deliveryAppLinks) {
+        const updatedApps = defaultApps.map((app) => {
+          const appLink = initialData.deliveryAppLinks[app.name];
+        
+          if (appLink) {
+            return {
+              ...app,
+              checked: true,
+              link: appLink,
+            };
+          }
+          return app;
+        });
+
+        setApps(updatedApps);
+      }
+    }
+  }, [initialData, initialized]);
 
   const handleInputChange = (name, value) => {
     setApps(
@@ -37,6 +75,7 @@ const DeliveryForm = ({ onDataChange }) => {
     );
   };
 
+ 
   const selectedApps = apps
     .filter((app) => app.checked)
     .map((app) => ({
@@ -44,9 +83,13 @@ const DeliveryForm = ({ onDataChange }) => {
       label: app.label,
     }));
 
+ 
   const getFormData = () => {
     const deliveryAppLinks = apps.reduce((acc, app) => {
-      acc[app.name] = app.checked ? app.link : null;
+   
+      if (app.checked && app.link) {
+        acc[app.name] = app.link;
+      }
       return acc;
     }, {});
 
@@ -57,19 +100,18 @@ const DeliveryForm = ({ onDataChange }) => {
     };
   };
 
-  // تحسين useEffect لمنع الاستدعاءات المتكررة
+  
   useEffect(() => {
     if (!onDataChange) return;
 
     const currentData = getFormData();
     const currentDataString = JSON.stringify(currentData);
 
-    // استدعاء onDataChange فقط إذا تغيرت البيانات فعلياً
     if (prevDataRef.current !== currentDataString) {
       prevDataRef.current = currentDataString;
       onDataChange(currentData);
     }
-  }, [apps, mainDeliveryApp]); // حذف onDataChange من المصفوفة لمنع إعادة التنفيذ غير الضرورية
+  }, [apps, mainDeliveryApp, onDataChange]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
@@ -94,5 +136,5 @@ const DeliveryForm = ({ onDataChange }) => {
   );
 };
 
-// استخدام React.memo للحد من عمليات إعادة التصيير غير الضرورية
+
 export default React.memo(DeliveryForm);

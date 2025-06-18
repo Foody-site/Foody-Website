@@ -17,6 +17,10 @@ import UserProfile from "../components/once/UserProfile";
 import ViewStore from "../pages/Lists/StoresTable/ViewStore";
 import ViewChef from "../pages/Lists/ChefsTable/ViewChef";
 import ViewRecipe from "../pages/Lists/RecipesTable/ViewRecipe";
+import EditRecipe from "../pages/Lists/RecipesTable/EditRecipe";
+import EditChef from "../pages/Lists/ChefsTable/EditChef";
+import EditStore from "../pages/Lists/StoresTable/EditStore";
+import RecipeDetails from "../pages/Recipe/RecipeDetails";
 
 const AppRouter = () => {
   return (
@@ -34,12 +38,16 @@ const AppRouter = () => {
         <Route path="/chef/view/:id" element={<ViewChef />} />
         <Route path="/store/view/:id" element={<ViewStore />} />
         <Route path="/recipe/view/:id" element={<ViewRecipe />} />
+        <Route path="/recipe/edit/:id" element={<EditRecipe />} />
+        <Route path="/chef/edit/:id" element={<EditChef />} />
+        <Route path="/store/edit/:id" element={<EditStore />} />
         <Route path="/chef" element={<Chef />} />
         <Route path="/user-profile" element={<UserProfile />} />
         <Route path="/chef" element={<Chef />} />
         <Route path="/chef/:id" element={<ChefProfile />} />
         <Route path="/add-chef" element={<AddChef />} />
         <Route path="/recipe" element={<Recipe />} />
+        <Route path="/recipe/:id" element={<RecipeDetails />} />
         <Route path="/add-recipe" element={<AddRecipe />} />
         <Route path="/add-store" element={<Add_Store />} />
         <Route path="/chefneed" element={<NeedChef />} />

@@ -1,6 +1,6 @@
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
-const Pagination = ({ pagination, setPage }) => {
+const Pagination2 = ({ pagination, setPage }) => {
     const totalPages = pagination?.totalPages || 1;
     const currentPage = pagination?.currentPage || 1;
 
@@ -70,4 +70,4 @@ const Pagination = ({ pagination, setPage }) => {
     );
 };
 
-export default Pagination;
+export default Pagination2;

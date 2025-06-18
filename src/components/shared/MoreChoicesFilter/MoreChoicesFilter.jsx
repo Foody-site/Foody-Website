@@ -1,5 +1,6 @@
 const options = [
     "مفتوح الآن",
+    "الاقرب اليك",
     "جلسات داخلية",
     "جلسات خارجية",
     "يوجد توصيل",
@@ -8,13 +9,42 @@ const options = [
     "أضيف حديثاً",
 ];
 
-const MoreChoicesFilter = ({ selectedOptions, setSelectedOptions }) => {
+const MoreChoicesFilter = ({
+    selectedOptions,
+    setSelectedOptions,
+    setCoordinates,
+}) => {
     const toggleSelection = (value) => {
-        setSelectedOptions(
-            selectedOptions.includes(value)
-                ? selectedOptions.filter((item) => item !== value)
-                : [...selectedOptions, value]
-        );
+        const updatedOptions = selectedOptions.includes(value)
+            ? selectedOptions.filter((item) => item !== value)
+            : [...selectedOptions, value];
+
+        setSelectedOptions(updatedOptions);
+
+        if (value === "الاقرب اليك") {
+            if (!selectedOptions.includes("الاقرب اليك")) {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            setCoordinates({
+                                latitude: position.coords.latitude,
+                                longitude: position.coords.longitude,
+                            });
+                        },
+                        (error) => {
+                            console.error("Geolocation error:", error);
+                            setCoordinates(null);
+                        }
+                    );
+                } else {
+                    console.warn("Geolocation not supported.");
+                    setCoordinates(null);
+                }
+            } else {
+                // now deselected
+                setCoordinates(null);
+            }
+        }
     };
 
     return (

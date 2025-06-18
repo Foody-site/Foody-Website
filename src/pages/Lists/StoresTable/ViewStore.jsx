@@ -39,9 +39,8 @@ const timeOptions = [
 ];
 
 const ViewStore = () => {
-  const { id } = useParams();
+  const { id: storeId } = useParams();
   const navigate = useNavigate();
-  
 
   // Loading state
   const [loading, setLoading] = useState(true);
@@ -56,32 +55,35 @@ const ViewStore = () => {
   // تحميل البيانات عند تحميل الصفحة
   useEffect(() => {
     const fetchStoreData = async () => {
+      if (!storeId) {
+        setError("معرف المتجر غير متوفر");
+        setLoading(false);
+        return;
+      }
+
       try {
+        console.log(`Fetching store data for ID: ${storeId}`);
         const token = localStorage.getItem("token");
-        const timestamp = new Date().getTime();
 
-        const response = await axios.get(
-          `${api_url}/store/user?t=${timestamp}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        // العثور على المتجر المطلوب من مصفوفة المتاجر
-        let storeData;
-        if (Array.isArray(response.data)) {
-          storeData = response.data.find((s) => s.id === id);
-        } else if (Array.isArray(response.data.data)) {
-          storeData = response.data.data.find((s) => s.id === id);
-        }
-
-        if (!storeData) {
-          setError("لم يتم العثور على المتجر المطلوب");
+        if (!token) {
+          setError("رمز الدخول غير متوفر، يرجى تسجيل الدخول مرة أخرى");
           setLoading(false);
           return;
         }
+
+        // استخدام واجهة API المخصصة للمتجر الفردي
+        const response = await axios.get(`${api_url}/store/${storeId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response || !response.data) {
+          throw new Error("لا توجد بيانات في استجابة الخادم");
+        }
+
+        const storeData = response.data;
+        console.log("Store data fetched successfully:", storeData);
 
         setStore(storeData);
 
@@ -118,23 +120,37 @@ const ViewStore = () => {
           }
         }
       } catch (error) {
-        console.error("Error fetching stores:", error);
-        setError("حدث خطأ أثناء تحميل بيانات المتجر");
+        console.error("Error fetching store data:", error);
+
+        let errorMessage = "حدث خطأ أثناء تحميل بيانات المتجر";
+
+        if (error.response) {
+          if (error.response.status === 404) {
+            errorMessage = "لم يتم العثور على المتجر المطلوب";
+          } else if (error.response.status === 403) {
+            errorMessage = "ليس لديك صلاحية للوصول إلى هذا المتجر";
+          } else if (error.response.data?.message) {
+            errorMessage = error.response.data.message;
+          }
+        }
+
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
     };
 
-    if (id) {
-      fetchStoreData();
-    }
-  }, [id]);
+    fetchStoreData();
+  }, [storeId]);
 
   if (loading) {
     return (
       <div className="flex flex-col min-h-screen">
-        <div className="flex-grow flex justify-center items-center">
-          <div className="text-xl">جاري تحميل بيانات المتجر...</div>
+        <div className="flex-grow flex flex-col justify-center items-center">
+          <div className="w-16 h-16 border-4 border-gray-200 border-t-primary-1 rounded-full animate-spin mb-6"></div>
+          <div className="text-gray-700 text-xl">
+            جاري تحميل بيانات المتجر...
+          </div>
         </div>
       </div>
     );
@@ -143,8 +159,17 @@ const ViewStore = () => {
   if (error) {
     return (
       <div className="flex flex-col min-h-screen">
-        <div className="flex-grow flex justify-center items-center">
-          <div className="bg-red-100 text-red-700 p-4 rounded-md">{error}</div>
+        <div className="flex-grow flex flex-col justify-center items-center">
+          <div className="bg-red-100 text-red-700 p-6 rounded-md max-w-md text-center">
+            <h2 className="text-xl font-bold mb-2">خطأ</h2>
+            <p>{error}</p>
+            <Button
+              label="العودة للقائمة"
+              className="mt-4 !text-primary-1 font-medium border border-primary-1 hover:bg-primary-1 hover:!text-white transition"
+              type="button"
+              onClick={() => navigate("/list")}
+            />
+          </div>
         </div>
       </div>
     );
@@ -210,23 +235,24 @@ const ViewStore = () => {
     return names[type] || type;
   };
 
-  // Helper function to format phone number (remove +20 prefix if exists)
+  // Helper function to format phone number (remove +966 prefix if exists)
   const formatPhoneNumber = (phoneNumber) => {
     if (!phoneNumber) return "غير محدد";
 
-    // If the phone number starts with +20, remove it
-    if (phoneNumber.startsWith("+2")) {
-      return phoneNumber.substring(2); // Remove first 3 characters (+20)
+    // If the phone number starts with +966, remove it
+    if (phoneNumber.startsWith("+966")) {
+      return phoneNumber.substring(4); // Remove first 4 characters (+966)
     }
 
-    return phoneNumber; // Return as is if not starting with +20
+    return phoneNumber; // Return as is if not starting with +966
   };
+
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex-grow flex justify-center items-center px-8 py-8">
         <div className="w-full max-w-[90rem] p-16 rounded-xl">
           <div className="flex justify-end items-center mb-10">
-            <h2 className="text-3xl  font-bold text-gray-700">
+            <h2 className="text-3xl font-bold text-gray-700">
               عرض بيانات المتجر
             </h2>
           </div>
@@ -319,7 +345,11 @@ const ViewStore = () => {
                   المنطقة
                 </label>
                 <div className="w-full h-12 px-6 py-3 bg-gray-50 border border-gray-300 rounded-md">
-                  {store.region || "غير محدد"}
+                  {store.region === "Riyadh"
+                    ? "الرياض"
+                    : store.region === "Al-Qassim"
+                    ? "القصيم"
+                    : store.region || "غير محدد"}{" "}
                 </div>
               </div>
 
@@ -329,7 +359,11 @@ const ViewStore = () => {
                   المدينة
                 </label>
                 <div className="w-full h-12 px-6 py-3 bg-gray-50 border border-gray-300 rounded-md">
-                  {store.city || "غير محدد"}
+                  {store.city === "Al-Kharj"
+                    ? "الخرج"
+                    : store.city === "Al-Badayea"
+                    ? "البدائع"
+                    : store.city || "غير محدد"}{" "}
                 </div>
               </div>
 
@@ -574,7 +608,10 @@ const ViewStore = () => {
 
               {store.deliveryAppLinks &&
               Object.keys(store.deliveryAppLinks).length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-right">
+                <div
+                  dir="rtl"
+                  className="text-right gap-4 md:grid-cols-3 grid-cols-1 grid"
+                >
                   {Object.entries(store.deliveryAppLinks).map(
                     ([key, value]) => {
                       if (!value) return null;
