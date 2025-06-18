@@ -19,6 +19,20 @@ import DeliveryForm from "../../components/shared/form/DeliveryForm";
 import CheckBoxWorkRange from "../../components/shared/inputs/CheckBoxWorkRange";
 import { api_url } from "../../utils/ApiClient";
 
+// دالة لإضافة مقدمة +966 للرقم عند الإرسال
+const formatPhoneForSubmit = (phone) => {
+  if (!phone) return "";
+
+  // تنظيف الرقم من أي مسافات
+  const trimmedPhone = phone.trim();
+
+  // إذا كان الرقم لا يبدأ بـ +966، قم بإضافته
+  if (!trimmedPhone.startsWith("+966")) {
+    return `+966${trimmedPhone}`;
+  }
+  return trimmedPhone;
+};
+
 const timeOptions = [
   { label: "12:00 ص", value: "2025-06-12T00:00:00.000Z" },
   { label: "1:00 ص", value: "2025-06-12T01:00:00.000Z" },
@@ -169,6 +183,10 @@ const Add_Store = () => {
         ? parseInt(sinceValue)
         : new Date().getFullYear();
 
+      // إضافة المقدمة +966 لأرقام الهواتف
+      const contactPhoneForSubmit = formatPhoneForSubmit(contactPhone);
+      const deliveryPhoneForSubmit = formatPhoneForSubmit(deliveryPhone);
+
       // إنشاء كائن additionalInfo مع قيم بوليان (لأننا سنحول الكائن إلى FormData لاحقًا)
       const additionalInfo = {
         indoorSessions: selectedAdditionalInfo.includes("indoorSessions"),
@@ -233,8 +251,8 @@ const Add_Store = () => {
       formData.append("name", name);
       formData.append("description", description);
       formData.append("type", type);
-      formData.append("contactPhone", contactPhone);
-      formData.append("deliveryPhone", deliveryPhone);
+      formData.append("contactPhone", contactPhoneForSubmit); // استخدام الرقم المنسق
+      formData.append("deliveryPhone", deliveryPhoneForSubmit); // استخدام الرقم المنسق
       formData.append("city", city);
       formData.append("region", region);
       formData.append("mapLink", mapLink);
@@ -293,8 +311,12 @@ const Add_Store = () => {
       socialInputs.forEach(({ key, selector }) => {
         const value = document.querySelector(selector)?.value;
         if (value && value.trim() !== "") {
+          // إذا كان الحقل هو رقم واتساب، نضيف المقدمة +966
           const finalValue =
-            key === "whatsappNumber" ? value : validateAndFixUrl(value);
+            key === "whatsappNumber"
+              ? formatPhoneForSubmit(value)
+              : validateAndFixUrl(value);
+
           formData.append(`socialMediaLinks[${key}]`, finalValue);
         }
       });
@@ -364,6 +386,23 @@ const Add_Store = () => {
         console.log(pair[0], pair[1]);
       }
 
+      // طباعة قيم الهاتف للتحقق
+      console.log("Original contactPhone:", contactPhone);
+      console.log("Formatted contactPhone:", contactPhoneForSubmit);
+      console.log("Original deliveryPhone:", deliveryPhone);
+      console.log("Formatted deliveryPhone:", deliveryPhoneForSubmit);
+
+      const whatsappValue = document.querySelector(
+        'input[name="socialMediaLinks[whatsappNumber]"]'
+      )?.value;
+      if (whatsappValue) {
+        console.log("Original whatsappNumber:", whatsappValue);
+        console.log(
+          "Formatted whatsappNumber:",
+          formatPhoneForSubmit(whatsappValue)
+        );
+      }
+
       // إرسال البيانات
       const token = localStorage.getItem("token");
       const response = await axios.post(`${api_url}/store`, formData, {
@@ -405,6 +444,7 @@ const Add_Store = () => {
       setLoading(false);
     }
   };
+
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex-grow flex justify-center items-center px-8 py-8">
