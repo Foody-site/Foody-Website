@@ -18,7 +18,7 @@ import { useNavigate, useParams, useLocation } from "react-router";
 import DeliveryForm from "../../../components/shared/form/DeliveryForm";
 import CheckBoxWorkRange from "../../../components/shared/inputs/CheckBoxWorkRange";
 import { api_url } from "../../../utils/ApiClient";
-import Alert from './../../../components/shared/Alert/Alert';
+import Alert from "./../../../components/shared/Alert/Alert";
 
 // دالة لإزالة مقدمة +966 من رقم الهاتف للعرض
 const formatPhoneForDisplay = (phone) => {
@@ -343,14 +343,10 @@ const EditStore = () => {
   const updateCities = (region) => {
     switch (region) {
       case "Riyadh":
-        setCities([
-          { value: "Al-Kharj", label: "الخرج" },
-        ]);
+        setCities([{ value: "Al-Kharj", label: "الخرج" }]);
         break;
       case "Al-Qassim":
-        setCities([
-          { value: "Al-Badayea", label: "البدائع" },
-        ]);
+        setCities([{ value: "Al-Badayea", label: "البدائع" }]);
         break;
       default:
         setCities([]);
@@ -934,18 +930,7 @@ const EditStore = () => {
                 value={formData.region}
                 options={[
                   { value: "Riyadh", label: "الرياض" },
-                  { value: "Mecca", label: "مكة المكرمة" },
-                  { value: "Eastern", label: "الشرقية" },
-                  { value: "Medina", label: "المدينة المنورة" },
-                  { value: "Asir", label: "عسير" },
                   { value: "Al-Qassim", label: "القصيم" },
-                  { value: "Tabuk", label: "تبوك" },
-                  { value: "Hail", label: "حائل" },
-                  { value: "Northern Borders", label: "الحدود الشمالية" },
-                  { value: "Jizan", label: "جازان" },
-                  { value: "Najran", label: "نجران" },
-                  { value: "Al-Bahah", label: "الباحة" },
-                  { value: "Al-Jouf", label: "الجوف" },
                 ]}
                 onChange={handleChange}
                 required
