@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { FaPlus, FaTrash } from "react-icons/fa";
 import { TbCameraPlus } from "react-icons/tb";
 import Inputs from "../../components/shared/inputs/Inputs";
@@ -12,7 +12,7 @@ import Button from "../../components/shared/Buttons/Button";
 import allergy from "../../assets/allergy.jpg";
 import TextAreaInput from "../../components/shared/inputs/TextAreaInput ";
 import { useNavigate } from "react-router";
-import Alert from "../../components/shared/Alert/Alert"; // استيراد مكون Alert
+import Alert from "../../components/shared/Alert/Alert";
 
 const AddRecipe = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,6 +21,9 @@ const AddRecipe = () => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+
+  // مرجع للتتبع
+  const recipeTypeRef = useRef(null);
 
   // حالات التنبيه
   const [alertOpen, setAlertOpen] = useState(false);
@@ -46,7 +49,6 @@ const AddRecipe = () => {
   const handleAlertClose = () => {
     setAlertOpen(false);
 
-    // إذا كان التنبيه من نوع "success" قم بإعادة توجيه المستخدم
     if (alertType === "success") {
       navigate("/list");
     }
@@ -84,10 +86,9 @@ const AddRecipe = () => {
           label: item.name.ar,
         }));
         setAvailableRecipeTypes(formattedData);
-        console.log("Available recipe types:", formattedData); // Debug
+        console.log("Available recipe types:", formattedData);
       } catch (error) {
         console.error("Error fetching recipe types:", error);
-        // عرض تنبيه بخطأ تحميل البيانات
         showAlert(
           "خطأ في تحميل البيانات",
           "حدث خطأ أثناء جلب أنواع الوصفات",
@@ -103,7 +104,6 @@ const AddRecipe = () => {
     if (file && file.type.startsWith("image/")) {
       setPhoto(file);
     } else if (file) {
-      // عرض تنبيه بخطأ في تحميل الصورة
       showAlert("خطأ في تحميل الصورة", "الرجاء اختيار صورة صحيحة!", "error");
     }
   };
@@ -115,18 +115,49 @@ const AddRecipe = () => {
     }));
   };
 
+  // معالج مخصص لتغيير أنواع الوصفات
+  const handleRecipeTypesChange = (e) => {
+    console.log("handleRecipeTypesChange called with:", e.target.value);
+
+    try {
+      // تحديد نوع القيمة المستلمة
+      let selectedValues = [];
+
+      // إذا كانت القيمة مصفوفة، استخدمها مباشرة
+      if (Array.isArray(e.target.value)) {
+        selectedValues = e.target.value.map(String); // تحويل كل القيم إلى نصوص
+      }
+      // إذا كانت القيمة نصًا، قد تكون مقسمة بفواصل
+      else if (
+        typeof e.target.value === "string" &&
+        e.target.value.includes(",")
+      ) {
+        selectedValues = e.target.value.split(",").map((v) => v.trim());
+      }
+      // إذا كانت قيمة واحدة
+      else if (e.target.value) {
+        selectedValues = [String(e.target.value)];
+      }
+
+      console.log("Selected values processed:", selectedValues);
+
+      // تحديث حالة النموذج
+      setFormData((prev) => ({
+        ...prev,
+        selectedRecipeTypes: selectedValues,
+      }));
+    } catch (error) {
+      console.error("Error processing recipe types:", error);
+    }
+  };
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
     if (name === "selectedRecipeTypes") {
-      const selectedTypeIds = Array.isArray(value) ? value : [value];
-
-      setFormData((prev) => ({
-        ...prev,
-        selectedRecipeTypes: selectedTypeIds,
-      }));
+      // استخدام المعالج المخصص لأنواع الوصفات
+      handleRecipeTypesChange(e);
     } else if (type === "checkbox") {
-      // Handle checkbox inputs
       setFormData((prev) => ({
         ...prev,
         [name]: checked,
@@ -139,6 +170,8 @@ const AddRecipe = () => {
     }
   };
 
+  // Rest of your handlers...
+
   const handleIngredientChange = (index, field, value) => {
     const updatedIngredients = [...formData.ingredients];
     updatedIngredients[index][field] = value;
@@ -149,7 +182,6 @@ const AddRecipe = () => {
   };
 
   const handlePreparationStepsChange = (steps) => {
-    // استخدام مقارنة للتأكد من أن الخطوات قد تغيرت بالفعل
     if (JSON.stringify(steps) !== JSON.stringify(formData.preparationSteps)) {
       setFormData((prev) => ({
         ...prev,
@@ -158,7 +190,7 @@ const AddRecipe = () => {
     }
   };
 
-  // Separate handlers for preparation and cooking time
+  // Time handlers...
   const handlePrepTimeHourChange = (value) => {
     const hours = parseInt(value) || 0;
     setFormData((prev) => {
@@ -238,6 +270,15 @@ const AddRecipe = () => {
     if (!formData.mainIngredient || formData.mainIngredient.trim() === "")
       newErrors.mainIngredient = "المكون الرئيسي مطلوب";
 
+    // اختياري: التحقق من وجود نوع طعام واحد على الأقل
+    if (
+      !formData.selectedRecipeTypes ||
+      formData.selectedRecipeTypes.length === 0
+    ) {
+      newErrors.selectedRecipeTypes =
+        "يرجى اختيار نوع واحد على الأقل من أنواع الطعام";
+    }
+
     // Check ingredients
     const ingredientErrors = [];
     formData.ingredients.forEach((ingredient, index) => {
@@ -261,9 +302,8 @@ const AddRecipe = () => {
     e.preventDefault();
     console.log("Form data before submission:", formData);
 
-    // Validate form first
+    // Validate form
     if (!validateForm()) {
-      // عرض تنبيه بوجود أخطاء في النموذج
       showAlert(
         "يرجى تصحيح الأخطاء",
         "يرجى التأكد من تعبئة جميع الحقول المطلوبة بشكل صحيح",
@@ -272,15 +312,16 @@ const AddRecipe = () => {
       return;
     }
 
+    // Form data preparation and submission code...
     setLoading(true);
     const token = localStorage.getItem("token");
     if (!token) {
-      // عرض تنبيه بعدم وجود توكن
       showAlert("خطأ في المصادقة", "لا يوجد توكن، يرجى تسجيل الدخول.", "error");
       setLoading(false);
       return;
     }
 
+    // Rest of your form submission code...
     const data = new FormData();
     data.append("name", formData.name);
     data.append("description", formData.description);
@@ -291,28 +332,28 @@ const AddRecipe = () => {
     data.append("isAllergenic", formData.isAllergenic);
     data.append("mainIngredient", formData.mainIngredient);
 
-    // Handle recipe types properly
+    // Handle recipe types
     if (
       formData.selectedRecipeTypes &&
       formData.selectedRecipeTypes.length > 0
     ) {
       formData.selectedRecipeTypes.forEach((typeId) => {
-        // Make sure we're adding valid IDs
-        if (typeId) {
-          data.append("recipeTypes[]", typeId); // Use array notation to ensure the server expects an array
+        if (typeId && String(typeId).trim() !== "") {
+          data.append("recipeTypes[]", typeId);
+          console.log("Adding recipe type:", typeId);
         }
       });
     } else {
-      // If no recipe types are selected, send an empty array
-      data.append("recipeTypes[]", ""); // This line ensures an empty array is sent if no types are selected
+      data.append("recipeTypes[]", "");
     }
 
-    // Limit preparationSteps to 20 items as per validation
+    // Add preparation steps
     const limitedSteps = formData.preparationSteps.slice(0, 20);
     limitedSteps.forEach((step, index) =>
       data.append(`preparationSteps[${index}]`, step)
     );
 
+    // Add ingredients
     formData.ingredients.forEach((ingredient, index) => {
       data.append(`ingredients[${index}][name]`, ingredient.name);
       data.append(`ingredients[${index}][quantity]`, ingredient.quantity);
@@ -331,10 +372,9 @@ const AddRecipe = () => {
         },
       });
 
-      // عرض تنبيه بنجاح الإضافة
       showAlert("تمت الإضافة", "تمت إضافة الوصفة بنجاح", "success");
 
-      // إعادة تعيين النموذج
+      // Reset form
       setFormData({
         name: "",
         description: "",
@@ -352,8 +392,6 @@ const AddRecipe = () => {
     } catch (error) {
       const errorMessage =
         error.response?.data?.message || "حدث خطأ أثناء الإرسال";
-
-      // عرض تنبيه بخطأ في الإضافة
       showAlert("خطأ في إضافة الوصفة", errorMessage, "error");
       console.error("API Error:", error.response?.data || error.message);
     } finally {
@@ -404,12 +442,33 @@ const AddRecipe = () => {
           </div>
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-10 text-right">
-              <CheckboxSelectInput
-                name="selectedRecipeTypes"
-                label="نوع الطعام"
-                options={availableRecipeTypes}
-                onChange={handleChange}
-              />
+              <div>
+                <label className="block text-gray-700 font-medium mb-2 text-right">
+                  نوع الطعام
+                </label>
+                <div className="relative">
+                  {availableRecipeTypes.length > 0 ? (
+                    <CheckboxSelectInput
+                      name="selectedRecipeTypes"
+                      label=""
+                      options={availableRecipeTypes}
+                      onChange={handleRecipeTypesChange}
+                      value={formData.selectedRecipeTypes}
+                      ref={recipeTypeRef}
+                      key="recipe-types-input"
+                    />
+                  ) : (
+                    <div className="text-gray-500">
+                      جاري تحميل أنواع الطعام...
+                    </div>
+                  )}
+                  {errors.selectedRecipeTypes && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.selectedRecipeTypes}
+                    </p>
+                  )}
+                </div>
+              </div>
 
               <Inputs
                 name="name"
@@ -423,6 +482,8 @@ const AddRecipe = () => {
                 maxLength={200}
               />
             </div>
+
+            {/* باقي النموذج كما هو */}
             <div className="grid grid-cols-1 md:grid-cols-1 gap-x-10 gap-y-10 text-right pt-10">
               <TextAreaInput
                 name="description"
@@ -437,6 +498,7 @@ const AddRecipe = () => {
               />
             </div>
 
+            {/* أوقات التحضير والطهي */}
             <div className="flex justify-end gap-x-8 col-span-full pt-10">
               <PreparationTimePicker
                 label="وقت الطبخ"
