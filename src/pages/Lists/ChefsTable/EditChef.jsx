@@ -15,9 +15,36 @@ import CheckboxSelectInput from "../../../components/shared/inputs/CheckboxSelec
 import countriesData from "../../../assets/countries.json";
 import TextAreaInput from "../../../components/shared/inputs/TextAreaInput ";
 import Checkbox from "../../../components/shared/inputs/Checkbox";
+import Alert from './../../../components/shared/Alert/Alert';
+
+// دالة لإزالة بادئة +966 من رقم الهاتف للعرض
+const formatPhoneForDisplay = (phoneNumber) => {
+  if (!phoneNumber) return "";
+
+  // إذا كان الرقم يبدأ بـ +966، قم بإزالته
+  if (phoneNumber.startsWith("+966")) {
+    return phoneNumber.substring(4); // إزالة أول 4 أحرف (+966)
+  }
+
+  return phoneNumber; // إرجاع الرقم كما هو إذا لم يكن يبدأ بـ +966
+};
+
+// دالة لإضافة بادئة +966 للرقم عند الإرسال
+const formatPhoneForSubmit = (phoneNumber) => {
+  if (!phoneNumber) return "";
+
+  // تنظيف الرقم من أي مسافات
+  const trimmedPhone = phoneNumber.trim();
+
+  // إذا كان الرقم لا يبدأ بـ +966، قم بإضافته
+  if (!trimmedPhone.startsWith("+966")) {
+    return `+966${trimmedPhone}`;
+  }
+  return trimmedPhone;
+};
 
 const EditChef = () => {
-  const { id } = useParams(); 
+  const { id } = useParams();
   const [noContact, setNoContact] = useState(false);
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(true);
@@ -25,13 +52,17 @@ const EditChef = () => {
   const [cities, setCities] = useState([]);
   const navigate = useNavigate();
 
+  // Alert states
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertType, setAlertType] = useState("success");
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertSubMessage, setAlertSubMessage] = useState("");
+
   // Form images
   const [coverPicture, setCoverPicture] = useState(null);
   const [profilePicture, setProfilePicture] = useState(null);
   const [currentCoverPicture, setCurrentCoverPicture] = useState(null);
   const [currentProfilePicture, setCurrentProfilePicture] = useState(null);
-
-
 
   // Form data state
   const [formData, setFormData] = useState({
@@ -53,6 +84,15 @@ const EditChef = () => {
     favoriteConnection: [],
   });
 
+  // معالج إغلاق التنبيه
+  const handleAlertClose = () => {
+    setAlertOpen(false);
+
+    // إذا كان التنبيه للنجاح، نقوم بالانتقال إلى صفحة القائمة
+    if (alertType === "success") {
+      navigate("/list");
+    }
+  };
 
   useEffect(() => {
     const fetchChefData = async () => {
@@ -69,7 +109,7 @@ const EditChef = () => {
         const chefData = response.data;
         console.log("Chef data:", chefData);
 
-       
+        // تحضير قائمة أنواع الوصفات المختارة
         let selectedRecipeTypeIds = [];
         if (chefData.recipeTypes && Array.isArray(chefData.recipeTypes)) {
           selectedRecipeTypeIds = chefData.recipeTypes.map(
@@ -77,20 +117,23 @@ const EditChef = () => {
           );
         }
 
-     
+        // تحديد ما إذا كان الشيف يريد التواصل أم لا
         const favoriteConnection = chefData.favoriteConnection || [];
         setNoContact(favoriteConnection.length === 0);
 
-      
+        // تعيين بيانات النموذج من البيانات المجلوبة
         setFormData({
           selectedRecipeTypes: selectedRecipeTypeIds,
           description: chefData.description || "",
           name: chefData.name || "",
           city: chefData.city || "",
           country: chefData.country || "",
-          phone: chefData.phone || "",
+          // تنسيق رقم الهاتف للعرض (إزالة +966 إذا وُجدت)
+          phone: formatPhoneForDisplay(chefData.phone) || "",
           socialMedia: {
-            whatsapp: chefData.socialMedia?.whatsapp || "",
+            // تنسيق رقم الواتساب للعرض (إزالة +966 إذا وُجدت)
+            whatsapp:
+              formatPhoneForDisplay(chefData.socialMedia?.whatsapp) || "",
             facebook: chefData.socialMedia?.facebook || "",
             x: chefData.socialMedia?.x || "",
             tiktok: chefData.socialMedia?.tiktok || "",
@@ -101,7 +144,7 @@ const EditChef = () => {
           favoriteConnection: favoriteConnection,
         });
 
-        
+        // تعيين صور الملف الشخصي والغلاف الحالية
         if (chefData.coverPicture) {
           setCurrentCoverPicture(chefData.coverPicture);
         }
@@ -109,13 +152,17 @@ const EditChef = () => {
           setCurrentProfilePicture(chefData.profilePicture);
         }
 
-      
+        // تحديث قائمة المدن بناءً على البلد المختار
         if (chefData.country) {
           updateCities(chefData.country);
         }
       } catch (error) {
         console.error("Error fetching chef details:", error);
-        alert("حدث خطأ أثناء جلب بيانات الشيف");
+        // استخدام مكون Alert بدلاً من alert
+        setAlertMessage("خطأ في جلب البيانات");
+        setAlertSubMessage("حدث خطأ أثناء جلب بيانات الشيف");
+        setAlertType("error");
+        setAlertOpen(true);
       } finally {
         setFetchLoading(false);
       }
@@ -141,7 +188,7 @@ const EditChef = () => {
     }
   }, [id]);
 
-  
+  // تحديث قائمة المدن استنادًا إلى البلد المختار
   const updateCities = (countryName) => {
     if (countryName) {
       const selectedCountry = countriesData.find(
@@ -159,7 +206,7 @@ const EditChef = () => {
     }
   };
 
-  
+  // تحديث المدن عند تغيير البلد
   useEffect(() => {
     updateCities(formData.country);
   }, [formData.country]);
@@ -204,7 +251,11 @@ const EditChef = () => {
     if (file && file.type.startsWith("image/")) {
       setCoverPicture(file);
     } else {
-      console.error("الرجاء اختيار صورة صحيحة!");
+      // استخدام مكون Alert بدلاً من console.error
+      setAlertMessage("خطأ في تحميل الصورة");
+      setAlertSubMessage("الرجاء اختيار صورة صحيحة للغلاف!");
+      setAlertType("error");
+      setAlertOpen(true);
     }
   };
 
@@ -213,7 +264,11 @@ const EditChef = () => {
     if (file && file.type.startsWith("image/")) {
       setProfilePicture(file);
     } else {
-      console.error("الرجاء اختيار صورة صحيحة!");
+      // استخدام مكون Alert بدلاً من console.error
+      setAlertMessage("خطأ في تحميل الصورة");
+      setAlertSubMessage("الرجاء اختيار صورة صحيحة للملف الشخصي!");
+      setAlertType("error");
+      setAlertOpen(true);
     }
   };
 
@@ -249,13 +304,16 @@ const EditChef = () => {
     setLoading(true);
     const token = localStorage.getItem("token");
     if (!token) {
-      console.error("لا يوجد توكن، يرجى تسجيل الدخول.");
+      // استخدام مكون Alert بدلاً من console.error
+      setAlertMessage("خطأ في المصادقة");
+      setAlertSubMessage("لا يوجد توكن، يرجى تسجيل الدخول.");
+      setAlertType("error");
+      setAlertOpen(true);
       setLoading(false);
       return;
     }
 
     try {
-     
       console.log("Current cover picture URL:", currentCoverPicture);
       console.log("New cover picture selected:", coverPicture ? "Yes" : "No");
       console.log("Current profile picture URL:", currentProfilePicture);
@@ -264,17 +322,18 @@ const EditChef = () => {
         profilePicture ? "Yes" : "No"
       );
 
-    
       const formDataToSend = new FormData();
 
-     
+      // إضافة البيانات الأساسية
       formDataToSend.append("name", formData.name);
       formDataToSend.append("description", formData.description);
       formDataToSend.append("country", formData.country);
       formDataToSend.append("city", formData.city);
-      formDataToSend.append("phone", formData.phone);
 
-     
+      // إضافة رقم الهاتف مع بادئة +966 إذا لم تكن موجودة
+      formDataToSend.append("phone", formatPhoneForSubmit(formData.phone));
+
+      // إضافة أنواع الوصفات المختارة
       if (
         formData.selectedRecipeTypes &&
         formData.selectedRecipeTypes.length > 0
@@ -288,22 +347,30 @@ const EditChef = () => {
         formDataToSend.append("recipeTypes", "[]");
       }
 
-     
+      // إضافة بيانات وسائل التواصل الاجتماعي
       Object.keys(formData.socialMedia).forEach((platform) => {
         if (formData.socialMedia[platform]) {
-          formDataToSend.append(
-            `socialMedia[${platform}]`,
-            formData.socialMedia[platform]
-          );
+          // إضافة بادئة +966 لرقم الواتساب إذا لم تكن موجودة
+          if (platform === "whatsapp") {
+            formDataToSend.append(
+              `socialMedia[${platform}]`,
+              formatPhoneForSubmit(formData.socialMedia[platform])
+            );
+          } else {
+            formDataToSend.append(
+              `socialMedia[${platform}]`,
+              formData.socialMedia[platform]
+            );
+          }
         }
       });
 
-     
+      // إضافة وسائل التواصل المفضلة
       formData.favoriteConnection.forEach((connection) => {
         formDataToSend.append("favoriteConnection[]", connection);
       });
 
-      
+      // إضافة الصور إذا تم تحديثها
       if (coverPicture) {
         console.log("Sending new cover picture in request");
         formDataToSend.append("coverPicture", coverPicture);
@@ -322,7 +389,7 @@ const EditChef = () => {
         );
       }
 
-  
+      // إرسال البيانات إلى الخادم
       const response = await axios.patch(
         `${api_url}/chef/${id}`,
         formDataToSend,
@@ -335,10 +402,31 @@ const EditChef = () => {
       );
 
       console.log("استجابة الخادم:", response.data);
-      alert("تم تعديل البيانات بنجاح!");
-      navigate("/list"); 
+      // استخدام مكون Alert بدلاً من alert
+      setAlertMessage("تم تعديل البيانات");
+      setAlertSubMessage("تم تعديل بيانات الشيف بنجاح!");
+      setAlertType("success");
+      setAlertOpen(true);
     } catch (error) {
-     
+      console.error("Error updating chef:", error);
+
+      let errorMessage = "حدث خطأ أثناء تعديل البيانات، يرجى المحاولة مرة أخرى";
+
+      if (error.response?.data?.message) {
+        if (Array.isArray(error.response.data.message)) {
+          errorMessage = error.response.data.message.join(", ");
+        } else {
+          errorMessage = error.response.data.message;
+        }
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
+      // استخدام مكون Alert بدلاً من alert
+      setAlertMessage("خطأ في تعديل البيانات");
+      setAlertSubMessage(errorMessage);
+      setAlertType("error");
+      setAlertOpen(true);
     } finally {
       setLoading(false);
     }
@@ -356,6 +444,15 @@ const EditChef = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
+      {/* مكون Alert */}
+      <Alert
+        message={alertMessage}
+        subMessage={alertSubMessage}
+        isOpen={alertOpen}
+        onClose={handleAlertClose}
+        type={alertType}
+      />
+
       <div className="flex-grow flex justify-center items-center px-8 py-8">
         <div className="w-full max-w-[70rem] p-16 rounded-xl ">
           <h2 className="text-3xl font-bold text-right text-gray-700 mb-10">
