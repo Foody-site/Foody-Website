@@ -49,23 +49,67 @@ const Login = () => {
         },
       });
 
-      localStorage.setItem("user", JSON.stringify(userResponse.data));
+      const userData = userResponse.data;
+      localStorage.setItem("user", JSON.stringify(userData));
 
       setAlertType("success");
-      setAlertMessage("تم تسجيل حسابك ");
+      setAlertMessage("تم تسجيل دخولك بنجاح");
       setAlertSubMessage(
-        "شكرًا لانضمامك إلى منصه فودي , يمكنك الآن التمتع بخدمات المنصه."
+        "شكرًا لانضمامك إلى منصه فودي، يمكنك الآن التمتع بخدمات المنصه."
       );
       setAlertOpen(true);
+
+     
+      const userRole = userData.role;
+      console.log("User role:", userRole);
+
+      
+      localStorage.setItem(
+        "redirectPath",
+        userRole === "BUSINESS" ? "/list" : "/"
+      );
     } catch (err) {
+      console.error("Login error:", err);
+
       setAlertType("error");
-      setAlertMessage("خطأ في التسجيل");
+      setAlertMessage("خطأ في تسجيل الدخول");
       setAlertSubMessage(
-        err.response?.data?.message || "حدث خطأ أثناء التسجيل!"
+        err.response?.data?.message || "حدث خطأ أثناء تسجيل الدخول!"
       );
       setAlertOpen(true);
     } finally {
       setLoading(false);
+    }
+  };
+
+ 
+  const handleAlertClose = () => {
+    setAlertOpen(false);
+
+    if (alertType === "success") {
+      try {
+      
+        const userData = JSON.parse(localStorage.getItem("user"));
+
+        if (userData && userData.role) {
+ 
+          if (userData.role === "BUSINESS") {
+            navigate("/list");
+          } else if (userData.role === "CUSTOMER") {
+            navigate("/");
+          } else {
+        
+            navigate("/");
+          }
+        } else {
+        
+          const redirectPath = localStorage.getItem("redirectPath") || "/";
+          navigate(redirectPath);
+        }
+      } catch (error) {
+        console.error("Error during redirect:", error);
+        navigate("/");
+      }
     }
   };
 
@@ -76,12 +120,7 @@ const Login = () => {
         subMessage={alertSubMessage}
         isOpen={alertOpen}
         type={alertType}
-        onClose={() => {
-          setAlertOpen(false);
-          if (alertType === "success") {
-            window.location.href = "/";
-          }
-        }}
+        onClose={handleAlertClose} 
       />
       <div className="flex min-h-screen justify-center items-center bg-gray-100 p-6">
         <div className="flex flex-col md:flex-row gap-36 w-full max-w-7xl">
