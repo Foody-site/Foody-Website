@@ -5,6 +5,7 @@ import { LuPencilLine } from "react-icons/lu";
 import { Pagination } from "../../../components/shared/Pagination/Pagination";
 import { api_url } from "../../../utils/ApiClient";
 import { useNavigate } from "react-router";
+import Alert from './../../../components/shared/Alert/Alert';
 
 // Helper function to format phone number (remove +966 prefix if exists)
 const formatPhoneNumber = (phoneNumber) => {
@@ -12,10 +13,10 @@ const formatPhoneNumber = (phoneNumber) => {
 
   // If the phone number starts with +966, remove it
   if (phoneNumber.startsWith("+966")) {
-    return phoneNumber.substring(4); 
+    return phoneNumber.substring(4);
   }
 
-  return phoneNumber; 
+  return phoneNumber;
 };
 
 export const StoresTable = forwardRef((props, ref) => {
@@ -30,6 +31,12 @@ export const StoresTable = forwardRef((props, ref) => {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [itemsPerPage] = useState(10);
   const navigate = useNavigate();
+
+  // الحالات الجديدة للتنبيه
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertType, setAlertType] = useState("success");
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertSubMessage, setAlertSubMessage] = useState("");
 
   useImperativeHandle(ref, () => ({
     hasStores: () => stores.length > 0,
@@ -115,6 +122,12 @@ export const StoresTable = forwardRef((props, ref) => {
               ? result.message.join(", ")
               : result.message;
             console.error("API Error Message:", errorMessage);
+
+            // عرض رسالة الخطأ بتنبيه Alert
+            setAlertMessage("خطأ في جلب البيانات");
+            setAlertSubMessage(errorMessage);
+            setAlertType("error");
+            setAlertOpen(true);
           }
         }
       } catch (error) {
@@ -123,6 +136,14 @@ export const StoresTable = forwardRef((props, ref) => {
         if (onStoresChange) {
           onStoresChange(false);
         }
+
+        // عرض رسالة الخطأ بتنبيه Alert
+        setAlertMessage("خطأ في الاتصال");
+        setAlertSubMessage(
+          "حدث خطأ أثناء محاولة الاتصال بالخادم. يرجى المحاولة لاحقاً."
+        );
+        setAlertType("error");
+        setAlertOpen(true);
       } finally {
         setLoading(false);
         if (onLoadingChange) {
@@ -151,6 +172,11 @@ export const StoresTable = forwardRef((props, ref) => {
 
   const handleEditStore = (store) => {
     navigate(`/store/edit/${store.id}`);
+  };
+
+  // معالج إغلاق التنبيه
+  const handleAlertClose = () => {
+    setAlertOpen(false);
   };
 
   const handleDeleteConfirm = async () => {
@@ -186,15 +212,41 @@ export const StoresTable = forwardRef((props, ref) => {
           setCurrentPage(currentPage - 1);
         }
 
-        alert("تم حذف المتجر بنجاح");
+        // استخدام Alert بدلاً من alert
+        setAlertMessage("تم حذف المتجر");
+        setAlertSubMessage(`تم حذف المتجر (${storeToDelete?.name}) بنجاح`);
+        setAlertType("success");
+        setAlertOpen(true);
       } else {
         const errorData = await response.json().catch(() => null);
         console.error("خطأ في حذف المتجر:", errorData);
-        alert(errorData?.message || "حدث خطأ أثناء حذف المتجر");
+
+        // استخدام Alert بدلاً من alert
+        setAlertMessage("خطأ في الحذف");
+        setAlertSubMessage(
+          errorData?.message || "حدث خطأ أثناء محاولة حذف المتجر"
+        );
+        setAlertType("error");
+        setAlertOpen(true);
+
+        // إغلاق نافذة تأكيد الحذف
+        setShowDeleteModal(false);
+        setStoreToDelete(null);
       }
     } catch (error) {
       console.error("خطأ في حذف المتجر:", error);
-      alert("حدث خطأ أثناء حذف المتجر");
+
+      // استخدام Alert بدلاً من alert
+      setAlertMessage("خطأ في الحذف");
+      setAlertSubMessage(
+        "حدث خطأ أثناء محاولة حذف المتجر. يرجى المحاولة مرة أخرى."
+      );
+      setAlertType("error");
+      setAlertOpen(true);
+
+      // إغلاق نافذة تأكيد الحذف
+      setShowDeleteModal(false);
+      setStoreToDelete(null);
     } finally {
       setDeleteLoading(false);
     }
@@ -218,6 +270,15 @@ export const StoresTable = forwardRef((props, ref) => {
 
   return (
     <div>
+      {/* مكون Alert */}
+      <Alert
+        message={alertMessage}
+        subMessage={alertSubMessage}
+        isOpen={alertOpen}
+        onClose={handleAlertClose}
+        type={alertType}
+      />
+
       <div className="overflow-hidden rounded-lg border border-gray-300">
         <table className="w-full table-fixed border-collapse border border-gray-300">
           <thead>
@@ -315,7 +376,7 @@ export const StoresTable = forwardRef((props, ref) => {
         />
       )}
 
-      {/* Delete Confirmation Modal */}
+      {/* Delete Confirmation Modal - نحتفظ بها للتأكيد الأولي قبل استخدام Alert */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
