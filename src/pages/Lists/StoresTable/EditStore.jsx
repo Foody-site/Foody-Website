@@ -352,39 +352,6 @@ const EditStore = () => {
           { value: "Al-Badayea", label: "البدائع" },
         ]);
         break;
-      case "Mecca":
-        setCities([{ value: "Mecca", label: "مكة المكرمة" }]);
-        break;
-      case "Eastern":
-        setCities([{ value: "Eastern", label: "الشرقية" }]);
-        break;
-      case "Medina":
-        setCities([{ value: "Medina", label: "المدينة المنورة" }]);
-        break;
-      case "Asir":
-        setCities([{ value: "Asir", label: "عسير" }]);
-        break;
-      case "Tabuk":
-        setCities([{ value: "Tabuk", label: "تبوك" }]);
-        break;
-      case "Hail":
-        setCities([{ value: "Hail", label: "حائل" }]);
-        break;
-      case "Northern Borders":
-        setCities([{ value: "Northern Borders", label: "الحدود الشمالية" }]);
-        break;
-      case "Jizan":
-        setCities([{ value: "Jizan", label: "جازان" }]);
-        break;
-      case "Najran":
-        setCities([{ value: "Najran", label: "نجران" }]);
-        break;
-      case "Al-Bahah":
-        setCities([{ value: "Al-Bahah", label: "الباحة" }]);
-        break;
-      case "Al-Jouf":
-        setCities([{ value: "Al-Jouf", label: "الجوف" }]);
-        break;
       default:
         setCities([]);
     }

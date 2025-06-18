@@ -670,18 +670,7 @@ const Add_Store = () => {
                 className="w-full h-12 px-6 text-xl py-4"
                 options={[
                   { value: "Riyadh", label: "الرياض" },
-                  { value: "Mecca", label: "مكة المكرمة" },
-                  { value: "Eastern", label: "الشرقية" },
-                  { value: "Medina", label: "المدينة المنورة" },
-                  { value: "Asir", label: "عسير" },
                   { value: "Al-Qassim", label: "القصيم" },
-                  { value: "Tabuk", label: "تبوك" },
-                  { value: "Hail", label: "حائل" },
-                  { value: "Northern Borders", label: "الحدود الشمالية" },
-                  { value: "Jizan", label: "جازان" },
-                  { value: "Najran", label: "نجران" },
-                  { value: "Al-Bahah", label: "الباحة" },
-                  { value: "Al-Jouf", label: "الجوف" },
                 ]}
                 required
               />
