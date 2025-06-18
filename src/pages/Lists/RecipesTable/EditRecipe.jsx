@@ -12,6 +12,7 @@ import allergy from "../../../assets/allergy.jpg";
 import TextAreaInput from "../../../components/shared/inputs/TextAreaInput ";
 import { api_url } from "../../../utils/ApiClient";
 import Button from "../../../components/shared/Buttons/Button";
+import Alert from "../../../components/shared/Alert/Alert";
 
 const EditRecipe = () => {
   const { id } = useParams();
@@ -25,9 +26,11 @@ const EditRecipe = () => {
   const [fetchLoading, setFetchLoading] = useState(true);
   const [errors, setErrors] = useState({});
 
-  // Current date and user info
-  const currentDateTime = "2025-06-17 13:16:46";
-  const currentUser = "Amr3011";
+  // حالات التنبيه
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertType, setAlertType] = useState("success");
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertSubMessage, setAlertSubMessage] = useState("");
 
   const [formData, setFormData] = useState({
     name: "",
@@ -42,6 +45,24 @@ const EditRecipe = () => {
     selectedRecipeTypes: [],
     mainIngredient: "",
   });
+
+  // معالج إغلاق التنبيه
+  const handleAlertClose = () => {
+    setAlertOpen(false);
+
+    // إذا كان التنبيه من نوع "success" قم بإعادة توجيه المستخدم
+    if (alertType === "success") {
+      navigate("/list");
+    }
+  };
+
+  // دالة لعرض التنبيه
+  const showAlert = (message, subMessage, type = "success") => {
+    setAlertMessage(message);
+    setAlertSubMessage(subMessage);
+    setAlertType(type);
+    setAlertOpen(true);
+  };
 
   useEffect(() => {
     const fetchRecipe = async () => {
@@ -66,7 +87,6 @@ const EditRecipe = () => {
         }
         console.log("Selected type IDs:", selectedTypeIds);
 
-        
         setFormData({
           name: recipeData.name || "",
           description: recipeData.description || "",
@@ -84,13 +104,16 @@ const EditRecipe = () => {
           mainIngredient: recipeData.mainIngredient || "",
         });
 
-     
         if (recipeData.photo) {
           setCurrentPhoto(recipeData.photo);
         }
       } catch (error) {
         console.error("Error fetching recipe details:", error);
-        alert("حدث خطأ أثناء جلب بيانات الوصفة");
+        showAlert(
+          "خطأ في جلب البيانات",
+          "حدث خطأ أثناء جلب بيانات الوصفة",
+          "error"
+        );
       } finally {
         setFetchLoading(false);
       }
@@ -100,13 +123,18 @@ const EditRecipe = () => {
       try {
         const response = await axios.get(`${api_url}/chef/recipe/types`);
         const formattedData = response.data.map((item) => ({
-          value: item.id || item._id, 
+          value: item.id || item._id,
           label: item.name.ar,
         }));
         setAvailableRecipeTypes(formattedData);
         console.log("Available recipe types:", formattedData);
       } catch (error) {
         console.error("Error fetching recipe types:", error);
+        showAlert(
+          "خطأ في جلب أنواع الطعام",
+          "حدث خطأ أثناء جلب أنواع الوصفات",
+          "error"
+        );
       }
     };
 
@@ -117,7 +145,6 @@ const EditRecipe = () => {
   }, [id]);
 
   const handleRemoveIngredient = (indexToRemove) => {
-   
     if (formData.ingredients.length <= 1) {
       return;
     }
@@ -134,8 +161,12 @@ const EditRecipe = () => {
     const file = event.target.files[0];
     if (file && file.type.startsWith("image/")) {
       setPhoto(file);
-    } else {
-      console.error("الرجاء اختيار صورة صحيحة!");
+    } else if (file) {
+      showAlert(
+        "صورة غير صالحة",
+        "الرجاء اختيار صورة صحيحة بصيغة مدعومة",
+        "error"
+      );
     }
   };
 
@@ -172,11 +203,9 @@ const EditRecipe = () => {
   const handleIngredientChange = (index, field, value) => {
     const updatedIngredients = [...formData.ingredients];
 
-   
     if (field === "quantity") {
-    
       const numValue = parseInt(value, 10);
-     
+
       updatedIngredients[index][field] = !isNaN(numValue) ? numValue : "";
     } else {
       updatedIngredients[index][field] = value;
@@ -197,7 +226,6 @@ const EditRecipe = () => {
     }
   };
 
-  
   const handlePrepTimeHourChange = (value) => {
     const hours = parseInt(value) || 0;
     setFormData((prev) => {
@@ -251,7 +279,6 @@ const EditRecipe = () => {
   const validateForm = () => {
     const newErrors = {};
 
-   
     if (!formData.name || formData.name.trim() === "")
       newErrors.name = "اسم الوصفة مطلوب";
     else if (formData.name.length > 200)
@@ -277,7 +304,6 @@ const EditRecipe = () => {
     if (!formData.mainIngredient || formData.mainIngredient.trim() === "")
       newErrors.mainIngredient = "المكون الرئيسي مطلوب";
 
-  
     const ingredientErrors = [];
     formData.ingredients.forEach((ingredient, index) => {
       const itemErrors = {};
@@ -300,16 +326,19 @@ const EditRecipe = () => {
     e.preventDefault();
     console.log("Form data before submission:", formData);
 
-    
     if (!validateForm()) {
-      console.error("يرجى تصحيح الأخطاء قبل الإرسال");
+      showAlert(
+        "يرجى تصحيح الأخطاء",
+        "يرجى التأكد من تعبئة جميع الحقول المطلوبة",
+        "error"
+      );
       return;
     }
 
     setLoading(true);
     const token = localStorage.getItem("token");
     if (!token) {
-      console.error("لا يوجد توكن، يرجى تسجيل الدخول.");
+      showAlert("خطأ في المصادقة", "لا يوجد توكن، يرجى تسجيل الدخول", "error");
       setLoading(false);
       return;
     }
@@ -324,7 +353,6 @@ const EditRecipe = () => {
     data.append("isAllergenic", formData.isAllergenic);
     data.append("mainIngredient", formData.mainIngredient);
 
-  
     if (
       formData.selectedRecipeTypes &&
       formData.selectedRecipeTypes.length > 0
@@ -338,16 +366,14 @@ const EditRecipe = () => {
       data.append("recipeTypes[]", "");
     }
 
-   
     const limitedSteps = formData.preparationSteps.slice(0, 20);
     limitedSteps.forEach((step, index) =>
       data.append(`preparationSteps[${index}]`, step)
     );
 
-    
     formData.ingredients.forEach((ingredient, index) => {
       data.append(`ingredients[${index}][name]`, ingredient.name);
-     
+
       data.append(
         `ingredients[${index}][quantity]`,
         parseInt(ingredient.quantity, 10)
@@ -355,13 +381,11 @@ const EditRecipe = () => {
       data.append(`ingredients[${index}][unit]`, ingredient.unit);
     });
 
-  
     if (photo) {
       data.append("photo", photo);
     }
 
     try {
-    
       const response = await axios.patch(`${api_url}/recipe/${id}`, data, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -369,18 +393,19 @@ const EditRecipe = () => {
         },
       });
 
-      alert("تم تعديل الوصفة بنجاح");
-      
-      navigate("/list");
+      showAlert("تم تعديل الوصفة", "تم تعديل الوصفة بنجاح", "success");
+
+      // التنقل سيتم في handleAlertClose عندما يكون نوع التنبيه هو success
     } catch (error) {
       const errorMessage =
         error.response?.data?.message || "حدث خطأ أثناء تعديل الوصفة";
-      alert(errorMessage);
+      showAlert("خطأ في تعديل الوصفة", errorMessage, "error");
       console.error("API Error:", error.response?.data || error.message);
     } finally {
       setLoading(false);
     }
   };
+
   if (fetchLoading) {
     return (
       <div className="flex flex-col min-h-screen">
@@ -391,7 +416,6 @@ const EditRecipe = () => {
     );
   }
 
-
   const getPrepTimeHours = () => Math.floor(formData.preparationTime / 60);
   const getPrepTimeMinutes = () => formData.preparationTime % 60;
   const getCookTimeHours = () => Math.floor(formData.cookingTime / 60);
@@ -399,6 +423,16 @@ const EditRecipe = () => {
 
   return (
     <div className="flex flex-col min-h-screen ">
+      {/* مكون Alert */}
+      <Alert
+        message={alertMessage}
+        subMessage={alertSubMessage}
+        isOpen={alertOpen}
+        onClose={handleAlertClose}
+        type={alertType}
+        autoClose={false}
+      />
+
       <div className="flex-grow flex justify-center items-center px-8 py-8">
         <div className="w-full max-w-[70rem] p-16 rounded-xl">
           <h2 className="text-3xl font-bold text-gray-700 mb-10 text-right">
