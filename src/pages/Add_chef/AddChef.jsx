@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
 import Button from "../../components/shared/Buttons/Button";
 import Inputs from "../../components/shared/inputs/Inputs";
@@ -15,8 +15,27 @@ import CheckboxSelectInput from "../../components/shared/inputs/CheckboxSelectIn
 import countriesData from "../../assets/countries.json";
 import TextAreaInput from "../../components/shared/inputs/TextAreaInput ";
 import Checkbox from "../../components/shared/inputs/Checkbox";
+import Alert from "../../components/shared/Alert/Alert";
+
+// دالة لإضافة بادئة +966 للرقم إذا لم تكن موجودة - خارج المكون
+const formatPhoneNumber = (phoneNumber) => {
+  if (!phoneNumber) return "";
+
+  // تنظيف الرقم من أي مسافات
+  const trimmedPhone = phoneNumber.trim();
+
+  // إذا كان الرقم لا يبدأ بـ +966، قم بإضافته
+  if (!trimmedPhone.startsWith("+966")) {
+    return `+966${trimmedPhone}`;
+  }
+
+  return trimmedPhone;
+};
 
 const AddChef = () => {
+  // مرجع للتتبع ما إذا كنا في التحميل الأولي
+  const isInitialMount = useRef(true);
+
   const [noContact, setNoContact] = useState(false);
   const [loading, setLoading] = useState(false);
   // State for available recipe types from API
@@ -27,6 +46,12 @@ const AddChef = () => {
   const [coverPicture, setCoverPicture] = useState(null);
   const [profilePicture, setProfilePicture] = useState(null);
 
+  // Alert states
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertType, setAlertType] = useState("success");
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertSubMessage, setAlertSubMessage] = useState("");
+
   // Form data state
   const [formData, setFormData] = useState({
     selectedRecipeTypes: [],
@@ -36,7 +61,7 @@ const AddChef = () => {
     country: "",
     phone: "",
     socialMedia: {
-      WhatsApp: "",
+      whatsapp: "",
       facebook: "",
       x: "",
       tiktok: "",
@@ -46,6 +71,18 @@ const AddChef = () => {
     },
     favoriteConnection: [],
   });
+
+  // معالج إغلاق التنبيه
+  const handleAlertClose = () => {
+    setAlertOpen(false);
+
+    // استخدام setTimeout للتنقل بعد إغلاق التنبيه
+    if (alertType === "success") {
+      setTimeout(() => {
+        navigate("/list");
+      }, 100);
+    }
+  };
 
   // Fetch recipe types on component mount
   useEffect(() => {
@@ -57,9 +94,15 @@ const AddChef = () => {
           label: item.name.ar,
         }));
         setAvailableRecipeTypes(formattedData);
-        console.log("Available recipe types:", formattedData); // Debug
       } catch (error) {
         console.error("Error fetching recipe types:", error);
+        // تجنب تحديث الحالة داخل useEffect باستخدام timeout
+        setTimeout(() => {
+          setAlertMessage("خطأ في تحميل البيانات");
+          setAlertSubMessage("حدث خطأ أثناء جلب أنواع الوصفات");
+          setAlertType("error");
+          setAlertOpen(true);
+        }, 10);
       }
     };
     fetchRecipeTypes();
@@ -73,14 +116,16 @@ const AddChef = () => {
           c.name.trim().toLowerCase() === formData.country.trim().toLowerCase()
       );
 
-      setCities(
-        selectedCountry && selectedCountry.states
-          ? selectedCountry.states.map((state) => ({
-              value: state.name,
-              label: state.name,
-            }))
-          : []
-      );
+      // تحديث المدن فقط إذا وجدت البلد
+      if (selectedCountry && selectedCountry.states) {
+        const cityOptions = selectedCountry.states.map((state) => ({
+          value: state.name,
+          label: state.name,
+        }));
+        setCities(cityOptions);
+      } else {
+        setCities([]);
+      }
     }
   }, [formData.country]);
 
@@ -123,8 +168,12 @@ const AddChef = () => {
     const file = event.target.files[0];
     if (file && file.type.startsWith("image/")) {
       setCoverPicture(file);
-    } else {
-      console.error("الرجاء اختيار صورة صحيحة!");
+    } else if (event.target.files.length > 0) {
+      // فقط إظهار التنبيه إذا تم اختيار ملف غير صالح
+      setAlertMessage("خطأ في تحميل الصورة");
+      setAlertSubMessage("الرجاء اختيار صورة صحيحة للغلاف!");
+      setAlertType("error");
+      setAlertOpen(true);
     }
   };
 
@@ -132,21 +181,39 @@ const AddChef = () => {
     const file = event.target.files[0];
     if (file && file.type.startsWith("image/")) {
       setProfilePicture(file);
-    } else {
-      console.error("الرجاء اختيار صورة صحيحة!");
+    } else if (event.target.files.length > 0) {
+      // فقط إظهار التنبيه إذا تم اختيار ملف غير صالح
+      setAlertMessage("خطأ في تحميل الصورة");
+      setAlertSubMessage("الرجاء اختيار صورة صحيحة للملف الشخصي!");
+      setAlertType("error");
+      setAlertOpen(true);
+    }
+  };
+
+  // إنشاء معالج منفصل لتغييرات انواع الوصفات
+  const handleRecipeTypesChange = (e) => {
+    // تأكد من أن القيمة المستلمة هي مصفوفة أو تحويلها إلى مصفوفة
+    const newValue = Array.isArray(e.target.value) ? e.target.value : [];
+
+    // تجنب التحديث إذا كانت القيم متساوية
+    const isSameArray =
+      formData.selectedRecipeTypes.length === newValue.length &&
+      formData.selectedRecipeTypes.every((val, idx) => val === newValue[idx]);
+
+    if (!isSameArray) {
+      setFormData((prev) => ({
+        ...prev,
+        selectedRecipeTypes: newValue,
+      }));
     }
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
+    // استخدام معالج منفصل لـ selectedRecipeTypes
     if (name === "selectedRecipeTypes") {
-      const selectedTypeIds = Array.isArray(value) ? value : [value];
-
-      setFormData((prev) => ({
-        ...prev,
-        selectedRecipeTypes: selectedTypeIds,
-      }));
+      return handleRecipeTypesChange(e);
     } else if (name.startsWith("socialMedia.")) {
       const field = name.split(".")[1];
       setFormData((prev) => ({
@@ -169,37 +236,51 @@ const AddChef = () => {
     setLoading(true);
     const token = localStorage.getItem("token");
     if (!token) {
-      console.error("لا يوجد توكن، يرجى تسجيل الدخول.");
+      setAlertMessage("خطأ في المصادقة");
+      setAlertSubMessage("لا يوجد توكن، يرجى تسجيل الدخول.");
+      setAlertType("error");
+      setAlertOpen(true);
       setLoading(false);
       return;
     }
 
     try {
+      // إضافة البادئة +966 لرقم الهاتف إذا لم تكن موجودة
+      const formattedPhone = formatPhoneNumber(formData.phone);
+
+      // إضافة البادئة +966 لرقم الواتساب إذا لم تكن موجودة
+      const formattedwhatsapp = formatPhoneNumber(
+        formData.socialMedia.whatsapp
+      );
+
       const chefData = {
         name: formData.name,
         description: formData.description,
         country: formData.country,
         city: formData.city,
-        phone: formData.phone,
+        phone: formattedPhone,
         recipeTypes:
           formData.selectedRecipeTypes &&
           formData.selectedRecipeTypes.length > 0
             ? formData.selectedRecipeTypes.filter(
-                (id) => id && id.trim() !== ""
+                (id) => id && String(id).trim() !== ""
               )
             : [],
-        socialMedia: {},
+        socialMedia: {
+          ...formData.socialMedia,
+          whatsapp: formattedwhatsapp, // استخدام الرقم المنسق
+        },
+        favoriteConnection: formData.favoriteConnection,
       };
 
-      Object.keys(formData.socialMedia).forEach((platform) => {
-        if (formData.socialMedia[platform]) {
-          chefData.socialMedia[platform] = formData.socialMedia[platform];
+      // إزالة أي حقول فارغة من socialMedia
+      Object.keys(chefData.socialMedia).forEach((platform) => {
+        if (!chefData.socialMedia[platform]) {
+          delete chefData.socialMedia[platform];
         }
       });
 
       if (!coverPicture && !profilePicture) {
-        console.log("إرسال البيانات كـ JSON:", chefData);
-
         const response = await axios.post(`${api_url}/chef`, chefData, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -207,8 +288,10 @@ const AddChef = () => {
           },
         });
 
-        console.log("استجابة الخادم:", response.data);
-        alert("تمت الإضافة بنجاح!");
+        setAlertMessage("تمت إضافة الشيف");
+        setAlertSubMessage("تمت إضافة الشيف بنجاح!");
+        setAlertType("success");
+        setAlertOpen(true);
         setLoading(false);
         return;
       }
@@ -219,14 +302,14 @@ const AddChef = () => {
       formDataToSend.append("description", formData.description);
       formDataToSend.append("country", formData.country);
       formDataToSend.append("city", formData.city);
-      formDataToSend.append("phone", formData.phone);
+      formDataToSend.append("phone", formattedPhone); // استخدام الرقم المنسق
 
       if (
         formData.selectedRecipeTypes &&
         formData.selectedRecipeTypes.length > 0
       ) {
         formData.selectedRecipeTypes.forEach((typeId) => {
-          if (typeId && typeId.trim() !== "") {
+          if (typeId && String(typeId).trim() !== "") {
             formDataToSend.append("recipeTypes[]", typeId);
           }
         });
@@ -234,12 +317,20 @@ const AddChef = () => {
         formDataToSend.append("recipeTypes", "[]");
       }
 
+      // إضافة بيانات وسائل التواصل الاجتماعي مع تنسيق رقم الواتساب
       Object.keys(formData.socialMedia).forEach((platform) => {
         if (formData.socialMedia[platform]) {
-          formDataToSend.append(
-            `socialMedia[${platform}]`,
-            formData.socialMedia[platform]
-          );
+          if (platform === "whatsapp") {
+            formDataToSend.append(
+              `socialMedia[${platform}]`,
+              formattedwhatsapp
+            );
+          } else {
+            formDataToSend.append(
+              `socialMedia[${platform}]`,
+              formData.socialMedia[platform]
+            );
+          }
         }
       });
 
@@ -251,8 +342,6 @@ const AddChef = () => {
       if (profilePicture)
         formDataToSend.append("profilePicture", profilePicture);
 
-      console.log("إرسال البيانات كـ FormData");
-
       const response = await axios.post(`${api_url}/chef`, formDataToSend, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -260,8 +349,10 @@ const AddChef = () => {
         },
       });
 
-      console.log("استجابة الخادم:", response.data);
-      alert("تمت الإضافة بنجاح!");
+      setAlertMessage("تمت إضافة الشيف");
+      setAlertSubMessage("تمت إضافة الشيف بنجاح!");
+      setAlertType("success");
+      setAlertOpen(true);
     } catch (error) {
       console.error("خطأ كامل:", error);
 
@@ -284,13 +375,26 @@ const AddChef = () => {
       }
 
       console.error("رسالة الخطأ:", errorMessage);
-      alert(`حدث خطأ: ${errorMessage}`);
+      setAlertMessage("خطأ في إضافة الشيف");
+      setAlertSubMessage(errorMessage);
+      setAlertType("error");
+      setAlertOpen(true);
     } finally {
       setLoading(false);
     }
   };
+
   return (
     <div className="flex flex-col min-h-screen">
+      {/* مكون Alert */}
+      <Alert
+        message={alertMessage}
+        subMessage={alertSubMessage}
+        isOpen={alertOpen}
+        onClose={handleAlertClose}
+        type={alertType}
+      />
+
       <div className="flex-grow flex justify-center items-center px-8 py-8">
         <div className="w-full max-w-[70rem] p-16 rounded-xl ">
           <h2 className="text-3xl font-bold text-right text-gray-700 mb-10">
@@ -351,19 +455,25 @@ const AddChef = () => {
             onSubmit={handleSubmit}
           >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-10 text-right">
-              <CheckboxSelectInput
-                name="selectedRecipeTypes"
-                label="أنواع وصفات الطبخ"
-                options={availableRecipeTypes}
-                onChange={handleChange} // Use the new handler function
-              />
+              {/* استخدام CheckboxSelectInput بطريقة آمنة */}
+              {availableRecipeTypes.length > 0 && (
+                <CheckboxSelectInput
+                  name="selectedRecipeTypes"
+                  label="أنواع وصفات الطبخ"
+                  options={availableRecipeTypes}
+                  onChange={handleRecipeTypesChange}
+                  value={formData.selectedRecipeTypes}
+                  key="recipe-types-input" // إضافة key ثابت لمنع إعادة التصيير التي قد تسبب تحديثات متكررة
+                />
+              )}
               <Inputs
                 name="phone"
                 label="رقم التواصل الخاص"
                 type="text"
                 className="w-full h-12 px-6 text-xl py-4 placeholder:text-sm"
-                placeholder="قم بادخال رقم التواصل الخاص  هنا"
+                placeholder="قم بادخال رقم التواصل الخاص هنا"
                 onChange={handleChange}
+                helperText="سيتم إضافة +966 تلقائيًا إذا لم تقم بكتابتها"
               />
 
               <Inputs
@@ -418,13 +528,14 @@ const AddChef = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-10 text-right">
               <Inputs
-                name="socialMedia.WhatsApp"
+                name="socialMedia.whatsapp"
                 label="إضافة رقم واتساب"
                 placeholder="قم بإضافة رقم واتساب هنا"
                 type="text"
                 Icon_2={IoLogoWhatsapp}
                 className="w-full h-12 px-6 text-xl py-4 placeholder:text-sm"
                 onChange={handleChange}
+                helperText="سيتم إضافة +966 تلقائيًا إذا لم تقم بكتابتها"
               />
               <Inputs
                 name="socialMedia.youtube"
@@ -464,10 +575,10 @@ const AddChef = () => {
               />
               <Inputs
                 name="socialMedia.tiktok"
-                label="إضافة رابط  تيك توك"
+                label="إضافة رابط تيك توك"
                 type="text"
                 Icon_2={FaTiktok}
-                placeholder="قم بادخال إضافة رابط  تيك توك هنا"
+                placeholder="قم بادخال إضافة رابط تيك توك هنا"
                 className="w-full h-12 px-6 text-xl py-4 placeholder:text-sm"
                 onChange={handleChange}
               />
@@ -494,9 +605,9 @@ const AddChef = () => {
                 />
                 <Checkbox
                   label="رقم الواتساب"
-                  name="WhatsApp"
+                  name="whatsapp"
                   className="accent-primary-1"
-                  checked={formData.favoriteConnection.includes("WhatsApp")}
+                  checked={formData.favoriteConnection.includes("whatsapp")}
                   onChange={handleCheckboxChange}
                   disabled={noContact}
                 />

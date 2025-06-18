@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FaChevronDown } from "react-icons/fa";
 
 const CheckboxSelectInput = ({
@@ -12,10 +12,25 @@ const CheckboxSelectInput = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState(value || []);
+  const isInitialMount = useRef(true); // مرجع للتحقق من التحميل الأولي
 
   // تحديث القيم المحددة عندما تتغير القيمة الخارجية
   useEffect(() => {
-    if (Array.isArray(value)) {
+    // تخطي التحديث الأول لمنع الحلقات اللانهائية عند التحميل
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
+    // التحقق من المساواة العميقة بين المصفوفتين قبل التحديث
+    const isSameArray =
+      Array.isArray(value) &&
+      Array.isArray(selectedOptions) &&
+      value.length === selectedOptions.length &&
+      value.every((val) => selectedOptions.includes(val));
+
+    // تحديث الحالة فقط إذا كانت القيمة مختلفة فعليًا
+    if (!isSameArray && Array.isArray(value)) {
       setSelectedOptions(value);
     }
   }, [value]);
@@ -24,24 +39,43 @@ const CheckboxSelectInput = ({
     setIsOpen(!isOpen);
   };
 
+  // معالج النقر خارج القائمة لإغلاقها
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // تحقق إذا كان الضغط خارج القائمة
+      if (isOpen && !event.target.closest(`.${name}-dropdown`)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen, name]);
+
   const handleCheckboxChange = (event) => {
-    const { value, checked } = event.target;
+    const { value: optionValue, checked } = event.target;
     let updatedSelection = checked
-      ? [...selectedOptions, value]
-      : selectedOptions.filter((item) => item !== value);
+      ? [...selectedOptions, optionValue]
+      : selectedOptions.filter((item) => item !== optionValue);
 
     setSelectedOptions(updatedSelection);
-    onChange({
-      target: {
-        name: name,
-        value: updatedSelection,
-      },
-    });
+
+    // استدعاء onChange فقط عند التغيير الفعلي
+    if (onChange) {
+      onChange({
+        target: {
+          name: name,
+          value: updatedSelection,
+        },
+      });
+    }
   };
 
   // تنسيق عرض العناصر المحددة
   const displaySelectedOptions = () => {
-    if (selectedOptions.length === 0) return "اختر";
+    if (!selectedOptions || selectedOptions.length === 0) return "اختر";
 
     if (selectedOptions.length === 1) {
       const selectedOption = options.find(
@@ -58,7 +92,7 @@ const CheckboxSelectInput = ({
   };
 
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative ${className} ${name}-dropdown`}>
       <label className="block text-gray-700 font-medium mb-1 text-right">
         {label}
       </label>
