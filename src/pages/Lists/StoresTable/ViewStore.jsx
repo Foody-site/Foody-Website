@@ -608,7 +608,10 @@ const ViewStore = () => {
 
               {store.deliveryAppLinks &&
               Object.keys(store.deliveryAppLinks).length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-right">
+                <div
+                  dir="rtl"
+                  className="text-right gap-4 md:grid-cols-3 grid-cols-1 grid"
+                >
                   {Object.entries(store.deliveryAppLinks).map(
                     ([key, value]) => {
                       if (!value) return null;
