@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import axios from "axios";
 import { api_url } from "../../utils/ApiClient";
 import BUSINESS_photo from "/assets/choose_role/BUSINESS_photo.jpg";
@@ -9,11 +9,13 @@ import { LuCircleUser } from "react-icons/lu";
 import { IoBriefcaseOutline } from "react-icons/io5";
 import Alert from "../shared/Alert/Alert";
 
-// القيم الثابتة المطلوبة
-const CURRENT_DATE_TIME = "2025-06-19 18:26:43";
+// القيم الثابتة المطلوبة - محدثة كما طلبت
+const CURRENT_DATE_TIME = "2025-06-19 20:17:18";
 const CURRENT_USER_LOGIN = "Amr3011";
 
 export default function ChooseRoleWithGoogle() {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [selectedRole, setSelectedRole] = useState("");
   const [loading, setLoading] = useState(false);
   const [userId, setUserId] = useState(null);
@@ -22,14 +24,27 @@ export default function ChooseRoleWithGoogle() {
   const [alertMessage, setAlertMessage] = useState("");
   const [alertSubMessage, setAlertSubMessage] = useState("");
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
+  const [isRoleSelected, setIsRoleSelected] = useState(false);
 
+  // تحقق من التاريخ للتأكد من أننا في صفحة اختيار الدور
   useEffect(() => {
-    // طباعة المعلومات الثابتة في وحدة التحكم
     console.log(
       `Current Date and Time (UTC - YYYY-MM-DD HH:MM:SS formatted): ${CURRENT_DATE_TIME}`
     );
     console.log(`Current User's Login: ${CURRENT_USER_LOGIN}`);
+
+    // استخدام تنبيه عند محاولة مغادرة الصفحة
+    const handleBeforeUnload = (event) => {
+      if (!isRoleSelected) {
+        event.preventDefault();
+        event.returnValue =
+          "هل أنت متأكد من رغبتك في مغادرة هذه الصفحة قبل اختيار دور؟";
+        return event.returnValue;
+      }
+    };
+
+    // إضافة المستمع للنافذة
+    window.addEventListener("beforeunload", handleBeforeUnload);
 
     // التحقق من وجود توكن المستخدم
     const token = localStorage.getItem("token");
@@ -55,7 +70,109 @@ export default function ChooseRoleWithGoogle() {
       console.error("Error parsing user data:", error);
       fetchUserInfo(token);
     }
-  }, []);
+
+    // إزالة المستمع عند تفكيك المكون
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [navigate, isRoleSelected]);
+
+  // منع التنقل للخلف
+  useEffect(() => {
+    // معالج للتنقل للخلف (back button)
+    const handlePopState = () => {
+      if (!isRoleSelected) {
+        // منع التنقل للخلف إذا لم يتم اختيار الدور
+        window.history.pushState(
+          null,
+          document.title,
+          window.location.pathname
+        );
+
+        showAlert(
+          "warning",
+          "يجب اختيار الدور",
+          "لا يمكنك مغادرة هذه الصفحة قبل اختيار دور"
+        );
+      }
+    };
+
+    // إعداد تاريخ المتصفح لمنع العودة للخلف
+    window.history.pushState(null, document.title, window.location.pathname);
+
+    // إضافة مستمع للتنقل للخلف
+    window.addEventListener("popstate", handlePopState);
+
+    // إزالة المستمع عند تفكيك المكون
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [isRoleSelected]);
+
+  // رصد تغيرات في URL
+  useEffect(() => {
+    // إنشاء مراقب للتنقل
+    const originalNavigate = navigate;
+
+    // تعديل وظيفة التنقل
+    const navigateWrapper = (to, options = {}) => {
+      // السماح بالتنقل إلى صفحات محددة فقط إذا لم يتم اختيار الدور
+      const allowedPaths = ["/login", "/choose-role"];
+      if (isRoleSelected || allowedPaths.includes(to)) {
+        originalNavigate(to, options);
+      } else {
+        showAlert(
+          "warning",
+          "يجب اختيار الدور",
+          "لا يمكنك مغادرة هذه الصفحة قبل اختيار دور"
+        );
+      }
+    };
+
+    // تخصيص وظيفة التنقل الخاصة بنا
+    window.myCustomNavigate = navigateWrapper;
+
+    // نحتاج أيضًا رصد تغيرات URL عبر pushState/replaceState
+    const handleUrlChange = () => {
+      if (!isRoleSelected) {
+        const currentPath = window.location.pathname;
+        const isChooseRolePath =
+          currentPath === location.pathname || currentPath === "/choose-role";
+        if (!isChooseRolePath) {
+          // إعادة المستخدم إلى صفحة اختيار الدور
+          window.history.pushState(null, document.title, location.pathname);
+
+          // إظهار تنبيه للمستخدم
+          showAlert(
+            "warning",
+            "يجب اختيار الدور",
+            "لا يمكنك مغادرة هذه الصفحة قبل اختيار دور"
+          );
+        }
+      }
+    };
+
+    // اعتراض كائنات history
+    const originalPushState = window.history.pushState;
+    window.history.pushState = function () {
+      const result = originalPushState.apply(this, arguments);
+      handleUrlChange();
+      return result;
+    };
+
+    const originalReplaceState = window.history.replaceState;
+    window.history.replaceState = function () {
+      const result = originalReplaceState.apply(this, arguments);
+      handleUrlChange();
+      return result;
+    };
+
+    // استرجاع الدوال الأصلية عند تفكيك المكون
+    return () => {
+      window.history.pushState = originalPushState;
+      window.history.replaceState = originalReplaceState;
+    };
+  }, [navigate, location.pathname, isRoleSelected]);
 
   // وظيفة لجلب معلومات المستخدم إذا لم تكن متوفرة
   const fetchUserInfo = async (token) => {
@@ -128,6 +245,9 @@ export default function ChooseRoleWithGoogle() {
         userData.role = selectedRole;
         localStorage.setItem("user", JSON.stringify(userData));
 
+        // الآن يمكننا السماح بمغادرة الصفحة
+        setIsRoleSelected(true);
+
         // عرض تنبيه النجاح
         showAlert(
           "success",
@@ -159,6 +279,12 @@ export default function ChooseRoleWithGoogle() {
         "معرّف المستخدم غير متوفر",
         "يرجى تسجيل الدخول مرة أخرى"
       );
+    } else {
+      showAlert(
+        "warning",
+        "الرجاء اختيار نوع الحساب",
+        "يجب اختيار نوع الحساب للمتابعة"
+      );
     }
   };
 
@@ -174,17 +300,32 @@ export default function ChooseRoleWithGoogle() {
   const handleAlertClose = () => {
     setAlertOpen(false);
 
-    if (alertType === "success") {
-      // توجيه المستخدم بناءً على الدور
+    // فقط إذا كان التنبيه هو نجاح واختار المستخدم دورًا، نقوم بإعادة التوجيه
+    if (alertType === "success" && selectedRole) {
       const redirectPath = localStorage.getItem("redirectPath") || "/";
+      // استخدام replace: true لاستبدال الصفحة الحالية في تاريخ المتصفح
       navigate(redirectPath, { replace: true });
       localStorage.removeItem("redirectPath");
-    } else if (alertType === "error") {
-      // إذا كانت المشكلة متعلقة بالمصادقة، توجيه المستخدم إلى صفحة تسجيل الدخول
-      if (error?.response?.status === 401 || error?.response?.status === 403) {
-        navigate("/login", { replace: true });
-      }
+    } else if (
+      alertType === "error" &&
+      (error?.response?.status === 401 || error?.response?.status === 403)
+    ) {
+      // إذا كانت المشكلة متعلقة بالمصادقة، نعود إلى صفحة تسجيل الدخول
+      navigate("/login", { replace: true });
     }
+    // في جميع الحالات الأخرى لا نقوم بإعادة التوجيه
+  };
+
+  const handleLogout = () => {
+    // مسح البيانات
+    localStorage.removeItem("token");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("user");
+    localStorage.removeItem("redirectPath");
+
+    // التوجيه إلى صفحة تسجيل الدخول
+    setIsRoleSelected(true); // السماح بالتنقل للخروج
+    navigate("/login", { replace: true });
   };
 
   return (
@@ -279,20 +420,18 @@ export default function ChooseRoleWithGoogle() {
           </div>
         </div>
 
-        <div className="flex justify-center mt-12">
+        <div className="flex justify-center mt-12 flex-wrap gap-4">
           <Button
             label={loading ? "جاري الإرسال..." : "التالى"}
             onClick={handleNext}
             disabled={!selectedRole || loading}
-            className={`max-w-[500px] w-full py-3 text-white font-bold rounded-md transition ${
+            className={`max-w-[300px] w-full py-3 text-white font-bold rounded-md transition ${
               selectedRole && !loading
                 ? "bg-primary-1 hover:bg-hover_primary-1"
                 : "bg-gray-400 cursor-not-allowed"
             }`}
           />
         </div>
-
-        
       </div>
     </div>
   );
