@@ -21,6 +21,8 @@ import EditRecipe from "../pages/Lists/RecipesTable/EditRecipe";
 import EditChef from "../pages/Lists/ChefsTable/EditChef";
 import EditStore from "../pages/Lists/StoresTable/EditStore";
 import RecipeDetails from "../pages/Recipe/RecipeDetails";
+import AuthCallback from "../components/Auth/AuthCallback";
+import ChooseRoleWithGoogle from "../components/Auth/ChooseRoleWithGoogle";
 
 const AppRouter = () => {
   return (
@@ -30,6 +32,8 @@ const AppRouter = () => {
       <Route path="/login2" element={<Login_2 />} />
       <Route path="/register" element={<Register />} />
       <Route path="/choose-role" element={<ChooseRole />} />
+      <Route path="/choose-role-with-google" element={<ChooseRoleWithGoogle />} />
+      <Route path="/auth/callback" element={<AuthCallback />} />
 
       {/* 🔒 Protected routes inside Layout */}
       <Route path="/" element={<Layout />}>
