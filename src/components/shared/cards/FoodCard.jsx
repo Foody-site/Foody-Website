@@ -9,6 +9,7 @@ import {
 } from "react-icons/fa";
 import { MdVerified } from "react-icons/md";
 import FavoriteButton from "../Favourites/FavouriteStore";
+import StoreShare from "../Share/StoreShare";
 
 const FoodCard = ({ store, favorites = [] }) => {
     return (
@@ -65,9 +66,7 @@ const FoodCard = ({ store, favorites = [] }) => {
                     <button className="flex-1 bg-primary-1 hover:bg-red-700 text-white py-2 rounded-lg text-sm">
                         المزيد من التفاصيل
                     </button>
-                    <button className="w-10 h-10 flex items-center justify-center border border-primary-1 rounded-lg text-primary-1">
-                        <FaShareAlt />
-                    </button>
+                    <StoreShare storeId={store.id} />
                 </div>
             </div>
         </div>
