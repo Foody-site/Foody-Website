@@ -10,6 +10,7 @@ import RecipeChef from "../shared/RecipeChef/RecipeChef";
 import { MdVerified } from "react-icons/md";
 import FavouriteChef from "../shared/Favourites/FavouriteChef";
 import ChefShare from "../shared/Share/ChefShare";
+import FollowChef from "../shared/FollowChef/FollowChef";
 
 const ChefPage = () => {
     const { id } = useParams();
@@ -84,9 +85,7 @@ const ChefPage = () => {
                         <p className="text-sm text-[#808080] mt-1 p-2">{chef.description || "وصف الطباخ هنا"}</p>
 
                         <div className="flex justify-center gap-2 mt-4">
-                            <button className="flex-1 py-2 rounded border border-primary-1 text-primary-1 hover:bg-primary-50">
-                                المتابعة
-                            </button>
+                            <FollowChef followingId={chef.id} isInitiallyFollowing={chef.isFollowing} />
                             <button className="flex-1 py-2 rounded bg-primary-1 text-white hover:bg-red-700">
                                 اريد الشيف
                             </button>
