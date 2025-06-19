@@ -14,6 +14,7 @@ import ChefProfile from "../pages/Chef/ChefProfile";
 import Home from "../pages/Home/Home";
 import UserProfile from "../components/once/UserProfile";
 import RecipeDetails from "../pages/Recipe/RecipeDetails";
+import StoreProfile from "../pages/Product/StoreProfile";
 
 const AppRouter = () => {
   return (
@@ -30,6 +31,7 @@ const AppRouter = () => {
         <Route path="/user-profile" element={<UserProfile />} /> 
         <Route path="/chef" element={<Chef />} /> 
         <Route path="/chef/:id" element={<ChefProfile />} />
+        <Route path="/store/:id" element={<StoreProfile />} />
         <Route path="/add-chef" element={<AddChef />} />
         <Route path="/recipe" element={<Recipe />} />
         <Route path="/recipe/:id" element={<RecipeDetails />} />

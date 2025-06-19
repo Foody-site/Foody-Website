@@ -9,6 +9,7 @@ import { FaWhatsapp } from "react-icons/fa6";
 import RecipeChef from "../shared/RecipeChef/RecipeChef";
 import { MdVerified } from "react-icons/md";
 import FavouriteChef from "../shared/Favourites/FavouriteChef";
+import ChefShare from "../shared/Share/ChefShare";
 
 const ChefPage = () => {
     const { id } = useParams();
@@ -126,9 +127,7 @@ const ChefPage = () => {
 
                             {/* Shares Section */}
                             <div className="flex items-center gap-3">
-                                <div className="bg-primary-1 text-white w-10 h-10 flex items-center justify-center rounded-md text-lg">
-                                    <FaShareAlt />
-                                </div>
+                                <ChefShare chefId={chef.id} />
                                 <div className="flex justify-between items-center flex-1 border rounded-md p-3">
                                     <p className="text-[#808080] text-sm">المشاركة بواسطة</p>
                                     <span className="text-[#808080] font-semibold text-base">
