@@ -50,7 +50,6 @@ const AllChefs = () => {
                 {error && <p className="text-center text-red-500">{error}</p>}
             </div>
 
-            <CategoryTabs />
             <div className="grid md:grid-cols-4 grid-cols-2 gap-6">
                 {Array.isArray(chefs) &&
                     chefs.map((chef) => (

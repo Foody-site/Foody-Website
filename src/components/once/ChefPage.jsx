@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import axios from "axios";
 import PageWrapper from "../common/PageWrapper";
 import { api_url } from "../../utils/ApiClient";
@@ -19,6 +19,12 @@ const ChefPage = () => {
     const [pagination, setPagination] = useState({ totalPages: 1, currentPage: 1 });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+
+    const navigate = useNavigate();
+
+    const handleRequestChef = () => {
+        navigate(`/chefneed/${chef.id}`);
+    };
 
     const fetchChefData = async (page = 1) => {
         setLoading(true);
@@ -86,7 +92,10 @@ const ChefPage = () => {
 
                         <div className="flex justify-center gap-2 mt-4">
                             <FollowChef followingId={chef.id} isInitiallyFollowing={chef.isFollowing} />
-                            <button className="flex-1 py-2 rounded bg-primary-1 text-white hover:bg-red-700">
+                            <button
+                                className="flex-1 py-2 rounded bg-primary-1 text-white hover:bg-red-700"
+                                onClick={handleRequestChef}
+                            >
                                 اريد الشيف
                             </button>
                         </div>

@@ -49,14 +49,14 @@ const AppRouter = () => {
         <Route path="/chef" element={<Chef />} />
         <Route path="/user-profile" element={<UserProfile />} />
         <Route path="/chef" element={<Chef />} />
+        <Route path="/user-profile" element={<UserProfile />} /> 
         <Route path="/chef/:id" element={<ChefProfile />} />
         <Route path="/store/:id" element={<StoreProfile />} />
         <Route path="/add-chef" element={<AddChef />} />
-        <Route path="/recipe" element={<Recipe />} />
         <Route path="/recipe/:id" element={<RecipeDetails />} />
         <Route path="/add-recipe" element={<AddRecipe />} />
         <Route path="/add-store" element={<Add_Store />} />
-        <Route path="/chefneed" element={<NeedChef />} />
+        <Route path="/chefneed/:id" element={<NeedChef />} />
       </Route>
     </Routes>
   );

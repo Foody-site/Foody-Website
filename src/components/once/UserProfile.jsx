@@ -1,9 +1,32 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
 import { FaUser, FaCity } from "react-icons/fa";
 import { MdDateRange } from "react-icons/md";
 import { RiUserSettingsLine } from "react-icons/ri";
 import PageWrapper from "../common/PageWrapper";
+import { api_url } from "../../utils/ApiClient";
 
 const UserProfile = () => {
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            const token = localStorage.getItem("token");
+            if (!token) return;
+
+            try {
+                const res = await axios.get(`${api_url}/auth/me`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                setUser(res.data);
+            } catch (error) {
+                console.error("Failed to fetch user:", error);
+            }
+        };
+
+        fetchUser();
+    }, []);
+
     return (
         <PageWrapper>
             <div className="profile-info">
@@ -17,8 +40,9 @@ const UserProfile = () => {
                             <FaUser className="ml-2 text-gray-500" />
                             <input
                                 type="text"
-                                placeholder="احمد هشام محمد"
+                                value={user?.fullName || ""}
                                 className="flex-grow bg-transparent text-right outline-none"
+                                readOnly
                             />
                         </div>
                     </div>
@@ -31,7 +55,7 @@ const UserProfile = () => {
                             <input
                                 type="text"
                                 readOnly
-                                value="حساب عادي"
+                                value={user?.role}
                                 className="flex-grow bg-transparent text-right outline-none"
                             />
                         </div>
@@ -44,17 +68,19 @@ const UserProfile = () => {
                             <MdDateRange className="ml-2 text-gray-500" />
                             <input
                                 type="date"
+                                value={user?.birthday ? user.birthday.split("T")[0] : ""}
                                 className="flex-grow bg-transparent text-right outline-none"
+                                readOnly
                             />
                         </div>
                     </div>
 
-                    {/* City */}
+                    {/* City - Not present in response, so you can customize if needed */}
                     <div>
                         <label className="block mb-2 text-right font-medium">المدينة</label>
                         <div className="flex flex-row-reverse items-center border rounded px-3 py-2">
                             <FaCity className="ml-2 text-gray-500" />
-                            <select className="flex-grow bg-transparent text-right outline-none">
+                            <select className="flex-grow bg-transparent text-right outline-none" disabled>
                                 <option value="">اختر المدينة</option>
                                 <option value="القاهرة">القاهرة</option>
                                 <option value="الجيزة">الجيزة</option>
@@ -65,10 +91,13 @@ const UserProfile = () => {
                 </div>
 
                 {/* Save Button */}
-                <div className="mt-8 flex justify-center">
-                    <button className="btn w-48 bg-primary-1 text-white hover:bg-primary-1/90">
+                {/* <div className="mt-8 flex justify-center">
+                    <button className="btn w-64 px-8 py-2 rounded-lg bg-primary-1 text-white hover:bg-primary-1/90" disabled>
                         حفظ
                     </button>
+                </div> */}
+                <div>
+                    
                 </div>
             </div>
         </PageWrapper>
