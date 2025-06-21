@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import PageWrapper from "../../components/common/PageWrapper";
 import { api_url } from "../../utils/ApiClient";
 import { useParams } from "react-router";
+import FollowChef from "../../components/shared/FollowChef/FollowChef"
 
 const RecipeDetails = () => {
     const [recipe, setRecipe] = useState(null);
@@ -73,9 +74,7 @@ const RecipeDetails = () => {
 
                             {/* Actions */}
                             <div className="flex justify-between gap-2 mt-2">
-                                <button className="w-1/2 border border-[#D71313] text-[#D71313] rounded-md py-2 hover:bg-[#D71313] hover:text-white transition">
-                                    المتابعة
-                                </button>
+                                <FollowChef />
                                 <button className="w-1/2 bg-[#D71313] text-white rounded-md py-2 text-center hover:opacity-90 transition">
                                     اريد شيف
                                 </button>
