@@ -44,7 +44,7 @@ const Register = () => {
       newErrors.email = "! يرجى إدخال بريد إلكتروني صالح";
     }
 
-    const phoneRegex = /^[0-9]{10,15}$/;
+    const phoneRegex = /^[0-9]{7,11}$/;
     if (!formData.phone.trim()) {
       newErrors.phone = "! رقم الهاتف مطلوب";
     } else if (!phoneRegex.test(formData.phone)) {
@@ -92,17 +92,20 @@ const Register = () => {
     e.preventDefault();
     setLoading(true);
     if (!validateForm()) {
+      setLoading(false);
       return;
     }
 
     const updatedData = {
       ...formData,
-      phone: formData.phone.trim().startsWith("+2")
+      phone: formData.phone.trim().startsWith("+966")
         ? formData.phone.trim()
-        : `+2${formData.phone.trim()}`,
+        : `+966${formData.phone.trim()}`,
     };
 
     try {
+      console.log("Registering with role:", updatedData.role);
+
       const res = await axios.post(`${api_url}/auth/register`, updatedData);
       const token = res.data.accessToken;
       localStorage.setItem("token", token);
@@ -113,7 +116,10 @@ const Register = () => {
         },
       });
 
-      localStorage.setItem("user", JSON.stringify(userResponse.data));
+      const userData = userResponse.data;
+      localStorage.setItem("user", JSON.stringify(userData));
+
+      console.log("User registration successful:", userData);
 
       setAlertType("success");
       setAlertMessage("تم تسجيل حسابك ");
@@ -121,7 +127,21 @@ const Register = () => {
         "شكرًا لانضمامك إلى منصه فودي , يمكنك الآن التمتع بخدمات المنصه."
       );
       setAlertOpen(true);
+
+      const userRole = userData.role || formData.role;
+      const isApproved = userData.status === "APPROVED" || !userData.status;
+
+      let redirectPath = "/";
+      if (userRole === "BUSINESS") {
+        redirectPath = isApproved ? "/list" : "/pending-approval";
+      } else if (userRole === "CUSTOMER") {
+        redirectPath = "/";
+      }
+
+      localStorage.setItem("redirectAfterRegister", redirectPath);
     } catch (err) {
+      console.error("Registration error:", err);
+
       setAlertType("error");
       setAlertMessage("خطأ في التسجيل");
       setAlertSubMessage(
@@ -133,6 +153,39 @@ const Register = () => {
     }
   };
 
+  const handleAlertClose = () => {
+    setAlertOpen(false);
+
+    if (alertType === "success") {
+      try {
+        const redirectPath =
+          localStorage.getItem("redirectAfterRegister") || "/";
+
+        navigate(redirectPath);
+      } catch (error) {
+        console.error("Error during navigation:", error);
+
+        try {
+          const userData = JSON.parse(localStorage.getItem("user")) || {};
+          const role = userData.role || formData.role;
+
+          if (role === "BUSINESS") {
+            const isApproved =
+              userData.status === "APPROVED" || !userData.status;
+            navigate(isApproved ? "/list" : "/pending-approval");
+          } else if (role === "CUSTOMER") {
+            navigate("/");
+          } else {
+            navigate("/");
+          }
+        } catch (innerError) {
+          console.error("Fallback navigation error:", innerError);
+          navigate("/");
+        }
+      }
+    }
+  };
+
   return (
     <>
       <Alert
@@ -140,12 +193,7 @@ const Register = () => {
         subMessage={alertSubMessage}
         isOpen={alertOpen}
         type={alertType}
-        onClose={() => {
-          setAlertOpen(false);
-          if (alertType === "success") {
-            window.location.href = "/";
-          }
-        }}
+        onClose={handleAlertClose}
       />
 
       <div className="flex min-h-screen justify-center items-center bg-gray-100 p-6">
@@ -267,21 +315,6 @@ const Register = () => {
                 onClick={() => navigate("/login")}
               />
             </form>
-
-            <div className="text-center mt-3">
-              <div className="flex items-center my-4">
-                <hr className="flex-grow border-gray-300" />
-                <span className="px-3 text-gray-500 text-sm">
-                  أو الاستمرار بواسطة
-                </span>
-                <hr className="flex-grow border-gray-300" />
-              </div>
-              <div className="flex justify-center gap-4">
-                <button className="border p-2 rounded-full">
-                  <FcGoogle size={24} className="w-6 h-6" />
-                </button>
-              </div>
-            </div>
           </div>
         </div>
       </div>

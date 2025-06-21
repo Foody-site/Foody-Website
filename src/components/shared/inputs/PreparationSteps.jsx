@@ -12,6 +12,8 @@ const PreparationSteps = ({
   const [steps, setSteps] = useState(
     currentSteps.length > 0 ? currentSteps : [""]
   );
+  // إضافة state للخطوة المحددة حالياً
+  const [selectedStepIndex, setSelectedStepIndex] = useState(0);
 
   // تنفيذ تحديث فقط عند تغير الـ currentSteps من المكون الأب
   useEffect(() => {
@@ -23,8 +25,6 @@ const PreparationSteps = ({
     }
   }, [currentSteps]);
 
-  // لا يوجد useEffect لاستدعاء onChange، بدلاً من ذلك نستدعيها مباشرة بعد كل تغيير
-
   const addStep = () => {
     if (steps.length < maxSteps) {
       const newSteps = [...steps, ""];
@@ -32,6 +32,8 @@ const PreparationSteps = ({
       // استدعاء onChange مباشرة بعد تحديث الحالة المحلية
       const validSteps = newSteps.filter((step) => step.trim() !== "");
       onChange(validSteps);
+      // تحديد الخطوة الجديدة كخطوة محددة
+      setSelectedStepIndex(newSteps.length - 1);
     }
   };
 
@@ -44,53 +46,73 @@ const PreparationSteps = ({
     onChange(validSteps);
   };
 
-  const handleRemoveStep = (index) => {
+  const handleSelectStep = (index) => {
+    setSelectedStepIndex(index);
+  };
+
+  const handleRemoveStep = () => {
+    // استخدام selectedStepIndex للحذف
     let updatedSteps;
     if (steps.length > 1) {
-      updatedSteps = steps.filter((_, i) => i !== index);
+      updatedSteps = steps.filter((_, i) => i !== selectedStepIndex);
     } else {
       updatedSteps = [""];
     }
     setSteps(updatedSteps);
-    // استدعاء onChange مباشرة بعد تحديث الحالة المحلية
+
+    // تعديل المؤشر المحدد بعد الحذف
+    if (selectedStepIndex >= updatedSteps.length) {
+      setSelectedStepIndex(updatedSteps.length - 1);
+    }
+
     const validSteps = updatedSteps.filter((step) => step.trim() !== "");
     onChange(validSteps);
   };
 
   return (
     <div className={`w-full ${className}`}>
-      <label className="block text-gray-700 font-medium mb-2 text-right">
-        خطوات التحضير للوصفة
-      </label>
       {steps.map((step, index) => (
-        <div key={index} className="flex items-center gap-2 mb-2 w-full">
+        <div
+          key={index}
+          className={`mb-2 w-full ${index === selectedStepIndex ? "" : ""}`}
+          onClick={() => handleSelectStep(index)}
+        >
           <textarea
             name={`preparationStep-${index}`}
             value={step}
             onChange={(e) => handleStepChange(index, e.target.value)}
-            className="w-full h-24 px-4 py-3 text-lg border border-gray-300 rounded-lg text-right"
+            className="w-full px-4 py-3 text-lg border bg-gray-100 border-gray-300 rounded-lg text-right"
             placeholder={`الخطوة ${index + 1}`}
           />
-          <button
-            type="button"
-            onClick={() => handleRemoveStep(index)}
-            className="text-primary-1 px-2"
-          >
-            <FaTrash />
-          </button>
         </div>
       ))}
-      {steps.length < maxSteps && (
+
+      <div className="flex justify-between mt-3">
         <button
           type="button"
-          onClick={addStep}
-          className="flex items-center text-primary-1 mt-3"
+          onClick={handleRemoveStep}
+          className="text-primary-1 px-2 flex items-center"
+          disabled={steps.length <= 1}
         >
-          <FaPlus className="text-2xl" />
-          <span className="mr-2">أضف خطوة جديدة</span>
+          <FaTrash className="text-xl" />
         </button>
+        {steps.length < maxSteps && (
+          <div className="flex justify-end">
+            <button
+              type="button"
+              onClick={addStep}
+              className="flex flex-row-reverse items-center text-primary-1"
+            >
+              <FaPlus className="text-2xl" />
+              <span className="ml-2">اضافة المزيد من الخطوات</span>
+            </button>
+          </div>
+        )}
+      </div>
+
+      {error && (
+        <p className="text-primary-1 text-sm mt-1 text-right">{error}</p>
       )}
-      {error && <p className="text-primary-1 text-sm mt-1 text-right">{error}</p>}
     </div>
   );
 };

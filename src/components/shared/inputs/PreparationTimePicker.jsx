@@ -1,14 +1,32 @@
-import React, { useState } from "react";
-import { FaChevronDown } from "react-icons/fa";
+import React, { useState, useEffect } from "react";
+import { IoChevronDownOutline } from "react-icons/io5";
 
 const PreparationTimePicker = ({
   label,
   onHourChange,
   onMinuteChange,
   className = "",
+  error,
+  hourValue, // قيمة افتراضية للساعات
+  minuteValue, // قيمة افتراضية للدقائق
 }) => {
-  const [hours, setHours] = useState(0);
-  const [minutes, setMinutes] = useState(0);
+  const [hours, setHours] = useState(hourValue !== undefined ? hourValue : 0);
+  const [minutes, setMinutes] = useState(
+    minuteValue !== undefined ? minuteValue : 0
+  );
+
+  // تحديث القيم المحلية عندما تتغير القيم الخارجية
+  useEffect(() => {
+    if (hourValue !== undefined) {
+      setHours(hourValue);
+    }
+  }, [hourValue]);
+
+  useEffect(() => {
+    if (minuteValue !== undefined) {
+      setMinutes(minuteValue);
+    }
+  }, [minuteValue]);
 
   const handleHourChange = (value) => {
     const newHours = parseInt(value, 10);
@@ -28,52 +46,53 @@ const PreparationTimePicker = ({
 
   return (
     <div className={`w-full ${className}`}>
-      <label className="flex items-center justify-end text-gray-700 font-medium mb-1 gap-2">
-        {label}
+      <label className="flex items-center justify-end text-gray-700 text-sm font-medium mb-2">
+        {label || "وقت الطهي"}
       </label>
-      <div className="flex gap-3 w-full">
+      <div className="flex gap-2 w-full">
         {/* Minutes selection */}
         <div className="w-1/2 relative">
-          <select
-            value={minutes}
-            onChange={(e) => handleMinuteChange(e.target.value)}
-            className="w-full appearance-none px-4 py-2 border border-gray-300 rounded-xl bg-white text-gray-700 text-base font-medium shadow-md focus:outline-none text-right"
-          >
-            <option value="" disabled hidden>
-              دقيقة
-            </option>
-            {[...Array(61).keys()].map((minute) => (
-              <option key={minute} value={minute}>
-                {minute} دقيقة
-              </option>
-            ))}
-          </select>
-          <div className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-gray-500">
-            <FaChevronDown />
+          <div className="flex items-center border border-gray-300 rounded-md bg-white overflow-hidden">
+            <div className="pointer-events-none px-2 flex items-center text-gray-400">
+              <IoChevronDownOutline size={16} />
+            </div>
+            <select
+              value={minutes}
+              onChange={(e) => handleMinuteChange(e.target.value)}
+              className="w-full appearance-none py-2 px-1 bg-transparent text-gray-700 text-right focus:outline-none"
+            >
+              {[...Array(61).keys()].map((minute) => (
+                <option key={minute} value={minute}>
+                  {minute}
+                </option>
+              ))}
+            </select>
+            <span className="px-2 text-gray-700 text-sm">دقيقة</span>
           </div>
         </div>
 
         {/* Hours selection */}
         <div className="w-1/2 relative">
-          <select
-            value={hours}
-            onChange={(e) => handleHourChange(e.target.value)}
-            className="w-full appearance-none px-4 py-2 border border-gray-300 rounded-xl bg-white text-gray-700 text-base font-medium shadow-md focus:outline-none text-right"
-          >
-            <option value="" disabled hidden>
-              ساعة
-            </option>
-            {[...Array(25).keys()].map((hour) => (
-              <option key={hour} value={hour}>
-                {hour} ساعة
-              </option>
-            ))}
-          </select>
-          <div className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-gray-500">
-            <FaChevronDown />
+          <div className="flex items-center border border-gray-300 rounded-md bg-white overflow-hidden">
+            <div className="pointer-events-none px-2 flex items-center text-gray-400">
+              <IoChevronDownOutline size={16} />
+            </div>
+            <select
+              value={hours}
+              onChange={(e) => handleHourChange(e.target.value)}
+              className="w-full appearance-none py-2 px-1 bg-transparent text-gray-700 text-right focus:outline-none"
+            >
+              {[...Array(25).keys()].map((hour) => (
+                <option key={hour} value={hour}>
+                  {hour}
+                </option>
+              ))}
+            </select>
+            <span className="px-2 text-gray-700 text-sm">ساعة</span>
           </div>
         </div>
       </div>
+      {error && <p className="text-red-500 text-sm mt-1 text-right">{error}</p>}
     </div>
   );
 };
