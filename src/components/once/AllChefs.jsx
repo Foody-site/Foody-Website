@@ -4,6 +4,7 @@ import { api_url } from "../../utils/ApiClient";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { Link } from "react-router";
 import CategoryTabs from "../shared/category/CategoryTabs";
+import FollowChef from "../shared/FollowChef/FollowChef";
 
 const AllChefs = () => {
     const [chefs, setChefs] = useState([]);
@@ -49,7 +50,6 @@ const AllChefs = () => {
                 {error && <p className="text-center text-red-500">{error}</p>}
             </div>
 
-            <CategoryTabs />
             <div className="grid md:grid-cols-4 grid-cols-2 gap-6">
                 {Array.isArray(chefs) &&
                     chefs.map((chef) => (
@@ -90,9 +90,7 @@ const AllChefs = () => {
                             </div>
 
                             <div className="flex justify-between gap-2 mt-2">
-                                <button className="w-1/2 border border-[#D71313] text-[#D71313] rounded-md py-2 hover:bg-[#D71313] hover:text-white transition">
-                                    المتابعة
-                                </button>
+                                <FollowChef followingId={chef.id} isInitiallyFollowing={chef.isFollowing} />
                                 <Link
                                     to={`/chef/${chef.id}`}
                                     className="w-1/2 bg-[#D71313] text-white rounded-md py-2 text-center hover:opacity-90 transition"

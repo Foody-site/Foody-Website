@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import axios from "axios";
 import PageWrapper from "../common/PageWrapper";
 import { api_url } from "../../utils/ApiClient";
@@ -9,6 +9,8 @@ import { FaWhatsapp } from "react-icons/fa6";
 import RecipeChef from "../shared/RecipeChef/RecipeChef";
 import { MdVerified } from "react-icons/md";
 import FavouriteChef from "../shared/Favourites/FavouriteChef";
+import ChefShare from "../shared/Share/ChefShare";
+import FollowChef from "../shared/FollowChef/FollowChef";
 
 const ChefPage = () => {
     const { id } = useParams();
@@ -17,6 +19,12 @@ const ChefPage = () => {
     const [pagination, setPagination] = useState({ totalPages: 1, currentPage: 1 });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+
+    const navigate = useNavigate();
+
+    const handleRequestChef = () => {
+        navigate(`/chefneed/${chef.id}`);
+    };
 
     const fetchChefData = async (page = 1) => {
         setLoading(true);
@@ -83,10 +91,11 @@ const ChefPage = () => {
                         <p className="text-sm text-[#808080] mt-1 p-2">{chef.description || "وصف الطباخ هنا"}</p>
 
                         <div className="flex justify-center gap-2 mt-4">
-                            <button className="flex-1 py-2 rounded border border-primary-1 text-primary-1 hover:bg-primary-50">
-                                المتابعة
-                            </button>
-                            <button className="flex-1 py-2 rounded bg-primary-1 text-white hover:bg-red-700">
+                            <FollowChef followingId={chef.id} isInitiallyFollowing={chef.isFollowing} />
+                            <button
+                                className="flex-1 py-2 rounded bg-primary-1 text-white hover:bg-red-700"
+                                onClick={handleRequestChef}
+                            >
                                 اريد الشيف
                             </button>
                         </div>
@@ -126,9 +135,7 @@ const ChefPage = () => {
 
                             {/* Shares Section */}
                             <div className="flex items-center gap-3">
-                                <div className="bg-primary-1 text-white w-10 h-10 flex items-center justify-center rounded-md text-lg">
-                                    <FaShareAlt />
-                                </div>
+                                <ChefShare chefId={chef.id} />
                                 <div className="flex justify-between items-center flex-1 border rounded-md p-3">
                                     <p className="text-[#808080] text-sm">المشاركة بواسطة</p>
                                     <span className="text-[#808080] font-semibold text-base">
