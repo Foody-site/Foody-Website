@@ -14,9 +14,8 @@ import {
 } from "react-icons/fa";
 import { SiTiktok } from "react-icons/si";
 import { MdVerified } from "react-icons/md";
-import ChefShare from "../shared/Share/ChefShare";
-import FollowChef from "../shared/FollowChef/FollowChef";
 import FavoriteButton from "../shared/Favourites/FavouriteStore";
+import StoreShare from "../shared/Share/StoreShare";
 
 const ProfileStore = () => {
     const { id } = useParams();
@@ -169,7 +168,7 @@ const ProfileStore = () => {
                                 </div>
                             </div>
                             <div className="flex items-center gap-3">
-                                <ChefShare chefId={store.id} />
+                                <StoreShare storeId={store.id} />
                                 <div className="flex justify-between items-center flex-1 border rounded-md p-3">
                                     <p className="text-[#808080] text-sm">المشاركة بواسطة</p>
                                     <span className="text-[#808080] font-semibold text-base">{store.totalShares || 0}</span>
