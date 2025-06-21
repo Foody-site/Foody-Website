@@ -14,6 +14,7 @@ import PageWrapper from "../common/PageWrapper";
 import axios from "axios";
 import { api_url } from "../../utils/ApiClient";
 import FavouriteRecipe from "../shared/Favourites/FavouriteRecipe";
+import FollowChef from "../../components/shared/FollowChef/FollowChef"
 
 const ChefNeed = () => {
     const { id } = useParams();
@@ -133,9 +134,7 @@ const ChefNeed = () => {
                                 </div>
                             </div>
 
-                            <button className="w-full bg-primary-1 hover:bg-red-700 transition text-white py-2 rounded-md font-semibold">
-                                المتابعة
-                            </button>
+                            <FollowChef />
 
                             {/* Title + Show More Button */}
                             <div className="flex justify-between items-center my-4">
