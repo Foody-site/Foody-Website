@@ -1,20 +1,24 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import CategoryTabs from "../shared/category/CategoryTabs";
 import FoodCard from "../shared/cards/FoodCard";
 import { api_url } from "../../utils/ApiClient";
 import Pagination2 from "../common/Pagination2";
 
-const Store = ({ searchTerm }) => {
+const Store = ({ searchTerm, categoryType = "restaurant" }) => {
     const [stores, setStores] = useState([]);
     const [page, setPage] = useState(1);
-    const [type, setType] = useState("restaurant");
+    const [type, setType] = useState(categoryType);
     const [pagination, setPagination] = useState({
         hasNextPage: false,
         hasPreviousPage: false,
         currentPage: 1,
         totalPages: 1,
     });
+
+    useEffect(() => {
+        setType(categoryType);
+        setPage(1);
+    }, [categoryType]);
 
     useEffect(() => {
         fetchStores();
@@ -106,15 +110,8 @@ const Store = ({ searchTerm }) => {
         }
     };
 
-    const handleCategoryChange = (newType) => {
-        setType(newType);
-        setPage(1);
-    };
-
     return (
         <div className="p-4">
-            <CategoryTabs onCategoryChange={handleCategoryChange} />
-
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
                 {stores.length > 0 ? (
                     stores.map((store) => (
