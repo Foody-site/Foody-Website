@@ -159,21 +159,30 @@ const RecipeDetails = () => {
               يساعدكم على تطبيق الوصفة بدقة دون تعقيد.
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-4">
-              {[...preparationSteps].reverse().map((step, idx) => (
-                <div
-                  key={preparationSteps.length - idx - 1}
-                  className="border rounded-xl overflow-hidden shadow-sm"
-                >
-                  <div className="bg-primary-1 h-2 w-full" />
-                  <div className="p-4 text-right">
-                    <h4 className="font-bold text-lg mb-2">
-                      الخطوة {preparationSteps.length - idx}
-                    </h4>
-                    <p className="text-sm text-gray-500">{step}</p>
+            <div
+              className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-4"
+              style={{ gridAutoFlow: "dense", gridTemplateAreas: '"a a a"' }}
+            >
+              {preparationSteps.map((step, idx) => {
+                const columnFromRight = (idx % 3) + 1;
+                const gridColumnStart = 4 - columnFromRight;
+
+                return (
+                  <div
+                    key={idx}
+                    className="border rounded-xl overflow-hidden shadow-sm"
+                    style={{ gridColumnStart }}
+                  >
+                    <div className="bg-primary-1 h-2 w-full" />
+                    <div className="p-4 text-right">
+                      <h4 className="font-bold text-lg mb-2">
+                        الخطوة {idx + 1}
+                      </h4>
+                      <p className="text-sm text-gray-500">{step}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
@@ -189,11 +198,15 @@ const RecipeDetails = () => {
               بوزنه المناسب ليسهل على المستخدمين تجهيز المقادير قبل البدء.
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+              style={{ direction: "rtl" }}
+            >
               {ingredients.map((item, idx) => (
                 <div
                   key={idx}
                   className="border rounded-xl overflow-hidden shadow-sm"
+                  style={{ direction: "ltr" }}
                 >
                   <div className="bg-primary-1 h-2 w-full" />
                   <div className="p-4 text-right">
