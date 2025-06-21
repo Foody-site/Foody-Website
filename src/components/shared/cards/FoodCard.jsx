@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router";
 import {
     BiSolidOffer,
     BiSolidTimer,
@@ -5,15 +6,21 @@ import {
 import {
     FaMapMarkerAlt,
     FaStar,
-    FaShareAlt,
 } from "react-icons/fa";
 import { MdVerified } from "react-icons/md";
 import FavoriteButton from "../Favourites/FavouriteStore";
 import StoreShare from "../Share/StoreShare";
 
-const FoodCard = ({ store, favorites = [] }) => {
+const FoodCard = ({ store }) => {
+    const navigate = useNavigate();
+
+    const handleDetails = () => {
+        if (store?.id) navigate(`/store/${store.id}`);
+    };
+
     return (
         <div className="relative bg-white rounded-2xl overflow-hidden shadow-lg font-sans">
+            {/* Banner */}
             <div className="relative">
                 <img
                     src="https://images.unsplash.com/photo-1600891964599-f61ba0e24092"
@@ -27,26 +34,30 @@ const FoodCard = ({ store, favorites = [] }) => {
                 </div>
             </div>
 
+            {/* Content */}
             <div className="p-4">
+                {/* Title + Rating */}
                 <div className="flex items-center justify-between mb-1">
                     <div className="flex items-center gap-1">
                         <h3 className="font-bold text-black text-lg line-clamp-1">
                             {store.name || "اسم المتجر"}
                         </h3>
-                        <MdVerified size={18} className="text-primary-1 text-sm" />
+                        <MdVerified size={18} className="text-primary-1" />
                     </div>
                     <div className="flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded">
-                        <span className="text-yellow-500 text-sm"><FaStar /></span>
+                        <FaStar className="text-yellow-500 text-sm" />
                         <span className="text-sm text-gray-800 font-semibold">
                             {store.averageRating || 2.5}
                         </span>
                     </div>
                 </div>
 
+                {/* Description */}
                 <p className="text-gray-500 text-sm mb-2 line-clamp-2">
                     {store.description || "ماكولات سريعة - مشروبات - بيتزا"}
                 </p>
 
+                {/* Status + Distance */}
                 <div className="flex items-center gap-3 mb-3 text-xs text-gray-600">
                     <div className="flex items-center gap-1 text-[#C7C7C7] border border-[#C7C7C7] px-2 py-0.5 rounded">
                         <BiSolidTimer size={16} />
@@ -58,12 +69,16 @@ const FoodCard = ({ store, favorites = [] }) => {
                     </div>
                 </div>
 
+                {/* Actions */}
                 <div className="flex justify-between items-center gap-2">
                     <FavoriteButton
                         itemId={store.id}
                         isInitiallyFavorited={store.isFavorited === true}
                     />
-                    <button className="flex-1 bg-primary-1 hover:bg-red-700 text-white py-2 rounded-lg text-sm">
+                    <button
+                        onClick={handleDetails}                // ⬅️ 4) ربط الحدث
+                        className="flex-1 bg-primary-1 hover:bg-red-700 text-white py-2 rounded-lg text-sm"
+                    >
                         المزيد من التفاصيل
                     </button>
                     <StoreShare storeId={store.id} />

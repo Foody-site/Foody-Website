@@ -37,7 +37,7 @@ const AppRouter = () => {
         <Route path="/recipe/:id" element={<RecipeDetails />} />
         <Route path="/add-recipe" element={<AddRecipe />} />
         <Route path="/add-store" element={<Add_Store />} />
-        <Route path="/chefneed" element={<NeedChef />} />
+        <Route path="/chefneed/:id" element={<NeedChef />} />
       </Route>
     </Routes>
   );

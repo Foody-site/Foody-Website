@@ -1,0 +1,193 @@
+import { useEffect, useState } from "react";
+import { useParams } from "react-router";
+import axios from "axios";
+import PageWrapper from "../common/PageWrapper";
+import { api_url } from "../../utils/ApiClient";
+import {
+    FaHeart,
+    FaFacebook,
+    FaInstagram,
+    FaSnapchatGhost,
+    FaTwitter,
+    FaWhatsapp,
+    FaYoutube,
+} from "react-icons/fa";
+import { SiTiktok } from "react-icons/si";
+import { MdVerified } from "react-icons/md";
+import ChefShare from "../shared/Share/ChefShare";
+import FollowChef from "../shared/FollowChef/FollowChef";
+import FavoriteButton from "../shared/Favourites/FavouriteStore";
+
+const ProfileStore = () => {
+    const { id } = useParams();
+    const [store, setStore] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+        const fetchStore = async () => {
+            try {
+                const token = localStorage.getItem("token");
+                const response = await axios.get(`${api_url}/store/${id}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                setStore(response.data);
+            } catch (err) {
+                setError("فشل تحميل بيانات المتجر.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (id) fetchStore();
+    }, [id]);
+
+    if (loading) return <PageWrapper><p className="text-center mt-4">...جاري التحميل</p></PageWrapper>;
+    if (error) return <PageWrapper><p className="text-center text-red-500 mt-4">{error}</p></PageWrapper>;
+    if (!store) return null;
+
+    const social = store.socialMediaLinks || {};
+    const deliveryApps = store.deliveryAppLinks || {};
+    const additionalInfo = store.additionalInfo || {};
+
+    const mainDeliveryAppLink = Object.entries(deliveryApps).find(([_, v]) => v)?.[1];
+    const mainDeliveryAppName = Object.entries(deliveryApps).find(([_, v]) => v)?.[0];
+
+    return (
+        <PageWrapper>
+            <div className="flex flex-col lg:flex-row gap-6 mt-6">
+
+                {/* Right Panel - Store Info */}
+                <div className="w-full lg:w-1/3 h-fit">
+                    <div className="bg-white rounded-2xl shadow p-4 text-center">
+                        <div className="flex flex-col items-center">
+                            <img
+                                src={store.profilePicture || "https://via.placeholder.com/150"}
+                                alt="Store Logo"
+                                className="w-24 h-24 rounded border object-cover"
+                            />
+                            <h2 className="mt-3 font-bold text-lg text-gray-800 flex items-center justify-center gap-1">
+                                {store.name}
+                                {store.isVerified && <MdVerified className="text-primary-1" />}
+                            </h2>
+                            <p className="text-sm text-[#808080]">{store.type || "مطعم"}</p>
+                        </div>
+
+                        <p className="text-sm text-[#808080] mt-2">{store.description || "وصف عن المتجر هنا"}</p>
+
+                        <div className="flex gap-2 mt-4 justify-center">
+                            {store.mapLink && (
+                                <a href={store.mapLink} target="_blank" rel="noreferrer" className="flex-1 py-2 text-sm rounded bg-primary-1 text-white hover:bg-red-700">
+                                    الموقع
+                                </a>
+                            )}
+                            {mainDeliveryAppLink && (
+                                <a href={mainDeliveryAppLink} target="_blank" rel="noreferrer" className="flex-1 py-2 text-sm rounded bg-primary-1 text-white hover:bg-red-700">
+                                    {mainDeliveryAppName || "تطبيق التوصيل"}
+                                </a>
+                            )}
+                        </div>
+
+                        {/* Social Media Icons */}
+                        <div className="flex justify-center flex-wrap gap-2 mt-4">
+                            {social.whatsappNumber && (
+                                <a href={`https://wa.me/${social.whatsappNumber.replace(/\D/g, "")}`} target="_blank" rel="noreferrer" className="w-10 h-10 flex items-center justify-center rounded border hover:bg-green-50">
+                                    <FaWhatsapp className="text-green-500" />
+                                </a>
+                            )}
+                            {social.facebook && (
+                                <a href={social.facebook} target="_blank" rel="noreferrer" className="w-10 h-10 flex items-center justify-center rounded border hover:bg-blue-50">
+                                    <FaFacebook className="text-blue-600" />
+                                </a>
+                            )}
+                            {social.x && (
+                                <a href={social.x} target="_blank" rel="noreferrer" className="w-10 h-10 flex items-center justify-center rounded border hover:bg-gray-100">
+                                    <FaTwitter className="text-gray-600" />
+                                </a>
+                            )}
+                            {social.instagram && (
+                                <a href={social.instagram} target="_blank" rel="noreferrer" className="w-10 h-10 flex items-center justify-center rounded border hover:bg-pink-50">
+                                    <FaInstagram className="text-pink-500" />
+                                </a>
+                            )}
+                            {social.youtube && (
+                                <a href={social.youtube} target="_blank" rel="noreferrer" className="w-10 h-10 flex items-center justify-center rounded border hover:bg-red-50">
+                                    <FaYoutube className="text-red-600" />
+                                </a>
+                            )}
+                            {social.tiktok && (
+                                <a href={social.tiktok} target="_blank" rel="noreferrer" className="w-10 h-10 flex items-center justify-center rounded border hover:bg-black text-black hover:text-white">
+                                    <SiTiktok />
+                                </a>
+                            )}
+                            {social.snapchat && (
+                                <a href={social.snapchat} target="_blank" rel="noreferrer" className="w-10 h-10 flex items-center justify-center rounded border hover:bg-yellow-100">
+                                    <FaSnapchatGhost className="text-yellow-500" />
+                                </a>
+                            )}
+                        </div>
+
+                        {/* Contact Info */}
+                        <div className="mt-4 space-y-3">
+                            <div className="p-3 rounded border">
+                                <p className="text-[#808080] text-sm">رقم التواصل للطلبات</p>
+                                <p className="font-bold text-lg text-[#030303]">{store.deliveryPhone || "—"}</p>
+                            </div>
+                            <div className="p-3 rounded border">
+                                <p className="text-[#808080] text-sm">المسافة</p>
+                                <p className="font-bold text-lg text-[#030303]">12Km</p>
+                            </div>
+                            <div className="p-3 rounded border">
+                                <p className="text-[#808080] text-sm">معلومات أخرى</p>
+                                <p className="font-bold text-sm text-[#030303] whitespace-pre-line">
+                                    {Object.entries(additionalInfo)
+                                        .filter(([_, value]) => value)
+                                        .map(([key]) => {
+                                            switch (key) {
+                                                case "indoorSessions": return "جلسات داخلية";
+                                                case "familySessions": return "جلسات عائلية";
+                                                case "outdoorSessions": return "جلسات خارجية";
+                                                case "preBooking": return "يوجد حجز مسبق";
+                                                case "carRequest": return "طلبات بالسيارة";
+                                                case "hasDelivery": return "خدمة توصيل";
+                                                default: return null;
+                                            }
+                                        })
+                                        .filter(Boolean)
+                                        .join(" - ") || "لا توجد معلومات إضافية"}
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Likes & Shares */}
+                        <div className="mt-4 space-y-3">
+                            <div className="flex items-center gap-3">
+                                <FavoriteButton itemId={store.id} isInitiallyFavorited={store.isFavorited} />
+                                <div className="flex justify-between items-center flex-1 border rounded-md p-3">
+                                    <p className="text-[#808080] text-sm">الاعجابات</p>
+                                    <span className="text-[#808080] font-semibold text-base">{store.favoritesCount || 0}</span>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <ChefShare chefId={store.id} />
+                                <div className="flex justify-between items-center flex-1 border rounded-md p-3">
+                                    <p className="text-[#808080] text-sm">المشاركة بواسطة</p>
+                                    <span className="text-[#808080] font-semibold text-base">{store.totalShares || 0}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Left Panel - Recipes Placeholder */}
+                <div className="w-full lg:w-2/3">
+                    <div className="p-6 border rounded-2xl text-center text-gray-500">
+                        لا توجد وصفات لعرضها حالياً
+                    </div>
+                </div>
+            </div>
+        </PageWrapper>
+    );
+};
+
+export default ProfileStore;
