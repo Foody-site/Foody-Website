@@ -2,12 +2,17 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import PageWrapper from "../../components/common/PageWrapper";
 import { api_url } from "../../utils/ApiClient";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import FollowChef from "../../components/shared/FollowChef/FollowChef"
 
 const RecipeDetails = () => {
     const [recipe, setRecipe] = useState(null);
     const { id } = useParams();
+    const navigate = useNavigate();
+
+    const handleRequestChef = () => {
+        navigate(`/chefneed/${chef.id}`);
+    };
 
     useEffect(() => {
         if (id) {
@@ -75,7 +80,10 @@ const RecipeDetails = () => {
                             {/* Actions */}
                             <div className="flex justify-between gap-2 mt-2">
                                 <FollowChef />
-                                <button className="w-1/2 bg-[#D71313] text-white rounded-md py-2 text-center hover:opacity-90 transition">
+                                <button
+                                    className="w-1/2 bg-[#D71313] text-white rounded-md py-2 text-center hover:opacity-90 transition"
+                                    onClick={handleRequestChef}
+                                >
                                     اريد شيف
                                 </button>
                             </div>
