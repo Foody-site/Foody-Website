@@ -21,6 +21,7 @@ const FoodFilter = ({ onSearch }) => {
         dinner: true,
     });
 
+    const [searchQuery, setSearchQuery] = useState("");
     const [selectedOptions, setSelectedOptions] = useState(["أضيف حديثاً"]);
     const [ratingRange, setRatingRange] = useState(null);
     const [selectedRegion, setSelectedRegion] = useState("");
@@ -49,49 +50,47 @@ const FoodFilter = ({ onSearch }) => {
             return acc;
         }, {});
 
+        const baseParams = {
+            name: searchQuery,
+            ...deliveryAppParams,
+            region: selectedRegion,
+            city: selectedCity,
+            rating: ratingRange?.min,
+            ...optionsObj,
+            ...mealParams,
+        };
+
         if (selectedOptions.includes("الاقرب اليك")) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     onSearch({
-                        ...deliveryAppParams,
-                        region: selectedRegion,
-                        city: selectedCity,
-                        rating: ratingRange?.min,
-                        ...optionsObj,
-                        ...mealParams,
+                        ...baseParams,
                         longitude: position.coords.longitude,
                         latitude: position.coords.latitude,
                     });
                 },
                 (error) => {
                     console.error("Error getting location", error);
-                    onSearch({
-                        ...deliveryAppParams,
-                        region: selectedRegion,
-                        city: selectedCity,
-                        rating: ratingRange?.min,
-                        ...optionsObj,
-                        ...mealParams,
-                    });
+                    onSearch(baseParams);
                 }
             );
         } else {
-            onSearch({
-                ...deliveryAppParams,
-                region: selectedRegion,
-                city: selectedCity,
-                rating: ratingRange?.min,
-                ...optionsObj,
-                ...mealParams,
-            });
+            onSearch(baseParams);
         }
     };
 
     return (
         <div className="bg-[#D713130D] text-white p-4 rounded-xl w-80 space-y-4 font-sans text-sm">
             <div className="relative">
-                <SearchFilter onSearch={onSearch} />
+                <SearchFilter
+                    value={searchQuery}
+                    onChange={(val) => setSearchQuery(val)}
+                    onSearch={() => {
+                        handleSearch();
+                    }}
+                />
             </div>
+
 
             <div className="relative">
                 <PlaceSearch

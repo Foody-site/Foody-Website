@@ -1,21 +1,50 @@
-import React from "react";
-import { FaSearch, FaHome, FaUtensils } from "react-icons/fa";
+import { useState } from "react";
+import { FaHome, FaUtensils } from "react-icons/fa";
+import SearchFilter from "../search/SearchFilter";
+import MoreDetails from "../MoreDetails/MoreDetails";
 
-const ChefFilter = () => {
+const ChefFilter = ({ onSearch }) => {
+    const [query, setQuery] = useState("");
+    const [moreDetails, setMoreDetails] = useState({
+        todayRecipe: false,
+        isAllergenic: false,
+        isFastFood: false,
+        canContactChef: false,
+    });
+
+    const handleSearch = () => {
+        const filters = {
+            name: query,
+            ...moreDetails,
+        };
+
+        if (onSearch) {
+            onSearch(filters);
+        }
+    };
+
+    const handleClear = () => {
+        setQuery("");
+        setMoreDetails({
+            todayRecipe: false,
+            isAllergenic: false,
+            isFastFood: false,
+            canContactChef: false,
+        });
+
+        onSearch && onSearch({});
+    };
+
     return (
-        <div className="bg-[#FDF3F1] p-4 rounded-xl w-80 space-y-4 text-right font-sans text-sm">
-            {/* Header */}
+        <div className="bg-[#FDF3F1] p-4 rounded-xl w-full lg:w-80 space-y-4 text-right font-sans text-sm">
             <h2 className="font-bold text-md text-gray-800">البحث</h2>
 
-            {/* Search */}
-            <div className="relative">
-                <input
-                    type="text"
-                    placeholder="يتم كتابة اسم الشيف هنا"
-                    className="w-full pr-10 pl-4 py-2 rounded-md border border-gray-300 focus:outline-none"
-                />
-                <FaSearch className="absolute top-2.5 right-3 text-gray-400" />
-            </div>
+            {/* Search input (reusable component) */}
+            <SearchFilter
+                value={query}
+                onChange={(val) => setQuery(val)}
+                onSearch={() => handleSearch()}
+            />
 
             {/* نوع الطعام */}
             <div className="relative">
@@ -41,29 +70,19 @@ const ChefFilter = () => {
                 <FaUtensils className="absolute top-9 right-3 text-gray-400" />
             </div>
 
-            {/* مزيد من التفاصيل */}
-            <h2 className="font-bold text-md text-gray-800">مزيد من التفاصيل</h2>
+            <MoreDetails values={moreDetails} onChange={setMoreDetails} />
 
-            <div className="space-y-3 text-gray-700">
-                {[
-                    "وصفات اليوم من فودي",
-                    "إمكانية التواصل مع الشيف لحجز موعد مناسبة",
-                    "وصفات سريعة التحضير (أقل من 45 دقيقة)",
-                    "أطعمة لا تحتوي على مسببات الحساسية"
-                ].map((label, i) => (
-                    <label key={i} className="flex items-center justify-between bg-white px-3 py-2 rounded-md border border-gray-200 cursor-pointer">
-                        <span>{label}</span>
-                        <input type="checkbox" className="form-checkbox text-primary-1 w-4 h-4" />
-                    </label>
-                ))}
-            </div>
-
-            {/* Buttons */}
             <div className="flex gap-3 mt-4">
-                <button className="w-full bg-primary-1 hover:opacity-90 text-white font-bold py-2 rounded-md">
+                <button
+                    className="w-full bg-primary-1 hover:opacity-90 text-white font-bold py-2 rounded-md"
+                    onClick={handleSearch}
+                >
                     عرض النتائج
                 </button>
-                <button className="w-full border border-primary-1 text-primary-1 font-bold py-2 rounded-md">
+                <button
+                    className="w-full border border-primary-1 text-primary-1 font-bold py-2 rounded-md"
+                    onClick={handleClear}
+                >
                     الغاء التصفيات
                 </button>
             </div>

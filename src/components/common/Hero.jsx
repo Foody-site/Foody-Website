@@ -1,6 +1,7 @@
 import { FaFireAlt, FaUtensils, FaArrowLeft } from 'react-icons/fa';
 import PageWrapper from './PageWrapper';
 import Slider from './Slider';
+import slider_photo from "/assets/home/slider.png"
 
 const Hero = () => {
     return (
@@ -40,7 +41,7 @@ const Hero = () => {
                                         <div className="grid grid-cols-1 sm:grid-cols-2">
                                             {/* Image */}
                                             <img
-                                                src="https://dummyimage.com/187"
+                                                src={slider_photo || "https://dummyimage.com/187"}
                                                 alt="image"
                                                 className="w-full h-full rounded-lg object-cover"
                                             />
@@ -77,7 +78,7 @@ const Hero = () => {
                                     <div className="p-3 text-black hover:text-white">
                                         <div className="grid grid-cols-1 sm:grid-cols-2">
                                             <img
-                                                src="https://dummyimage.com/187"
+                                                src={slider_photo || "https://dummyimage.com/187"}
                                                 alt="image"
                                                 className="w-full h-full rounded-lg object-cover"
                                             />

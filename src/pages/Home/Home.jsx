@@ -43,9 +43,6 @@ const Home = () => {
                 {view.type === "category" && (
                     <div className="flex flex-col gap-4 mt-4">
                         <div className="flex gap-4">
-                            <div className="w-auto">
-                                <FoodFilter onSearch={handleSearch} />
-                            </div>
                             <div className="flex-1">
                                 <CategoryTabs
                                     onCategoryChange={handleCategoryChange}
@@ -54,6 +51,9 @@ const Home = () => {
                                 <div className="w-full">
                                     <Store searchTerm={searchTerm} categoryType={view.enum} />
                                 </div>
+                            </div>
+                            <div className="w-auto">
+                                <FoodFilter onSearch={handleSearch} />
                             </div>
                         </div>
                     </div>

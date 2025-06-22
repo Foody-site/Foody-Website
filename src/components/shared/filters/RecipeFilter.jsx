@@ -1,87 +1,86 @@
-import React from "react";
-import { FaSearch, FaStar, FaRegStar } from "react-icons/fa";
+import { useState } from "react";
+import { FaHome, FaUtensils } from "react-icons/fa";
+import SearchFilter from "../search/SearchFilter";
+import MoreDetails from "../MoreDetails/MoreDetails";
 
-const RecipeFilter = () => {
+const RecipeFilter = ({ onSearch }) => {
+    const [query, setQuery] = useState("");
+    const [moreDetails, setMoreDetails] = useState({
+        todayRecipe: false,
+        isAllergenic: false,
+        isFastFood: false,
+        canContactChef: false,
+    });
+
+    const handleSearch = () => {
+        const filters = {
+            name: query,
+            ...moreDetails,
+        };
+
+        onSearch && onSearch(filters);
+    };
+
+    const handleClear = () => {
+        setQuery("");
+        setMoreDetails({
+            todayRecipe: false,
+            isAllergenic: false,
+            isFastFood: false,
+            canContactChef: false,
+        });
+
+        onSearch && onSearch({});
+    };
+
     return (
-        <div className="bg-[#D9D9D9] p-4 rounded-xl w-72 space-y-5 text-right font-sans">
+        <div className="bg-[#FDF3F1] p-4 rounded-xl w-full lg:w-80 space-y-4 text-right font-sans text-sm">
+            <h2 className="font-bold text-md text-gray-800">البحث</h2>
 
-            {/* Search */}
+            <SearchFilter
+                value={query}
+                onChange={(val) => setQuery(val)}
+                onSearch={() => handleSearch()}
+            />
+
             <div className="relative">
-                <input
-                    type="text"
-                    placeholder="ادخل اسم الشيف/الوصفة"
-                    className="w-full pr-10 pl-4 py-2 rounded-full text-sm border border-gray-300 focus:outline-none"
-                />
-                <FaSearch className="absolute top-2.5 right-4 text-gray-500" />
-            </div>
-
-            {/* نوع الطعام */}
-            <div>
-                <label className="block text-sm font-medium text-gray-800 mb-1">نوع الطعام</label>
-                <select className="w-full py-2 px-3 rounded-full border border-gray-300 bg-white text-sm text-right">
-                    <option>نوع الطعام</option>
+                <label className="block text-gray-800 mb-1">نوع الطعام</label>
+                <select className="w-full pr-10 pl-3 py-2 rounded-md border border-gray-300 bg-white">
+                    <option>تم اختيار نوع الطعام</option>
                     <option>حلويات</option>
                     <option>أطباق رئيسية</option>
                     <option>مقبلات</option>
                 </select>
+                <FaHome className="absolute top-9 right-3 text-gray-400" />
             </div>
 
-            {/* التقييم */}
-            <div>
-                <label className="block text-sm font-medium text-gray-800 mb-1">التقييم</label>
-                <div className="flex flex-col gap-2">
-                    {[5, 4, 3, 2, 1].map((rating) => (
-                        <label key={rating} className="flex items-center gap-2 cursor-pointer">
-                            <input type="radio" name="rating" className="radio radio-sm" />
-                            <div className="flex gap-1">
-                                {[...Array(5)].map((_, i) =>
-                                    i < rating ? (
-                                        <FaStar key={i} className="text-yellow-400" />
-                                    ) : (
-                                        <FaRegStar key={i} className="text-gray-400" />
-                                    )
-                                )}
-                            </div>
-                        </label>
-                    ))}
-                </div>
-            </div>
-
-            {/* المكونات الرئيسية */}
-            <div>
-                <label className="block text-sm font-medium text-gray-800 mb-1">المكونات الرئيسية</label>
-                <select className="w-full py-2 px-3 rounded-full border border-gray-300 bg-white text-sm text-right">
-                    <option>المكونات</option>
+            <div className="relative">
+                <label className="block text-gray-800 mb-1">المكونات الرئيسية</label>
+                <select className="w-full pr-10 pl-3 py-2 rounded-md border border-gray-300 bg-white">
+                    <option>تم اختيار المكونات الرئيسية</option>
                     <option>دجاج</option>
                     <option>لحم</option>
                     <option>خضروات</option>
                 </select>
+                <FaUtensils className="absolute top-9 right-3 text-gray-400" />
             </div>
 
-            {/* Checkboxes */}
-            <div className="space-y-2 text-sm text-gray-800">
-                <label className="flex items-center gap-2">
-                    <input type="checkbox" className="checkbox checkbox-sm" />
-                    <span>وصفات اليوم من فودي</span>
-                </label>
-                <label className="flex items-center gap-2">
-                    <input type="checkbox" className="checkbox checkbox-sm" />
-                    <span>إمكانية التواصل مع الشيف لحجز موعد مناسبة</span>
-                </label>
-                <label className="flex items-center gap-2">
-                    <input type="checkbox" className="checkbox checkbox-sm" />
-                    <span>أطباق لا تحتوي على مسببات الحساسية</span>
-                </label>
-                <label className="flex items-center gap-2">
-                    <input type="checkbox" className="checkbox checkbox-sm" />
-                    <span>وصفات سريعة التحضير (أقل من 45 دقيقة)</span>
-                </label>
-            </div>
+            <MoreDetails values={moreDetails} onChange={setMoreDetails} />
 
-            {/* Button */}
-            <button className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 rounded-full text-sm">
-                عرض النتائج
-            </button>
+            <div className="flex gap-3 mt-4">
+                <button
+                    className="w-full bg-primary-1 hover:opacity-90 text-white font-bold py-2 rounded-md"
+                    onClick={handleSearch}
+                >
+                    عرض النتائج
+                </button>
+                <button
+                    className="w-full border border-primary-1 text-primary-1 font-bold py-2 rounded-md"
+                    onClick={handleClear}
+                >
+                    الغاء التصفيات
+                </button>
+            </div>
         </div>
     );
 };
