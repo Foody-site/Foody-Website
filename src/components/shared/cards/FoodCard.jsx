@@ -23,7 +23,7 @@ const FoodCard = ({ store }) => {
             {/* Banner */}
             <div className="relative">
                 <img
-                    src="https://images.unsplash.com/photo-1600891964599-f61ba0e24092"
+                    src={store.coverPicture || "https://images.unsplash.com/photo-1600891964599-f61ba0e24092"}
                     alt="Food Banner"
                     className="w-full h-48 object-cover"
                 />

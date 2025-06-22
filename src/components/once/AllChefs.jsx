@@ -50,7 +50,7 @@ const AllChefs = () => {
                 {error && <p className="text-center text-red-500">{error}</p>}
             </div>
 
-            <div className="grid md:grid-cols-4 grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-3 grid-cols-1 gap-6">
                 {Array.isArray(chefs) &&
                     chefs.map((chef) => (
                         <div
@@ -83,7 +83,7 @@ const AllChefs = () => {
                                     <p className="font-bold text-lg text-[#D71313]">1700+</p>
                                     <p>عدد المتابعين</p>
                                 </div>
-                                <div className="px-2">
+                                <div className="px-2 border-l">
                                     <p className="font-bold text-lg text-[#D71313]">120</p>
                                     <p>عدد الزوار</p>
                                 </div>

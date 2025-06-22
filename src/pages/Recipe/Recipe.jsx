@@ -22,17 +22,17 @@ const Recipe = () => {
             <PageWrapper>
                 <div className="flex gap-4 mt-4">
                     {/* Right Column: ChefFilter (used here as RecipeFilter if shared) */}
-                    <div className="w-[250px]">
-                        <ChefFilter />
-                    </div>
-
-                    {/* Left Column: Tabs + All Recipes */}
                     <div className="flex-1 flex flex-col gap-4">
                         <CategoryTabs
                             onCategoryChange={handleCategoryChange}
                             activeTabLabel={activeTab}
                         />
                         <AllRecipes />
+                    </div>
+
+                    {/* Left Column: Tabs + All Recipes */}
+                    <div className="w-[250px]">
+                        <ChefFilter />
                     </div>
                 </div>
             </PageWrapper>
