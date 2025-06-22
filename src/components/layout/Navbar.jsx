@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import { FiSearch, FiBell, FiMapPin } from "react-icons/fi";
 import { GiKnifeFork } from "react-icons/gi";
 import { FaHeart } from "react-icons/fa";
@@ -6,6 +7,7 @@ import { MdDiscount } from "react-icons/md";
 
 const Navbar = () => {
     const [fullName, setFullName] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         const storedUser = localStorage.getItem("user");
@@ -23,7 +25,7 @@ const Navbar = () => {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
         localStorage.removeItem("refreshToken");
-        window.location.reload(); // or redirect as needed
+        window.location.reload(); // or redirect
     };
 
     return (
@@ -54,8 +56,11 @@ const Navbar = () => {
                     <span className="text-xs text-red-500">فودي</span>
                 </div>
 
-                {/* User Info */}
-                <div className="flex items-center gap-1">
+                {/* User Info Clickable */}
+                <div
+                    className="flex items-center gap-1 cursor-pointer"
+                    onClick={() => navigate("/user-profile")}
+                >
                     <span className="text-gray-700">{fullName || "المستخدم"}</span>
                     <img
                         src="https://randomuser.me/api/portraits/women/44.jpg"
@@ -67,7 +72,6 @@ const Navbar = () => {
 
             {/* Bottom Row */}
             <div className="relative border-t text-gray-700 py-2 px-4">
-                {/* Navigation Links Centered */}
                 <div className="flex justify-center gap-4 text-sm font-medium">
                     <button className="bg-red-600 text-white px-3 py-1 rounded">الرئيسية</button>
                     <button className="hover:text-red-600">التصنيفات</button>
@@ -75,7 +79,7 @@ const Navbar = () => {
                     <button className="hover:text-red-600">الوصفات</button>
                 </div>
 
-                {/* Logout Button on Right */}
+                {/* Logout Button */}
                 <div className="absolute right-4 top-1/2 -translate-y-1/2">
                     <button
                         onClick={handleLogout}
@@ -85,7 +89,7 @@ const Navbar = () => {
                     </button>
                 </div>
 
-                {/* Search on Left */}
+                {/* Search Input */}
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 w-64 max-w-full">
                     <div className="flex items-center border rounded overflow-hidden">
                         <input
