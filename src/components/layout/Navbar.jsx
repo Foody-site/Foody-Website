@@ -1,13 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FiSearch, FiBell, FiMapPin } from "react-icons/fi";
-import { BsGiftFill } from "react-icons/bs";
 import { GiKnifeFork } from "react-icons/gi";
 import { FaHeart } from "react-icons/fa";
 import { MdDiscount } from "react-icons/md";
 
 const Navbar = () => {
-    const [isOpen, setIsOpen] = useState(false);
-    const toggleSidebar = () => setIsOpen(!isOpen);
+    const [fullName, setFullName] = useState("");
+
+    useEffect(() => {
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) {
+            try {
+                const parsedUser = JSON.parse(storedUser);
+                setFullName(parsedUser.fullName || "");
+            } catch {
+                setFullName("");
+            }
+        }
+    }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        localStorage.removeItem("refreshToken");
+        window.location.reload(); // or redirect as needed
+    };
 
     return (
         <div className="w-full border-b bg-white shadow-sm text-sm font-medium" dir="rtl">
@@ -37,9 +54,9 @@ const Navbar = () => {
                     <span className="text-xs text-red-500">فودي</span>
                 </div>
 
-                {/* User Dropdown */}
+                {/* User Info */}
                 <div className="flex items-center gap-1">
-                    <span className="text-gray-700">تسنيم حسام</span>
+                    <span className="text-gray-700">{fullName || "المستخدم"}</span>
                     <img
                         src="https://randomuser.me/api/portraits/women/44.jpg"
                         alt="user"
@@ -58,11 +75,13 @@ const Navbar = () => {
                     <button className="hover:text-red-600">الوصفات</button>
                 </div>
 
-                {/* Offers Button on Right */}
+                {/* Logout Button on Right */}
                 <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                    <button className="flex items-center border border-red-600 text-red-600 px-3 py-1 rounded gap-1 text-sm">
-                        العروض
-                        <BsGiftFill />
+                    <button
+                        onClick={handleLogout}
+                        className="flex items-center border border-red-600 text-red-600 px-3 py-1 rounded gap-1 text-sm hover:bg-red-50"
+                    >
+                        تسجيل الخروج
                     </button>
                 </div>
 
