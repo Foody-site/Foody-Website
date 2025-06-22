@@ -6,7 +6,7 @@ import FavouriteRecipe from "../shared/Favourites/FavouriteRecipe";
 import RecipeShare from "../shared/Share/RecipeShare";
 import Pagination2 from "../common/Pagination2";
 
-const AllRecipes = () => {
+const AllRecipes = ({ searchParams = {} }) => {
     const [recipes, setRecipes] = useState([]);
     const [page, setPage] = useState(1);
     const [pagination, setPagination] = useState({
@@ -17,34 +17,44 @@ const AllRecipes = () => {
     });
 
     useEffect(() => {
+        setPage(1);
+    }, [searchParams]);
+
+    useEffect(() => {
+        const fetchRecipes = async () => {
+            try {
+                const res = await axios.get(`${api_url}/recipe`, {
+                    params: {
+                        page,
+                        take: 9,
+                        ...searchParams,
+                    },
+                });
+
+                const data = res.data?.data || [];
+                const pag = res.data?.pagination || {
+                    hasNextPage: false,
+                    hasPreviousPage: false,
+                    currentPage: 1,
+                    totalPages: 1,
+                };
+
+                setRecipes(data);
+                setPagination(pag);
+            } catch (error) {
+                console.error("Error fetching recipes:", error);
+                setRecipes([]);
+                setPagination({
+                    hasNextPage: false,
+                    hasPreviousPage: false,
+                    currentPage: 1,
+                    totalPages: 1,
+                });
+            }
+        };
+
         fetchRecipes();
-    }, [page]);
-
-    const fetchRecipes = async () => {
-        try {
-            const res = await axios.get(`${api_url}/recipe`, {
-                params: {
-                    page,
-                    take: 9,
-                },
-            });
-
-            const data = res.data?.data || [];
-            const pag = res.data?.pagination || {};
-
-            setRecipes(data);
-            setPagination(pag);
-        } catch (error) {
-            console.error("Error fetching recipes:", error);
-            setRecipes([]);
-            setPagination({
-                hasNextPage: false,
-                hasPreviousPage: false,
-                currentPage: 1,
-                totalPages: 1,
-            });
-        }
-    };
+    }, [page, searchParams]);
 
     return (
         <div className="p-4">
@@ -85,7 +95,10 @@ const AllRecipes = () => {
                                 )}
 
                                 <div className="flex justify-between items-center gap-2">
-                                    <FavouriteRecipe itemId={recipe.id} isInitiallyFavorited={recipe.isFavorited} />
+                                    <FavouriteRecipe
+                                        itemId={recipe.id}
+                                        isInitiallyFavorited={recipe.isFavorited}
+                                    />
                                     <Link to={`/recipe/${recipe.id}`} className="flex-1">
                                         <div className="bg-primary-1 hover:bg-red-700 text-white py-2 rounded-lg text-sm text-center w-full">
                                             المزيد من التفاصيل

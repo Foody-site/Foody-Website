@@ -1,14 +1,21 @@
 import { useState } from "react";
 import { FaHome, FaUtensils } from "react-icons/fa";
 import SearchFilter from "../search/SearchFilter";
+import MoreDetails from "../MoreDetails/MoreDetails";
 
 const ChefFilter = ({ onSearch }) => {
     const [query, setQuery] = useState("");
+    const [moreDetails, setMoreDetails] = useState({
+        todayRecipe: false,
+        isAllergenic: false,
+        isFastFood: false,
+        canContactChef: false,
+    });
 
     const handleSearch = () => {
         const filters = {
             name: query,
-            // Add other fields later here
+            ...moreDetails,
         };
 
         if (onSearch) {
@@ -18,7 +25,12 @@ const ChefFilter = ({ onSearch }) => {
 
     const handleClear = () => {
         setQuery("");
-        // Reset other filters later here
+        setMoreDetails({
+            todayRecipe: false,
+            isAllergenic: false,
+            isFastFood: false,
+            canContactChef: false,
+        });
 
         onSearch && onSearch({});
     };
@@ -34,9 +46,8 @@ const ChefFilter = ({ onSearch }) => {
                 onSearch={() => handleSearch()}
             />
 
-            {/* You can uncomment and use these later */}
             {/* نوع الطعام */}
-            {/* <div className="relative">
+            <div className="relative">
                 <label className="block text-gray-800 mb-1">نوع الطعام</label>
                 <select className="w-full pr-10 pl-3 py-2 rounded-md border border-gray-300 bg-white">
                     <option>تم اختيار نوع الطعام</option>
@@ -45,10 +56,10 @@ const ChefFilter = ({ onSearch }) => {
                     <option>مقبلات</option>
                 </select>
                 <FaHome className="absolute top-9 right-3 text-gray-400" />
-            </div> */}
+            </div>
 
             {/* المكونات الرئيسية */}
-            {/* <div className="relative">
+            <div className="relative">
                 <label className="block text-gray-800 mb-1">المكونات الرئيسية</label>
                 <select className="w-full pr-10 pl-3 py-2 rounded-md border border-gray-300 bg-white">
                     <option>تم اختيار المكونات الرئيسية</option>
@@ -57,7 +68,9 @@ const ChefFilter = ({ onSearch }) => {
                     <option>خضروات</option>
                 </select>
                 <FaUtensils className="absolute top-9 right-3 text-gray-400" />
-            </div> */}
+            </div>
+
+            <MoreDetails values={moreDetails} onChange={setMoreDetails} />
 
             <div className="flex gap-3 mt-4">
                 <button

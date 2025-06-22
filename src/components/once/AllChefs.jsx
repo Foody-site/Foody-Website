@@ -29,7 +29,7 @@ const AllChefs = ({ searchParams = {} }) => {
                     params: {
                         page,
                         take: pageSize,
-                        ...searchParams, // Inject search params here
+                        ...searchParams,
                     },
                 });
 
