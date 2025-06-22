@@ -25,7 +25,7 @@ const CategoryTabs = ({ onCategoryChange, activeTabLabel }) => {
     };
 
     return (
-        <div className="w-full flex flex-wrap gap-2 p-2 rounded-xl border border-[#808080]">
+        <div className="w-full flex justify-between flex-wrap gap-2 p-2 rounded-xl border border-[#808080]">
             {tabs.map((tab) => (
                 <button
                     key={tab.label}
