@@ -7,13 +7,13 @@ import CategoryTabs from "../../components/shared/category/CategoryTabs";
 
 const Chef = () => {
     const [activeTab, setActiveTab] = useState("الشيفات");
+    const [searchParams, setSearchParams] = useState({});
     const navigate = useNavigate();
 
     const handleCategoryChange = (selectedTab) => {
         setActiveTab(selectedTab.label);
-
         if (selectedTab.type === "category") {
-            navigate("/", { state: selectedTab }); // send full tab object
+            navigate("/", { state: selectedTab });
         }
     };
 
@@ -27,12 +27,12 @@ const Chef = () => {
                             onCategoryChange={handleCategoryChange}
                             activeTabLabel={activeTab}
                         />
-                        <AllChefs />
+                        <AllChefs searchParams={searchParams} />
                     </div>
 
-                    {/* Left column: Tabs and chefs */}
+                    {/* Left column: Filter panel */}
                     <div className="w-[250px]">
-                        <ChefFilter />
+                        <ChefFilter onSearch={setSearchParams} />
                     </div>
                 </div>
             </PageWrapper>
