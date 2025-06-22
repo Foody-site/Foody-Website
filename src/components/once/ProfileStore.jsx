@@ -48,7 +48,6 @@ const ProfileStore = () => {
     const social = store.socialMediaLinks || {};
     const deliveryApps = store.deliveryAppLinks || {};
     const additionalInfo = store.additionalInfo || {};
-
     const mainDeliveryAppLink = Object.entries(deliveryApps).find(([_, v]) => v)?.[1];
     const mainDeliveryAppName = Object.entries(deliveryApps).find(([_, v]) => v)?.[0];
 
@@ -56,9 +55,27 @@ const ProfileStore = () => {
         <PageWrapper>
             <div className="flex flex-col lg:flex-row gap-6 mt-6">
 
-                {/* Right Panel - Store Info */}
-                <div className="w-full lg:w-1/3 h-fit">
-                    <div className="bg-white rounded-2xl shadow p-4 text-center">
+                {/* Right Panel - Placeholder */}
+                <div className="w-full lg:w-2/3">
+                    <div className="p-6 border rounded-2xl text-center text-gray-500">
+                        لا توجد وصفات لعرضها حالياً
+                    </div>
+                </div>
+
+                {/* Left Panel - Store Info */}
+                <div className="w-full lg:w-1/3 h-fit text-right">
+                    <div className="bg-white rounded-2xl shadow p-4">
+
+                        {/* Store Header */}
+                        <div className="flex items-center justify-between mb-2">
+                            {store.averageRating > 0 && (
+                                <div className="flex items-center gap-1 bg-yellow-100 text-yellow-700 text-xs font-bold px-2 py-1 rounded">
+                                    ⭐ {store.averageRating.toFixed(1)}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Logo + Name */}
                         <div className="flex flex-col items-center">
                             <img
                                 src={store.profilePicture || "https://via.placeholder.com/150"}
@@ -72,59 +89,62 @@ const ProfileStore = () => {
                             <p className="text-sm text-[#808080]">{store.type || "مطعم"}</p>
                         </div>
 
-                        <p className="text-sm text-[#808080] mt-2">{store.description || "وصف عن المتجر هنا"}</p>
+                        <p className="text-sm text-[#808080] mt-2 text-center">
+                            {store.description || "وصف عن المتجر هنا"}
+                        </p>
 
-                        <div className="flex gap-2 mt-4 justify-center">
+                        {/* Action Buttons */}
+                        <div className="flex gap-2 mt-4">
+                            <button className="flex-1 py-2 text-sm rounded bg-primary-1 text-white">
+                                المنيو / العنوان
+                            </button>
                             {store.mapLink && (
-                                <a href={store.mapLink} target="_blank" rel="noreferrer" className="flex-1 py-2 text-sm rounded bg-primary-1 text-white hover:bg-red-700">
+                                <a
+                                    href={store.mapLink}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="flex-1 py-2 text-sm rounded bg-primary-1 text-white text-center"
+                                >
                                     الموقع
                                 </a>
                             )}
-                            {mainDeliveryAppLink && (
-                                <a href={mainDeliveryAppLink} target="_blank" rel="noreferrer" className="flex-1 py-2 text-sm rounded bg-primary-1 text-white hover:bg-red-700">
-                                    {mainDeliveryAppName || "تطبيق التوصيل"}
-                                </a>
-                            )}
                         </div>
 
-                        {/* Social Media Icons */}
-                        <div className="flex justify-center flex-wrap gap-2 mt-4">
-                            {social.whatsappNumber && (
-                                <a href={`https://wa.me/${social.whatsappNumber.replace(/\D/g, "")}`} target="_blank" rel="noreferrer" className="w-10 h-10 flex items-center justify-center rounded border hover:bg-green-50">
-                                    <FaWhatsapp className="text-green-500" />
+                        {/* Main Delivery App */}
+                        {mainDeliveryAppLink && (
+                            <div className="mt-4">
+                                <a
+                                    href={mainDeliveryAppLink}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="w-full py-2 text-sm rounded bg-primary-1 text-white block hover:bg-red-700 text-center"
+                                >
+                                    {mainDeliveryAppName || "تطبيق التوصيل"}
                                 </a>
-                            )}
-                            {social.facebook && (
-                                <a href={social.facebook} target="_blank" rel="noreferrer" className="w-10 h-10 flex items-center justify-center rounded border hover:bg-blue-50">
-                                    <FaFacebook className="text-blue-600" />
-                                </a>
-                            )}
-                            {social.x && (
-                                <a href={social.x} target="_blank" rel="noreferrer" className="w-10 h-10 flex items-center justify-center rounded border hover:bg-gray-100">
-                                    <FaTwitter className="text-gray-600" />
-                                </a>
-                            )}
-                            {social.instagram && (
-                                <a href={social.instagram} target="_blank" rel="noreferrer" className="w-10 h-10 flex items-center justify-center rounded border hover:bg-pink-50">
-                                    <FaInstagram className="text-pink-500" />
-                                </a>
-                            )}
-                            {social.youtube && (
-                                <a href={social.youtube} target="_blank" rel="noreferrer" className="w-10 h-10 flex items-center justify-center rounded border hover:bg-red-50">
-                                    <FaYoutube className="text-red-600" />
-                                </a>
-                            )}
-                            {social.tiktok && (
-                                <a href={social.tiktok} target="_blank" rel="noreferrer" className="w-10 h-10 flex items-center justify-center rounded border hover:bg-black text-black hover:text-white">
-                                    <SiTiktok />
-                                </a>
-                            )}
-                            {social.snapchat && (
-                                <a href={social.snapchat} target="_blank" rel="noreferrer" className="w-10 h-10 flex items-center justify-center rounded border hover:bg-yellow-100">
-                                    <FaSnapchatGhost className="text-yellow-500" />
-                                </a>
-                            )}
-                        </div>
+                            </div>
+                        )}
+
+                        {/* Other Delivery Apps */}
+                        {Object.values(deliveryApps).filter(Boolean).length > 1 && (
+                            <div className="mt-4">
+                                <p className="text-sm text-[#808080] mb-2">تطبيقات التوصيل</p>
+                                <div className="grid grid-cols-5 gap-2 justify-center">
+                                    {Object.entries(deliveryApps)
+                                        .filter(([_, link]) => link)
+                                        .map(([name, link]) => (
+                                            <a
+                                                key={name}
+                                                href={link}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="w-10 h-10 flex items-center justify-center rounded border hover:bg-gray-100"
+                                            >
+                                                <FaTwitter /> {/* Replace if needed */}
+                                            </a>
+                                        ))}
+                                </div>
+                            </div>
+                        )}
 
                         {/* Contact Info */}
                         <div className="mt-4 space-y-3">
@@ -175,15 +195,49 @@ const ProfileStore = () => {
                                 </div>
                             </div>
                         </div>
+
+                        {/* Social Media Icons at Bottom */}
+                        <div className="flex justify-center flex-wrap gap-2 mt-6">
+                            {social.whatsappNumber && (
+                                <a href={`https://wa.me/${social.whatsappNumber.replace(/\D/g, "")}`} target="_blank" rel="noreferrer" className="w-10 h-10 flex items-center justify-center rounded border hover:bg-green-50">
+                                    <FaWhatsapp className="text-green-500" />
+                                </a>
+                            )}
+                            {social.facebook && (
+                                <a href={social.facebook} target="_blank" rel="noreferrer" className="w-10 h-10 flex items-center justify-center rounded border hover:bg-blue-50">
+                                    <FaFacebook className="text-blue-600" />
+                                </a>
+                            )}
+                            {social.x && (
+                                <a href={social.x} target="_blank" rel="noreferrer" className="w-10 h-10 flex items-center justify-center rounded border hover:bg-gray-100">
+                                    <FaTwitter className="text-gray-600" />
+                                </a>
+                            )}
+                            {social.instagram && (
+                                <a href={social.instagram} target="_blank" rel="noreferrer" className="w-10 h-10 flex items-center justify-center rounded border hover:bg-pink-50">
+                                    <FaInstagram className="text-pink-500" />
+                                </a>
+                            )}
+                            {social.youtube && (
+                                <a href={social.youtube} target="_blank" rel="noreferrer" className="w-10 h-10 flex items-center justify-center rounded border hover:bg-red-50">
+                                    <FaYoutube className="text-red-600" />
+                                </a>
+                            )}
+                            {social.tiktok && (
+                                <a href={social.tiktok} target="_blank" rel="noreferrer" className="w-10 h-10 flex items-center justify-center rounded border hover:bg-black text-black hover:text-white">
+                                    <SiTiktok />
+                                </a>
+                            )}
+                            {social.snapchat && (
+                                <a href={social.snapchat} target="_blank" rel="noreferrer" className="w-10 h-10 flex items-center justify-center rounded border hover:bg-yellow-100">
+                                    <FaSnapchatGhost className="text-yellow-500" />
+                                </a>
+                            )}
+                        </div>
+
                     </div>
                 </div>
 
-                {/* Left Panel - Recipes Placeholder */}
-                <div className="w-full lg:w-2/3">
-                    <div className="p-6 border rounded-2xl text-center text-gray-500">
-                        لا توجد وصفات لعرضها حالياً
-                    </div>
-                </div>
             </div>
         </PageWrapper>
     );
