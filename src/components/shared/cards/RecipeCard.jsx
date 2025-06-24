@@ -12,7 +12,7 @@ const RecipeCard = ({ recipe }) => {
         className="w-full h-48 object-cover"
       />
 
-      <div className="p-4">
+      <div className="p-4 text-right">
         <h3 className="font-bold text-lg text-black mb-1 line-clamp-1">
           {recipe.name || "اسم الوصفة"}
         </h3>
