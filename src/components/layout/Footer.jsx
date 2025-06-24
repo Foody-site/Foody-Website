@@ -5,8 +5,12 @@ import {
   FaSnapchat,
 } from "react-icons/fa6";
 import PageWrapper from "../common/PageWrapper";
+import { useNavigate } from "react-router";
 
 const Footer = () => {
+
+  const navigate = useNavigate();
+
   return (
     <footer className="bg-[#970D0D] text-white text-sm font-sans max-w-full">
       <PageWrapper>
@@ -30,10 +34,9 @@ const Footer = () => {
           <div>
             <h3 className="font-bold mb-2">الرئيسية</h3>
             <ul className="space-y-3">
-              <li><a href="#" className="text-white no-underline">حسابي</a></li>
-              <li><a href="#" className="text-white no-underline">المفضلة</a></li>
-              <li><a href="#" className="text-white no-underline">العروض/الخصومات</a></li>
-              <li><a href="#" className="text-white no-underline">نص</a></li>
+              <li><a href="#" className="text-white no-underline" onClick={() => navigate("/user-profile")}>حسابي</a></li>
+              <li><a href="#" className="text-white no-underline" onClick={() => navigate("/user-profile")}>المفضلة</a></li>
+              <li><a href="#" className="text-white no-underline" onClick={() => navigate("/under-construction")}>العروض/الخصومات</a></li>
             </ul>
           </div>
 
@@ -41,10 +44,10 @@ const Footer = () => {
           <div>
             <h3 className="font-bold mb-2">من نحن</h3>
             <ul className="space-y-3">
-              <li><a href="#" className="text-white no-underline">إخلاء المسؤولية</a></li>
-              <li><a href="#" className="text-white no-underline">سياسة الإستخدام</a></li>
-              <li><a href="#" className="text-white no-underline">الشروط والأحكام</a></li>
-              <li><a href="#" className="text-white no-underline">فريقنا</a></li>
+              <li><a href="#" className="text-white no-underline" onClick={() => navigate("/under-construction")}>إخلاء المسؤولية</a></li>
+              <li><a href="#" className="text-white no-underline" onClick={() => navigate("/under-construction")}>سياسة الإستخدام</a></li>
+              <li><a href="#" className="text-white no-underline" onClick={() => navigate("/under-construction")}>الشروط والأحكام</a></li>
+              <li><a href="#" className="text-white no-underline" onClick={() => navigate("/under-construction")}>فريقنا</a></li>
             </ul>
           </div>
 
@@ -52,10 +55,10 @@ const Footer = () => {
           <div>
             <h3 className="font-bold mb-2">روابط سريعة</h3>
             <ul className="space-y-3">
-              <li><a href="#" className="text-white no-underline">المدونة</a></li>
-              <li><a href="#" className="text-white no-underline">استطلاع الرأي</a></li>
-              <li><a href="#" className="text-white no-underline">آخر الأخبار</a></li>
-              <li><a href="#" className="text-white no-underline">مناسبات</a></li>
+              <li><a href="#" className="text-white no-underline" onClick={() => navigate("/under-construction")}>المدونة</a></li>
+              <li><a href="#" className="text-white no-underline" onClick={() => navigate("/under-construction")}>استطلاع الرأي</a></li>
+              <li><a href="#" className="text-white no-underline" onClick={() => navigate("/under-construction")}>آخر الأخبار</a></li>
+              <li><a href="#" className="text-white no-underline" onClick={() => navigate("/under-construction")}>مناسبات</a></li>
             </ul>
           </div>
 
