@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router";
 import FoodFilter from "../../components/shared/filters/FoodFilter";
+
 import Store from "../../components/once/Store";
 import PageWrapper from "../../components/common/PageWrapper";
 import Hero from "../../components/common/Hero";

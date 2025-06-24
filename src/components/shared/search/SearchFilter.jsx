@@ -17,7 +17,7 @@ const SearchFilter = ({ value = "", onChange, onSearch }) => {
     };
 
     return (
-        <div className="bg-[#D713130D] text-white p-4 rounded-xl space-y-4 font-sans text-sm">
+        <div className="bg-[#D713130D] text-white p-4 rounded-xl space-y-4 font-sans text-sm ">
             <div className="relative">
                 <input
                     type="text"
@@ -25,7 +25,7 @@ const SearchFilter = ({ value = "", onChange, onSearch }) => {
                     value={value}
                     onChange={handleInputChange}
                     onKeyDown={handleKeyDown}
-                    className="w-full pl-10 pr-4 py-2 rounded-full bg-white text-black focus:outline-none"
+                    className="w-full pl-10 pr-4 py-2 rounded-full bg-white text-black focus:outline-none text-right"
                 />
                 <FaSearch
                     onClick={handleSearchClick}

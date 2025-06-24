@@ -24,6 +24,7 @@ import RecipeDetails from "../pages/Recipe/RecipeDetails";
 import AuthCallback from "../components/Auth/AuthCallback";
 import ChooseRoleWithGoogle from "../components/Auth/ChooseRoleWithGoogle";
 import StoreProfile from "../pages/Product/StoreProfile";
+import UnderConstruction from "../pages/UnderConstruction/UnderConstruction";
 
 const AppRouter = () => {
   return (
@@ -57,6 +58,7 @@ const AppRouter = () => {
         <Route path="/add-recipe" element={<AddRecipe />} />
         <Route path="/add-store" element={<Add_Store />} />
         <Route path="/chefneed/:id" element={<NeedChef />} />
+        <Route path="/under-construction" element={<UnderConstruction />} />
       </Route>
     </Routes>
   );
