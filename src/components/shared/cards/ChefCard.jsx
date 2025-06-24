@@ -5,6 +5,10 @@ const ChefCard = ({ chef }) => {
   return (
     <div className="bg-white p-4 rounded-lg shadow-md border flex flex-col gap-4">
       <div className="flex items-center border-b pb-4 gap-4">
+        <div className="flex-1 ">
+          <h2 className="text-lg font-semibold">{chef.name}</h2>
+          <p className="text-gray-500 text-sm mt-1">أنواع وصفات الطبخ هنا</p>
+        </div>
         <img
           src={
             chef.profilePicture ||
@@ -15,23 +19,23 @@ const ChefCard = ({ chef }) => {
           alt={chef.name}
           className="w-24 h-24 rounded-md object-cover"
         />
-        <div className="flex-1 text-right">
-          <h2 className="text-lg font-semibold">{chef.name}</h2>
-          <p className="text-gray-500 text-sm mt-1">أنواع وصفات الطبخ هنا</p>
-        </div>
       </div>
 
       <div className="flex justify-around text-center text-sm text-gray-600 border-b pb-4">
         <div className="px-2 border-l last:border-l-0">
-          <p className="font-bold text-lg text-[#D71313]">90</p>
+          <p className="font-bold text-lg text-[#D71313]">
+            {chef.totalRecipes}
+          </p>
           <p>عدد الوصفات</p>
         </div>
         <div className="px-2 border-l">
-          <p className="font-bold text-lg text-[#D71313]">1700+</p>
+          <p className="font-bold text-lg text-[#D71313]">
+            {chef.totalFollowers}
+          </p>
           <p>عدد المتابعين</p>
         </div>
         <div className="px-2">
-          <p className="font-bold text-lg text-[#D71313]">120</p>
+          <p className="font-bold text-lg text-[#D71313]">{chef.totalViews}</p>
           <p>عدد الزوار</p>
         </div>
       </div>
