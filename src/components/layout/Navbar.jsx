@@ -69,12 +69,11 @@ const Navbar = () => {
       {/* Bottom Row */}
       <div className="relative border-t text-gray-700 py-2 px-4">
         <div className="flex justify-center gap-4 text-sm font-medium">
-          <button className="bg-red-600 text-white px-3 py-1 rounded">
+          <button className="bg-red-600 text-white px-3 py-1 rounded" onClick={() => navigate("/")}>
             الرئيسية
           </button>
-          <button className="hover:text-red-600">التصنيفات</button>
-          <button className="hover:text-red-600">الشيفات</button>
-          <button className="hover:text-red-600">الوصفات</button>
+          <button className="hover:text-red-600" onClick={() => navigate("/")}>الشيفات</button>
+          <button className="hover:text-red-600" onClick={() => navigate("/")}>الوصفات</button>
         </div>
 
         {/* Logout Button */}
