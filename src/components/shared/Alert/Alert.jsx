@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import rocket from "/assets/alert/rocket.png";
+import rocket from "/assets/alert/rocket.webp";
 import Button from "../Buttons/Button";
 
 const Alert = ({

@@ -1,8 +1,8 @@
 import { FaFireAlt, FaUtensils, FaArrowLeft } from "react-icons/fa";
 import PageWrapper from "./PageWrapper";
 import Slider from "./Slider";
-import slider_photo2 from "/assets/home/slider_2.jpg";
-import slider_photo from "/assets/home/slider.png";
+import slider_photo2 from "/assets/home/slider_2.webp";
+import slider_photo from "/assets/home/slider.webp";
 
 const Hero = () => {
   return (

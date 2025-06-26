@@ -9,7 +9,7 @@ import PreparationTimePicker from "../../components/shared/inputs/PreparationTim
 import PreparationSteps from "../../components/shared/inputs/PreparationSteps";
 import SelectInput from "../../components/shared/inputs/SelectInput";
 import Button from "../../components/shared/Buttons/Button";
-import allergy from "../../assets/allergy.jpg";
+import allergy from "../../assets/allergy.webp";
 import TextAreaInput from "../../components/shared/inputs/TextAreaInput ";
 import { useNavigate } from "react-router";
 import Alert from "../../components/shared/Alert/Alert";

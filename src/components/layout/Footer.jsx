@@ -17,7 +17,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6 text-center md:text-right mb-6">
           <div className="md:col-span-1">
             <img
-              src="/assets/common/whitelogo.png"
+              src="/assets/common/whitelogo.webp"
               alt="Foody Logo"
               className="w-24 mx-auto md:mx-0 mb-2"
             />

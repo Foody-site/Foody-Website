@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
-import BUSINESS_photo from "/assets/choose_role/BUSINESS_photo.jpg";
-import CUSTOMER_photo from "/assets/choose_role/CUSTOMER_photo.jpg";
+import BUSINESS_photo from "/assets/choose_role/BUSINESS_photo.webp";
+import CUSTOMER_photo from "/assets/choose_role/CUSTOMER_photo.webp";
 import Button from "../shared/Buttons/Button";
 import { LuCircleUser } from "react-icons/lu";
 import { IoBriefcaseOutline } from "react-icons/io5";

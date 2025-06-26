@@ -64,7 +64,7 @@ const ChefNeed = () => {
                             {/* Header */}
                             <div className="flex flex-row-reverse items-center gap-4 text-right mb-4">
                                 <img
-                                    src={chef.profilePicture || "/assets/home/chef.png"}
+                                    src={chef.profilePicture || "/assets/home/chef.webp"}
                                     alt="Chef"
                                     className="w-20 h-20 object-cover rounded-md"
                                 />
