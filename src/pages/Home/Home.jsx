@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router";
 import FoodFilter from "../../components/shared/filters/FoodFilter";
-
 import Store from "../../components/once/Store";
 import PageWrapper from "../../components/common/PageWrapper";
 import Hero from "../../components/common/Hero";
@@ -12,7 +11,7 @@ import CategoryTabs from "../../components/shared/category/CategoryTabs";
 const defaultView = {
     label: "مطاعم",
     type: "category",
-    enum: "restaurant"
+    enum: "restaurant",
 };
 
 const Home = () => {
@@ -21,10 +20,16 @@ const Home = () => {
     const [view, setView] = useState(defaultView);
 
     useEffect(() => {
-        if (location.state) {
-            setView(location.state);
+        const savedTab = sessionStorage.getItem("tabState");
+        const stateFromNav = location.state;
+
+        if (stateFromNav) {
+            setView(stateFromNav);
+            sessionStorage.setItem("tabState", JSON.stringify(stateFromNav));
+        } else if (savedTab) {
+            setView(JSON.parse(savedTab));
         }
-    }, [location.state]);
+    }, [location.key]);
 
     const handleSearch = (term) => {
         setSearchTerm(term);

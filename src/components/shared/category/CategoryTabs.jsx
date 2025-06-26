@@ -21,7 +21,13 @@ const CategoryTabs = ({ onCategoryChange, activeTabLabel }) => {
 
     const handleClick = (tab) => {
         setActive(tab.label);
-        onCategoryChange?.(tab);
+        if (tab.type === "component") {
+            window.history.replaceState(null, '', '/');
+            window.location.href = "/";
+            sessionStorage.setItem("tabState", JSON.stringify(tab));
+        } else {
+            onCategoryChange?.(tab);
+        }
     };
 
     return (
@@ -30,11 +36,10 @@ const CategoryTabs = ({ onCategoryChange, activeTabLabel }) => {
                 <button
                     key={tab.label}
                     onClick={() => handleClick(tab)}
-                    className={`min-w-[100px] px-4 py-2 rounded-lg text-sm border transition-all duration-200 ${
-                        active === tab.label
+                    className={`min-w-[100px] px-4 py-2 rounded-lg text-sm border transition-all duration-200 ${active === tab.label
                             ? "bg-primary-1 text-white"
                             : "text-black border-[#808080]"
-                    }`}
+                        }`}
                 >
                     {tab.label}
                 </button>
