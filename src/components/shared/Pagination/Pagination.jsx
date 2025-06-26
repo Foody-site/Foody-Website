@@ -18,7 +18,7 @@ export function Pagination({ currentPage, totalPages, onPageChange }) {
         key="prev"
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="w-12 h-12 flex items-center justify-center rounded-md bg-white border border-gray-300 text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-12 h-12 flex items-center justify-center rounded-md bg-white border border-gray-300 text-primary-1 hover:bg-primary-1 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <FaArrowLeft size={16} />
       </button>
@@ -102,7 +102,7 @@ export function Pagination({ currentPage, totalPages, onPageChange }) {
         key="next"
         onClick={() => handlePageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="w-12 h-12 flex items-center justify-center rounded-md bg-white border border-gray-300 text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-12 h-12 flex items-center justify-center rounded-md bg-white border border-gray-300 text-primary-1 hover:bg-primary-1 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <FaArrowRight size={16} />
       </button>
@@ -119,3 +119,4 @@ export function Pagination({ currentPage, totalPages, onPageChange }) {
     </div>
   );
 }
+
