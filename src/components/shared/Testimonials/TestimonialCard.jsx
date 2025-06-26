@@ -1,8 +1,8 @@
 import React from "react";
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
-import smiling_woman from "/assets/login/smiling_woman.jpg";
-import comma from "/assets/login/comma.png";
-import logo from "/assets/common/logo.png";
+import smiling_woman from "/assets/login/smiling_woman.webp";
+import comma from "/assets/login/comma.webp";
+import logo from "/assets/common/logo.webp";
 
 const TestimonialCard = () => {
   return (

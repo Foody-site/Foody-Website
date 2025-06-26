@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { FaChevronUp, FaChevronDown } from "react-icons/fa";
-import slider_photo from "/assets/home/slider.png";
-import slider_photo2 from "/assets/home/slider_2.jpg";
-import slider_photo3 from "/assets/home/slider_3.jpg";
-import slider_photo4 from "/assets/home/slider_4.jpg";
-import slider_photo5 from "/assets/home/slider_5.jpg";
+import slider_photo from "/assets/home/slider.webp";
+import slider_photo2 from "/assets/home/slider_2.webp";
+import slider_photo3 from "/assets/home/slider_3.webp";
+import slider_photo4 from "/assets/home/slider_4.webp";
+import slider_photo5 from "/assets/home/slider_5.webp";
 
 const images = [
   `${slider_photo}?food,1`,

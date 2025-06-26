@@ -1,4 +1,6 @@
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+
 
 export function Pagination({ currentPage, totalPages, onPageChange }) {
   const handlePageChange = (page) => {
@@ -16,9 +18,9 @@ export function Pagination({ currentPage, totalPages, onPageChange }) {
         key="prev"
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="w-8 h-8 flex items-center justify-center rounded-md bg-white border border-gray-300 text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-12 h-12 flex items-center justify-center rounded-md bg-white border border-gray-300 text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        <IoIosArrowBack size={16} />
+        <FaArrowLeft size={16} />
       </button>
     );
 
@@ -28,7 +30,7 @@ export function Pagination({ currentPage, totalPages, onPageChange }) {
         <button
           key={1}
           onClick={() => handlePageChange(1)}
-          className="w-8 h-8 flex items-center justify-center rounded-md bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+          className="w-12 h-12 flex items-center justify-center rounded-md bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
         >
           01
         </button>
@@ -46,7 +48,7 @@ export function Pagination({ currentPage, totalPages, onPageChange }) {
         <button
           key={currentPage - 1}
           onClick={() => handlePageChange(currentPage - 1)}
-          className="w-8 h-8 flex items-center justify-center rounded-md bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+          className="w-12 h-12 flex items-center justify-center rounded-md bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
         >
           {String(currentPage - 1).padStart(2, "0")}
         </button>
@@ -57,7 +59,7 @@ export function Pagination({ currentPage, totalPages, onPageChange }) {
     pages.push(
       <button
         key={currentPage}
-        className="w-8 h-8 flex items-center justify-center rounded-md bg-red-600 border border-red-600 text-white"
+        className="w-12 h-12 flex items-center justify-center rounded-md bg-red-600 border border-red-600 text-white"
       >
         {String(currentPage).padStart(2, "0")}
       </button>
@@ -69,7 +71,7 @@ export function Pagination({ currentPage, totalPages, onPageChange }) {
         <button
           key={currentPage + 1}
           onClick={() => handlePageChange(currentPage + 1)}
-          className="w-8 h-8 flex items-center justify-center rounded-md bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+          className="w-12 h-12 flex items-center justify-center rounded-md bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
         >
           {String(currentPage + 1).padStart(2, "0")}
         </button>
@@ -87,7 +89,7 @@ export function Pagination({ currentPage, totalPages, onPageChange }) {
         <button
           key={totalPages}
           onClick={() => handlePageChange(totalPages)}
-          className="w-8 h-8 flex items-center justify-center rounded-md bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+          className="w-12 h-12 flex items-center justify-center rounded-md bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
         >
           {String(totalPages).padStart(2, "0")}
         </button>
@@ -100,9 +102,9 @@ export function Pagination({ currentPage, totalPages, onPageChange }) {
         key="next"
         onClick={() => handlePageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="w-8 h-8 flex items-center justify-center rounded-md bg-white border border-gray-300 text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-12 h-12 flex items-center justify-center rounded-md bg-white border border-gray-300 text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        <IoIosArrowForward size={16} />
+        <FaArrowRight size={16} />
       </button>
     );
 

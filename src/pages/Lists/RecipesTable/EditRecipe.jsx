@@ -8,7 +8,7 @@ import axios from "axios";
 import PreparationTimePicker from "../../../components/shared/inputs/PreparationTimePicker";
 import PreparationSteps from "../../../components/shared/inputs/PreparationSteps";
 import SelectInput from "../../../components/shared/inputs/SelectInput";
-import allergy from "../../../assets/allergy.jpg";
+import allergy from "../../../assets/allergy.webp";
 import TextAreaInput from "../../../components/shared/inputs/TextAreaInput ";
 import { api_url } from "../../../utils/ApiClient";
 import Button from "../../../components/shared/Buttons/Button";
