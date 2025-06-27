@@ -93,7 +93,7 @@ const ChefPage = () => {
         {/* Right Panel */}
         <div className="w-full h-fit lg:w-1/3 ">
           <div className="bg-white rounded-2xl shadow p-2">
-            <div className="flex">
+            <div className="flex justify-end space-x-3">
               <div className="ms-3">
                 <h2 className="mt-3 font-bold text-lg text-gray-800 flex items-center justify-end gap-1">
                   <MdVerified className="text-primary-1" />
@@ -105,11 +105,11 @@ const ChefPage = () => {
                     : "وصف مختصر عن الشيف هنا"}
                 </p>
               </div>
-              <div className="w-24 h-24 mx-auto overflow-hidden border rounded-md">
+              <div className="w-24 h-24 rounded-md">
                 <img
                   src={chef.profilePicture || "https://via.placeholder.com/150"}
                   alt="Chef Avatar"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover rounded-md"
                 />
               </div>
             </div>
