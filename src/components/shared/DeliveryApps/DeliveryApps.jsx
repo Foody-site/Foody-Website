@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { FaBiking } from "react-icons/fa";
+import { IoIosArrowDown } from "react-icons/io";
 
 const DELIVERY_APPS = [
   { key: "keeta", label: "Keeta" },
@@ -32,26 +33,32 @@ const DeliveryApps = ({ selectedApps, setSelectedApps }) => {
   };
 
   return (
-    <div className="relative">
-      <div className="relative">
-        <div className="absolute left-4 top-3 text-gray-500">
-          <FaBiking />
-        </div>
+    <div className="relative w-full">
+      {/* Label */}
+      <label className="block mb-2 text-black text-right text-sm font-medium">
+        تطبيقات التوصيل
+      </label>
+
+      <div className="w-full">
         <button
           type="button"
           onClick={toggleDropdown}
-          className="w-full text-right appearance-none pl-10 pr-4 py-2 bg-white text-black rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 flex justify-between items-center"
+          className="w-full bg-white border border-gray-300 rounded-lg py-2 px-4 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
+          <IoIosArrowDown className="text-black text-lg" />
           <span
-            className={`${
+            className={`flex-1 mx-2 text-sm text-right ${
               selectedApps.length === 0 ? "text-gray-500" : "text-black"
-            } text-right w-full`}
+            }`}
           >
             {selectedApps.length === 0
               ? "قم بإختيار نوع تطبيقات التوصيل"
               : `تطبيقات مختارة (${selectedApps.length})`}
           </span>
-          <span className="ml-2">▼</span>
+          <div className="flex items-center gap-2 text-gray-500">
+            <span className="border-l h-4 border-gray-300"></span>
+            <FaBiking className="text-lg" />
+          </div>
         </button>
       </div>
 

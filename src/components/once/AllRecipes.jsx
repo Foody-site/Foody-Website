@@ -80,28 +80,27 @@ const AllRecipes = ({ searchParams = {} }) => {
 
                 <div className="flex justify-between text-xs border border-gray-200 rounded p-2 mb-3 text-center">
                   <div className="flex-1">
-                    <p className="font-semibold">التحضير</p>
+                    <p className="font-semibold text-[#808080]">التحضير</p>
                     <p>{recipe.preparationTime || "-"} دقيقة</p>
                   </div>
                   <div className="w-px bg-gray-300 mx-2" />
                   <div className="flex-1">
-                    <p className="font-semibold">الطهي</p>
+                    <p className="font-semibold text-[#808080]">الطهي</p>
                     <p>{recipe.cookingTime || "-"} دقيقة</p>
                   </div>
                   <div className="w-px bg-gray-300 mx-2" />
                   <div className="flex-1">
-                    <p className="font-semibold">الإجمالي</p>
+                    <p className="font-semibold text-[#808080]">الإجمالي</p>
                     <p>{recipe.totalTime || "-"} دقيقة</p>
                   </div>
                 </div>
 
                 <div>
                   <p
-                    className={`border p-2 rounded-md text-[16px] my-2 ${
-                      recipe.isAllergenic === true
+                    className={`border p-2 rounded-md text-[16px] my-2 ${recipe.isAllergenic === true
                         ? "text-red-500 border-red-500"
                         : "text-[#969393] border-[#969393]"
-                    }`}
+                      }`}
                   >
                     {recipe.isAllergenic === true
                       ? "تحتوي هذه الوصفة علي احد مسببات حساسية"
@@ -109,16 +108,16 @@ const AllRecipes = ({ searchParams = {} }) => {
                   </p>
                 </div>
                 <div className="flex justify-between items-center gap-2">
-                  <FavouriteRecipe
-                    itemId={recipe.id}
-                    isInitiallyFavorited={recipe.isFavorited}
-                  />
+                  <RecipeShare recipeId={recipe.id} />
                   <Link to={`/recipe/${recipe.id}`} className="flex-1">
                     <div className="bg-primary-1 hover:bg-red-700 text-white py-2 rounded-lg text-sm text-center w-full">
                       المزيد من التفاصيل
                     </div>
                   </Link>
-                  <RecipeShare recipeId={recipe.id} />
+                  <FavouriteRecipe
+                    itemId={recipe.id}
+                    isInitiallyFavorited={recipe.isFavorited}
+                  />
                 </div>
               </div>
             </div>

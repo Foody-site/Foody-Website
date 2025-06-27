@@ -136,7 +136,7 @@ const FoodFilter = ({ onSearch }) => {
                 />
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex flex-row-reverse gap-2">
                 <button
                     className="w-1/2 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg"
                     onClick={handleSearch}

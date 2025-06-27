@@ -18,7 +18,7 @@ const FoodCard = ({ store }) => {
       <div className="relative">
         <img
           src={
-            store.coverPicture ||
+            store.profilePicture ||
             "https://images.unsplash.com/photo-1600891964599-f61ba0e24092"
           }
           alt="Food Banner"
@@ -35,32 +35,33 @@ const FoodCard = ({ store }) => {
       <div className="p-4">
         {/* Title + Rating */}
         <div className="flex items-center justify-between mb-1">
-          <div className="flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded">
-            <FaStar className="text-yellow-500 text-sm" />
-            <span className="text-sm text-gray-800 font-semibold">
+          <div className="flex flex-row-reverse items-center gap-1 border border-gray-300 px-2 py-0.5 rounded">
+            <FaStar className="text-[#FFDB43] text-sm" />
+            <span className="text-sm text-[#FFDB43] font-semibold">
               {store.averageRating}
             </span>
           </div>
-          <div className="flex items-center gap-1">
-            <h3 className="font-bold text-black text-lg line-clamp-1">
+
+          <div className="flex items-center gap-1 min-w-0">
+            <MdVerified size={18} className="text-primary-1 flex-shrink-0" />
+            <h3 className="font-bold text-black text-lg line-clamp-1 truncate">
               {store.name || "اسم المتجر"}
             </h3>
-            <MdVerified size={18} className="text-primary-1" />
           </div>
         </div>
 
         {/* Description */}
-        <p className="text-gray-500 text-sm mb-2 line-clamp-2">
+        <p className="text-[#A3A3A3] text-right text-sm mb-2 line-clamp-2">
           {store.description || "ماكولات سريعة - مشروبات - بيتزا"}
         </p>
 
         {/* Status + Distance */}
-        <div className="flex items-center gap-3 mb-3 text-xs text-gray-600">
-          <div className="flex items-center gap-1 text-[#C7C7C7] border border-[#C7C7C7] px-2 py-0.5 rounded">
+        <div className="flex justify-end items-center gap-3 mb-3 text-xs text-gray-600">
+          <div className="flex flex-row-reverse items-center gap-1 text-[#C7C7C7] border border-[#C7C7C7] px-2 py-0.5 rounded">
             <BiSolidTimer size={16} />
             <span>مفتوح الآن</span>
           </div>
-          <div className="flex items-center gap-1 text-[#C7C7C7] border border-[#C7C7C7] px-2 py-0.5 rounded">
+          <div className="flex flex-row-reverse items-center gap-1 text-[#C7C7C7] border border-[#C7C7C7] px-2 py-0.5 rounded">
             <FaMapMarkerAlt />
             <span>{store.distance || "2Km"}</span>
           </div>
@@ -68,17 +69,17 @@ const FoodCard = ({ store }) => {
 
         {/* Actions */}
         <div className="flex justify-between items-center gap-2">
-          <FavoriteButton
-            itemId={store.id}
-            isInitiallyFavorited={store.isFavorited === true}
-          />
+          <StoreShare storeId={store.id} />
           <button
-            onClick={handleDetails} // ⬅️ 4) ربط الحدث
+            onClick={handleDetails}
             className="flex-1 bg-primary-1 hover:bg-red-700 text-white py-2 rounded-lg text-sm"
           >
             المزيد من التفاصيل
           </button>
-          <StoreShare storeId={store.id} />
+          <FavoriteButton
+            itemId={store.id}
+            isInitiallyFavorited={store.isFavorited === true}
+          />
         </div>
       </div>
     </div>
