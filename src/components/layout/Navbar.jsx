@@ -4,10 +4,14 @@ import { FiSearch, FiBell, FiMapPin } from "react-icons/fi";
 import { GiKnifeFork } from "react-icons/gi";
 import { FaHeart } from "react-icons/fa";
 import { MdDiscount } from "react-icons/md";
+import { MdStorefront } from "react-icons/md";   
+import { api_url } from './../../utils/ApiClient';
 
 const Navbar = () => {
   const [fullName, setFullName] = useState("");
+  const [userRole, setUserRole] = useState("");
   const navigate = useNavigate();
+
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -19,13 +23,36 @@ const Navbar = () => {
         setFullName("");
       }
     }
-  }, []);
+
+    // Fetch user role from auth API
+    const fetchUserRole = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const response = await fetch(`${api_url}/auth/me`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const userData = await response.json();
+          setUserRole(userData.role || "");
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserRole();
+  }, [api_url]);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
     localStorage.removeItem("refreshToken");
-    window.location.reload(); // or redirect
+    window.location.reload(); 
   };
 
   return (
@@ -69,11 +96,18 @@ const Navbar = () => {
       {/* Bottom Row */}
       <div className="relative border-t text-gray-700 py-2 px-4">
         <div className="flex justify-center gap-4 text-sm font-medium">
-          <button className="bg-red-600 text-white px-3 py-1 rounded" onClick={() => navigate("/")}>
+          <button
+            className="bg-red-600 text-white px-3 py-1 rounded"
+            onClick={() => navigate("/")}
+          >
             الرئيسية
           </button>
-          <button className="hover:text-red-600" onClick={() => navigate("/")}>الشيفات</button>
-          <button className="hover:text-red-600" onClick={() => navigate("/")}>الوصفات</button>
+          <button className="hover:text-red-600" onClick={() => navigate("/")}>
+            الشيفات
+          </button>
+          <button className="hover:text-red-600" onClick={() => navigate("/")}>
+            الوصفات
+          </button>
         </div>
 
         {/* Logout Button */}
@@ -86,16 +120,27 @@ const Navbar = () => {
           </button>
         </div>
 
-        {/* Search Input */}
-        <div className="absolute left-4 top-1/2 -translate-y-1/2 w-64 max-w-full">
-          <div className="flex items-center border rounded overflow-hidden">
+        {/* Search Input with Business Button */}
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center">
+          <div className="relative flex items-center border rounded overflow-hidden">
             <input
               type="text"
               placeholder="البحث"
-              className="px-2 py-1 w-full text-sm focus:outline-none text-right"
+              className="px-2 py-1 w-64 max-w-full text-sm focus:outline-none text-right"
             />
             <FiSearch className="mx-2 text-gray-500" />
           </div>
+
+          {/* Business Button - Only shown if role is BUSINESS */}
+          {userRole === "BUSINESS" && (
+            <button
+              className="mr-2 bg-red-600 text-white px-3 py-1 rounded flex items-center gap-1 text-sm hover:bg-red-700"
+              onClick={() => navigate("/list")}
+            >
+              <MdStorefront className="text-lg" />
+              <span>خاص بحساب الاعمال</span>
+            </button>
+          )}
         </div>
       </div>
     </div>
