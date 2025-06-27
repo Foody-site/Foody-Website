@@ -34,7 +34,7 @@ const Hero = () => {
 
             {/* عروض وخصومات */}
             <div>
-              <div className="flex justify-between items-center mb-4 px-2">
+              <div className="flex flex-row-reverse justify-between items-center mb-4 px-2">
                 <h2 className="text-2xl font-normal">عروض وخصومات</h2>
                 <a href="#" className="text-primary-1 hover:underline">
                   مشاهدة المزيد
@@ -61,7 +61,7 @@ const Hero = () => {
                         <p className="mt-2 text-[#808080]">الوصف</p>
 
                         {/* Stats */}
-                        <div className="flex flex-wrap gap-4 items-center mt-4 text-sm">
+                        <div className="flex flex-wrap justify-end gap-4 items-center mt-4 text-sm">
                           <div className="flex items-center gap-1 text-[#C7C7C7] border-2 p-1 rounded-md">
                             <span>42</span>
                             <FaUtensils />
@@ -73,7 +73,7 @@ const Hero = () => {
                         </div>
 
                         {/* Link */}
-                        <div className="mt-4 flex items-center gap-1 text-primary-1 hover:text-white">
+                        <div className="mt-4 flex items-center justify-end gap-1 text-primary-1 hover:text-white">
                           <a className="hover:underline">رؤية المزيد</a>
                           <FaArrowLeft />
                         </div>
@@ -95,7 +95,7 @@ const Hero = () => {
                         <h3 className="font-bold text-lg">الاسم</h3>
                         <p className="mt-2 text-[#808080]">الوصف</p>
 
-                        <div className="flex flex-wrap gap-4 items-center mt-4 text-sm">
+                        <div className="flex flex-wrap justify-end gap-4 items-center mt-4 text-sm">
                           <div className="flex items-center gap-1 text-[#C7C7C7] border-2 p-1 rounded-md">
                             <span>42</span>
                             <FaUtensils />
@@ -106,7 +106,7 @@ const Hero = () => {
                           </div>
                         </div>
 
-                        <div className="mt-4 flex items-center gap-1 text-primary-1 hover:text-white">
+                        <div className="mt-4 flex items-center justify-end gap-1 text-primary-1 hover:text-white">
                           <a className="hover:underline">رؤية المزيد</a>
                           <FaArrowLeft />
                         </div>
