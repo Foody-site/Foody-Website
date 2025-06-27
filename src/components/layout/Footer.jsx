@@ -12,7 +12,7 @@ const Footer = () => {
   const navigate = useNavigate();
 
   return (
-    <footer className="bg-[#970D0D] text-white text-sm font-sans max-w-full">
+    <footer className="bg-[#970D0D] text-white text-sm font-sans max-w-full" dir="rtl">
       <PageWrapper>
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6 text-center md:text-right mb-6">
           <div className="md:col-span-1">

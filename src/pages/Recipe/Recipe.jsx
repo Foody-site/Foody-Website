@@ -19,7 +19,7 @@ const Recipe = () => {
 
     return (
         <PageWrapper>
-            <div className="flex gap-4 mt-4">
+            <div className="w-full flex gap-4 mt-4">
                 <div className="flex-1 flex flex-col gap-4">
                     <CategoryTabs
                         onCategoryChange={handleCategoryChange}
@@ -27,8 +27,7 @@ const Recipe = () => {
                     />
                     <AllRecipes searchParams={searchParams} />
                 </div>
-
-                <div className="w-[250px]">
+                <div className="w-[250px] shrink-0">
                     <RecipeFilter onSearch={setSearchParams} />
                 </div>
             </div>

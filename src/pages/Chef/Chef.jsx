@@ -20,8 +20,8 @@ const Chef = () => {
     return (
         <div>
             <PageWrapper>
-                <div className="flex gap-4 mt-4">
-                    {/* Right column: Filter */}
+                <div className="w-full flex gap-4 mt-4">
+                    {/* Right side: content */}
                     <div className="flex-1 flex flex-col gap-4">
                         <CategoryTabs
                             onCategoryChange={handleCategoryChange}
@@ -30,8 +30,8 @@ const Chef = () => {
                         <AllChefs searchParams={searchParams} />
                     </div>
 
-                    {/* Left column: Filter panel */}
-                    <div className="w-[250px]">
+                    {/* Left side: filters */}
+                    <div className="w-[250px] shrink-0">
                         <ChefFilter onSearch={setSearchParams} />
                     </div>
                 </div>

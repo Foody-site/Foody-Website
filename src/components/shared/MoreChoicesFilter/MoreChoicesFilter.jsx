@@ -1,3 +1,5 @@
+import { FaCheck } from "react-icons/fa";
+
 const options = [
   "مفتوح الآن",
   "الاقرب اليك",
@@ -41,7 +43,6 @@ const MoreChoicesFilter = ({
           setCoordinates(null);
         }
       } else {
-        // now deselected
         setCoordinates(null);
       }
     }
@@ -49,23 +50,43 @@ const MoreChoicesFilter = ({
 
   return (
     <div>
-      <label className="block mb-2 text-black text-right">
-        مزيد من الخيارات
-      </label>
-      {options.map((opt) => (
-        <label
-          key={opt}
-          className="flex justify-between items-center bg-white text-black px-3 py-2 rounded-lg mb-1"
-        >
-          <input
-            type="checkbox"
-            checked={selectedOptions.includes(opt)}
-            onChange={() => toggleSelection(opt)}
-            className="accent-primary-1"
-          />
-          <span>{opt}</span>
-        </label>
-      ))}
+      <label className="block mb-2 text-black font-semibold pb-2 text-right">مزيد من الخيارات</label>
+      {options.map((opt) => {
+        const isSelected = selectedOptions.includes(opt);
+        return (
+          <div
+            key={opt}
+            onClick={() => toggleSelection(opt)}
+            className={`flex items-center justify-between bg-white px-3 py-2 rounded-lg mb-2 cursor-pointer ${
+              isSelected ? "text-[#030303]" : "text-[#808080]"
+            }`}
+          >
+            <div className="w-4">
+              {isSelected && <FaCheck className="text-primary-1 text-sm" />}
+            </div>
+
+            <div
+              className={`flex-1 text-right text-sm font-semibold px-2 ${
+                isSelected ? "text-[#030303]" : "text-[#808080]"
+              }`}
+            >
+              {opt}
+            </div>
+
+            <div
+              className={`w-4 h-4 flex items-center justify-center rounded-md border ${
+                isSelected ? "border-primary-1" : "border-[#808080]"
+              }`}
+            >
+              {isSelected && (
+                <div className="bg-primary-1 w-4 h-4 flex items-center justify-center rounded-[4px]">
+                  <FaCheck className="text-white text-[10px]" />
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 };

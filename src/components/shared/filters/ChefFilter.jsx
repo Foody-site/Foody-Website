@@ -36,9 +36,7 @@ const ChefFilter = ({ onSearch }) => {
     };
 
     return (
-        <div className="bg-[#FDF3F1] p-4 rounded-xl w-full lg:w-80 space-y-4 text-right font-sans text-sm">
-            <h2 className="font-bold text-md text-gray-800">البحث</h2>
-
+        <div className="bg-[#FDF3F1] p-4 rounded-xl w-80 space-y-4 text-right font-sans text-sm">
             {/* Search input (reusable component) */}
             <SearchFilter
                 value={query}
@@ -72,7 +70,7 @@ const ChefFilter = ({ onSearch }) => {
 
             <MoreDetails values={moreDetails} onChange={setMoreDetails} />
 
-            <div className="flex gap-3 mt-4">
+            <div className="flex flex-row-reverse gap-3 mt-4">
                 <button
                     className="w-full bg-primary-1 hover:opacity-90 text-white font-bold py-2 rounded-md"
                     onClick={handleSearch}

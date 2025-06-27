@@ -1,4 +1,3 @@
-// src/components/shared/buttons/FavouriteChef.js
 import { useState } from "react";
 import axios from "axios";
 import { FaHeart } from "react-icons/fa";

@@ -77,23 +77,23 @@ const RecipeDetails = () => {
               </div>
 
               {/* Stats */}
-              <div className="flex justify-around text-center text-sm text-gray-600 border-b pb-4">
-                <div className="px-2 border-l last:border-l-0">
-                  <p className="font-bold text-lg text-[#D71313]">
-                    {chef?.totalRecipes}
-                  </p>
+              <div className="flex justify-between items-center text-center border-y py-3 text-sm text-gray-700">
+                <div className="flex-1">
+                  <p className="font-bold text-gray-900">{chef?.totalRecipes || 0}</p>
                   <p>عدد الوصفات</p>
                 </div>
-                <div className="px-2 border-l last:border-l-0">
-                  <p className="font-bold text-lg text-[#D71313]">
-                    {chef?.totalFollowers}+
-                  </p>
+
+                <div className="h-10 w-px bg-gray-300"></div>
+
+                <div className="flex-1">
+                  <p className="font-bold text-gray-900">{chef?.totalFollowers || 0}</p>
                   <p>عدد المتابعين</p>
                 </div>
-                <div className="px-2">
-                  <p className="font-bold text-lg text-[#D71313]">
-                    {chef?.totalViews}
-                  </p>
+
+                <div className="h-10 w-px bg-gray-300"></div>
+
+                <div className="flex-1">
+                  <p className="font-bold text-gray-900">{chef?.totalViews || 0}</p>
                   <p>عدد الزوار</p>
                 </div>
               </div>

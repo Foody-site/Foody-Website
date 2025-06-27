@@ -47,7 +47,7 @@ const Slider = () => {
 
   return (
     <div className="flex items-center justify-center bg-[#D7131305] rounded-md p-6">
-      <div className="flex flex-row-reverse items-center gap-6">
+      <div className="flex flex-row items-center gap-6">
         {/* Pagination buttons */}
         <div className="flex flex-col items-center gap-4">
           <button
