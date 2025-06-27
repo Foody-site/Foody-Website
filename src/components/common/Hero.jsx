@@ -8,7 +8,7 @@ const Hero = () => {
   return (
     <div className="hero py-10">
       <PageWrapper>
-        <div className="flex flex-col lg:flex-row gap-6 bg-white font-sans">
+        <div className="flex flex-col lg:flex-row-reverse gap-6 bg-white font-sans">
           {/* Right Side: Slider */}
           <div className="w-full lg:w-1/4 flex justify-center">
             <Slider />
