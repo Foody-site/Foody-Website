@@ -1,16 +1,21 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { api_url } from "../../utils/ApiClient";
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { Link } from "react-router";
 import FollowChef from "../shared/FollowChef/FollowChef";
+import Pagination2 from "../common/Pagination2";
 
 const AllChefs = ({ searchParams = {} }) => {
   const [chefs, setChefs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [page, setPage] = useState(1);
-  const [total, setTotal] = useState(0);
+  const [pagination, setPagination] = useState({
+    hasNextPage: false,
+    hasPreviousPage: false,
+    currentPage: 1,
+    totalPages: 1,
+  });
   const pageSize = 6;
 
   useEffect(() => {
@@ -33,8 +38,15 @@ const AllChefs = ({ searchParams = {} }) => {
           },
         });
 
-        setChefs(response.data.data);
-        setTotal(response.data.pagination.totalCount);
+        setChefs(response.data.data || []);
+        const pag = response.data.pagination;
+
+        setPagination({
+          hasNextPage: pag?.hasNextPage || false,
+          hasPreviousPage: pag?.hasPreviousPage || false,
+          currentPage: pag?.currentPage || 1,
+          totalPages: pag?.totalPages || 1,
+        });
       } catch (err) {
         setError("فشل تحميل الطهاة.");
       } finally {
@@ -44,8 +56,6 @@ const AllChefs = ({ searchParams = {} }) => {
 
     fetchChefs();
   }, [page, searchParams]);
-
-  const totalPages = Math.ceil(total / pageSize);
 
   return (
     <div>
@@ -60,7 +70,7 @@ const AllChefs = ({ searchParams = {} }) => {
               className="bg-white p-4 rounded-lg shadow-md border flex flex-col gap-4"
             >
               <div className="flex items-center border-b pb-4 gap-4">
-                <div className="flex-1 ">
+                <div className="flex-1">
                   <h2 className="text-lg font-semibold">{chef.name}</h2>
                   <p className="text-gray-500 text-sm mt-1">
                     أنواع وصفات الطبخ هنا
@@ -118,41 +128,7 @@ const AllChefs = ({ searchParams = {} }) => {
         )}
       </div>
 
-      {totalPages > 1 && (
-        <div className="flex justify-center mt-8">
-          <div className="flex gap-2 flex-wrap">
-            <button
-              className="p-2 px-3 border border-[#D71313] text-[#D71313] rounded-md hover:bg-[#D71313] hover:text-white transition"
-              onClick={() => setPage((prev) => prev - 1)}
-              disabled={page === 1}
-            >
-              <FaArrowRight />
-            </button>
-
-            {[...Array(totalPages)].map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setPage(index + 1)}
-                className={`p-2 px-4 rounded-md transition ${
-                  page === index + 1
-                    ? "bg-[#D71313] text-white"
-                    : "border border-[#D71313] text-[#D71313] hover:bg-[#D71313] hover:text-white"
-                }`}
-              >
-                {index + 1}
-              </button>
-            ))}
-
-            <button
-              className="p-2 px-3 border border-[#D71313] text-[#D71313] rounded-md hover:bg-[#D71313] hover:text-white transition"
-              onClick={() => setPage((prev) => prev + 1)}
-              disabled={page === totalPages}
-            >
-              <FaArrowLeft />
-            </button>
-          </div>
-        </div>
-      )}
+      <Pagination2 pagination={pagination} setPage={setPage} />
     </div>
   );
 };
