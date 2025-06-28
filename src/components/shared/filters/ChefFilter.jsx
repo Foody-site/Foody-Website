@@ -17,16 +17,27 @@ const ChefFilter = ({ onSearch }) => {
     });
 
     const handleSearch = () => {
-        const filters = {
-            name: query,
-            ...moreDetails,
-            recipeTypes: foodTypes.join(","), 
-            mainIngredient: ingredients.join(","),
-        };
+        const filters = {};
 
-        if (onSearch) {
-            onSearch(filters);
+        if (query.trim() !== "") {
+            filters.name = query.trim();
         }
+
+        if (foodTypes.length > 0) {
+            filters.recipeTypes = foodTypes.join(",");
+        }
+
+        if (ingredients.length > 0) {
+            filters.mainIngredient = ingredients.join(",");
+        }
+
+        Object.entries(moreDetails).forEach(([key, value]) => {
+            if (value === true) {
+                filters[key] = true;
+            }
+        });
+
+        onSearch && onSearch(filters);
     };
 
     const handleClear = () => {
