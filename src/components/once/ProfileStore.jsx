@@ -70,7 +70,7 @@ const ProfileStore = () => {
                         <div className="flex items-center justify-between mb-2">
                             {store.averageRating > 0 && (
                                 <div className="flex items-center gap-1 bg-yellow-100 text-yellow-700 text-xs font-bold px-2 py-1 rounded">
-                                    ⭐ {store.averageRating.toFixed(1)}
+                                    <FaStar className="text-[#FFDB43] text-sm" /> {store.averageRating.toFixed(1)}
                                 </div>
                             )}
                         </div>
@@ -130,7 +130,7 @@ const ProfileStore = () => {
                         {Object.values(deliveryApps).filter(Boolean).length > 1 && (
                             <div className="mt-4">
                                 <p className="text-sm text-[#808080] mb-2">تطبيقات التوصيل</p>
-                                <div className="grid grid-cols-5 gap-2 justify-center">
+                                <div className="grid grid-cols-5 gap-2 justify-between">
                                     {Object.entries(deliveryApps)
                                         .filter(([_, link]) => link)
                                         .map(([name, link]) => (
