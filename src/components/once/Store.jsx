@@ -8,6 +8,7 @@ const Store = ({ searchTerm, categoryType = "restaurant" }) => {
     const [stores, setStores] = useState([]);
     const [page, setPage] = useState(1);
     const [type, setType] = useState(categoryType);
+    const [loading, setLoading] = useState(true);
     const [pagination, setPagination] = useState({
         hasNextPage: false,
         hasPreviousPage: false,
@@ -25,6 +26,7 @@ const Store = ({ searchTerm, categoryType = "restaurant" }) => {
     }, [type, page, searchTerm]);
 
     const fetchStores = async () => {
+        setLoading(true);
         try {
             const token = localStorage.getItem("token");
             const baseParams = {
@@ -107,28 +109,34 @@ const Store = ({ searchTerm, categoryType = "restaurant" }) => {
                 currentPage: 1,
                 totalPages: 1,
             });
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
         <div className="p-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-                {stores.length > 0 ? (
-                    stores.map((store) => (
-                        <FoodCard
-                            key={store._id}
-                            store={store}
-                            isFavorited={store.isFavorited === true}
-                        />
+                {loading
+                    ? Array.from({ length: 6 }).map((_, index) => (
+                        <FoodCard key={index} loading />
                     ))
-                ) : (
-                    <p className="text-center w-full mt-4">
-                        لا توجد متاجر متاحة حاليًا.
-                    </p>
-                )}
+                    : stores.length > 0
+                        ? stores.map((store) => (
+                            <FoodCard
+                                key={store._id}
+                                store={store}
+                                isFavorited={store.isFavorited === true}
+                            />
+                        ))
+                        : (
+                            <p className="text-center w-full mt-4">
+                                لا توجد متاجر متاحة حاليًا.
+                            </p>
+                        )}
             </div>
 
-            <Pagination2 pagination={pagination} setPage={setPage} />
+            {!loading && <Pagination2 pagination={pagination} setPage={setPage} />}
         </div>
     );
 };

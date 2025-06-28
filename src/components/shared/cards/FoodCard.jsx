@@ -5,12 +5,20 @@ import { MdVerified } from "react-icons/md";
 import FavoriteButton from "../Favourites/FavouriteStore";
 import StoreShare from "../Share/StoreShare";
 
-const FoodCard = ({ store }) => {
+const FoodCard = ({ store = {}, loading = false }) => {
   const navigate = useNavigate();
 
   const handleDetails = () => {
     if (store?.id) navigate(`/store/${store.id}`);
   };
+
+  if (loading) {
+    return (
+      <div className="bg-white rounded-2xl shadow-lg h-72 flex justify-center items-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-1"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative bg-white rounded-2xl overflow-hidden shadow-lg font-sans text-right">
@@ -44,7 +52,10 @@ const FoodCard = ({ store }) => {
 
           <div className="flex items-center gap-1 min-w-0">
             <MdVerified size={18} className="text-primary-1 flex-shrink-0" />
-            <h3 className="font-bold text-black text-lg line-clamp-1 truncate">
+            <h3
+              className="font-bold text-black text-lg truncate"
+              style={{ maxWidth: "20ch" }}
+            >
               {store.name || "اسم المتجر"}
             </h3>
           </div>
