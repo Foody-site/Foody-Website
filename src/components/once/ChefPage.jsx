@@ -192,11 +192,11 @@ const ChefPage = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow p-2 mt-4">
+          <div className="bg-white rounded-2xl shadow p-4 mt-4">
             <p className="text-[#808080] text-sm mb-2 text-right">
               وسائل التواصل
             </p>
-            <div className="flex justify-center flex-wrap gap-2">
+            <div className="flex justify-between flex-wrap gap-2">
               {chef.socialMedia?.whatsapp && (
                 <a
                   href={`https://wa.me/${chef.socialMedia.whatsapp.replace(

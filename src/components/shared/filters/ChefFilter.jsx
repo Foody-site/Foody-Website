@@ -2,9 +2,13 @@ import { useState } from "react";
 import { FaHome, FaUtensils } from "react-icons/fa";
 import SearchFilter from "../search/SearchFilter";
 import MoreDetails from "../MoreDetails/MoreDetails";
+import FoodType from "../foodtype/FoodType";
+import MainIngredients from "../mainIngredients/MainIngredients";
 
 const ChefFilter = ({ onSearch }) => {
     const [query, setQuery] = useState("");
+    const [foodTypes, setFoodTypes] = useState([]);
+    const [ingredients, setIngredients] = useState([]);
     const [moreDetails, setMoreDetails] = useState({
         todayRecipe: false,
         isAllergenic: false,
@@ -13,18 +17,33 @@ const ChefFilter = ({ onSearch }) => {
     });
 
     const handleSearch = () => {
-        const filters = {
-            name: query,
-            ...moreDetails,
-        };
+        const filters = {};
 
-        if (onSearch) {
-            onSearch(filters);
+        if (query.trim() !== "") {
+            filters.name = query.trim();
         }
+
+        if (foodTypes.length > 0) {
+            filters.recipeTypes = foodTypes.join(",");
+        }
+
+        if (ingredients.length > 0) {
+            filters.mainIngredient = ingredients.join(",");
+        }
+
+        Object.entries(moreDetails).forEach(([key, value]) => {
+            if (value === true) {
+                filters[key] = true;
+            }
+        });
+
+        onSearch && onSearch(filters);
     };
 
     const handleClear = () => {
         setQuery("");
+        setFoodTypes([]);
+        setIngredients([]);
         setMoreDetails({
             todayRecipe: false,
             isAllergenic: false,
@@ -44,28 +63,12 @@ const ChefFilter = ({ onSearch }) => {
                 onSearch={() => handleSearch()}
             />
 
-            {/* نوع الطعام */}
             <div className="relative">
-                <label className="block text-gray-800 mb-1">نوع الطعام</label>
-                <select className="w-full pr-10 pl-3 py-2 rounded-md border border-gray-300 bg-white">
-                    <option>تم اختيار نوع الطعام</option>
-                    <option>حلويات</option>
-                    <option>أطباق رئيسية</option>
-                    <option>مقبلات</option>
-                </select>
-                <FaHome className="absolute top-9 right-3 text-gray-400" />
+                <FoodType selected={foodTypes} onChange={setFoodTypes} />
             </div>
 
-            {/* المكونات الرئيسية */}
             <div className="relative">
-                <label className="block text-gray-800 mb-1">المكونات الرئيسية</label>
-                <select className="w-full pr-10 pl-3 py-2 rounded-md border border-gray-300 bg-white">
-                    <option>تم اختيار المكونات الرئيسية</option>
-                    <option>دجاج</option>
-                    <option>لحم</option>
-                    <option>خضروات</option>
-                </select>
-                <FaUtensils className="absolute top-9 right-3 text-gray-400" />
+                <MainIngredients selected={ingredients} onChange={setIngredients} />
             </div>
 
             <MoreDetails values={moreDetails} onChange={setMoreDetails} />
