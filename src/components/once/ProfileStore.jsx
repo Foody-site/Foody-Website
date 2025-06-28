@@ -64,7 +64,7 @@ const ProfileStore = () => {
 
                 {/* Left Panel - Store Info */}
                 <div className="w-full lg:w-1/3 h-fit text-right">
-                    <div className="bg-white rounded-2xl shadow p-4">
+                    <div className="bg-white rounded-2xl shadow px-4 py-2">
 
                         {/* Store Header */}
                         <div className="flex items-center justify-between mb-2">
@@ -76,20 +76,22 @@ const ProfileStore = () => {
                         </div>
 
                         {/* Logo + Name */}
-                        <div className="flex flex-col items-center">
+                        <div className="flex flex-row-reverse items-center">
                             <img
                                 src={store.profilePicture || "https://via.placeholder.com/150"}
                                 alt="Store Logo"
-                                className="w-24 h-24 rounded border object-cover"
+                                className="w-24 h-24 rounded object-cover"
                             />
-                            <h2 className="mt-3 font-bold text-lg text-gray-800 flex items-center justify-center gap-1">
-                                {store.name}
-                                {store.isVerified && <MdVerified className="text-primary-1" />}
-                            </h2>
-                            <p className="text-sm text-[#808080]">{store.type || "مطعم"}</p>
+                            <div className="flex flex-col me-2">
+                                <h2 className="mt-3 font-bold text-lg text-gray-800 flex items-center justify-center gap-1">
+                                    {store.name}
+                                    {store.isVerified && <MdVerified className="text-primary-1" />}
+                                </h2>
+                                <p className="text-sm text-[#808080]">{store.type || "مطعم"}</p>
+                            </div>
                         </div>
 
-                        <p className="text-sm text-[#808080] mt-2 text-center">
+                        <p className="text-sm text-[#808080] mt-2">
                             {store.description || "وصف عن المتجر هنا"}
                         </p>
 
@@ -177,27 +179,30 @@ const ProfileStore = () => {
                                 </p>
                             </div>
                         </div>
+                    </div>
 
-                        {/* Likes & Shares */}
-                        <div className="mt-4 space-y-3">
-                            <div className="flex items-center gap-3">
-                                <FavoriteButton itemId={store.id} isInitiallyFavorited={store.isFavorited} />
-                                <div className="flex justify-between items-center flex-1 border rounded-md p-3">
-                                    <p className="text-[#808080] text-sm">الاعجابات</p>
-                                    <span className="text-[#808080] font-semibold text-base">{store.favoritesCount || 0}</span>
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-3">
-                                <StoreShare storeId={store.id} />
-                                <div className="flex justify-between items-center flex-1 border rounded-md p-3">
-                                    <p className="text-[#808080] text-sm">المشاركة بواسطة</p>
-                                    <span className="text-[#808080] font-semibold text-base">{store.totalShares || 0}</span>
-                                </div>
+                    {/* Likes & Shares */}
+                    <div className="mt-4 space-y-3 shadow p-4 rounded-md">
+                        <div className="flex flex-row-reverse items-center gap-3">
+                            <FavoriteButton itemId={store.id} isInitiallyFavorited={store.isFavorited} />
+                            <div className="flex justify-between items-center flex-1 border rounded-md p-3">
+                                <p className="text-[#808080] text-sm">الاعجابات</p>
+                                <span className="text-[#808080] font-semibold text-base">{store.favoritesCount || 0}</span>
                             </div>
                         </div>
+                        <div className="flex flex-row-reverse items-center gap-3">
+                            <StoreShare storeId={store.id} />
+                            <div className="flex justify-between items-center flex-1 border rounded-md p-3">
+                                <p className="text-[#808080] text-sm">المشاركة بواسطة</p>
+                                <span className="text-[#808080] font-semibold text-base">{store.totalShares || 0}</span>
+                            </div>
+                        </div>
+                    </div>
 
-                        {/* Social Media Icons at Bottom */}
-                        <div className="flex justify-center flex-wrap gap-2 mt-6">
+                    {/* Social Media Icons at Bottom */}
+                    <div className="flex flex-col shadow p-4 rounded-md mt-3">
+                        <h2 className="text-[#808080] text-sm">تواصل معنا</h2>
+                        <div className="flex justify-between flex-wrap gap-2 mt-6">
                             {social.whatsappNumber && (
                                 <a href={`https://wa.me/${social.whatsappNumber.replace(/\D/g, "")}`} target="_blank" rel="noreferrer" className="w-10 h-10 flex items-center justify-center rounded border hover:bg-green-50">
                                     <FaWhatsapp className="text-green-500" />
@@ -234,7 +239,6 @@ const ProfileStore = () => {
                                 </a>
                             )}
                         </div>
-
                     </div>
                 </div>
 
