@@ -74,8 +74,8 @@ const Hero = () => {
 
                         {/* Link */}
                         <div className="mt-4 flex items-center justify-end gap-1 text-primary-1 hover:text-white">
-                          <a className="hover:underline">رؤية المزيد</a>
                           <FaArrowLeft />
+                          <a className="hover:underline">رؤية المزيد</a>
                         </div>
                       </div>
                     </div>
@@ -107,8 +107,8 @@ const Hero = () => {
                         </div>
 
                         <div className="mt-4 flex items-center justify-end gap-1 text-primary-1 hover:text-white">
-                          <a className="hover:underline">رؤية المزيد</a>
                           <FaArrowLeft />
+                          <a className="hover:underline">رؤية المزيد</a>
                         </div>
                       </div>
                     </div>
