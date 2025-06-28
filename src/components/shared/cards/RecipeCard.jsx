@@ -2,7 +2,7 @@ import { Link } from "react-router";
 import RecipeShare from "../Share/RecipeShare";
 import FavouriteRecipe from "../Favourites/FavouriteRecipe";
 
-const RecipeCard = ({ recipe }) => {
+const RecipeCard = ({ recipe, onUnfavorite }) => {
   return (
     <div className="relative bg-white rounded-2xl overflow-hidden shadow-lg font-sans">
       {/* Image */}
@@ -40,11 +40,10 @@ const RecipeCard = ({ recipe }) => {
 
         <div>
           <p
-            className={`border p-2 rounded-md text-[16px] my-2 ${
-              recipe.isAllergenic === true
-                ? "text-red-500 border-red-500"
-                : "text-[#969393] border-[#969393]"
-            }`}
+            className={`border p-2 rounded-md text-[16px] my-2 ${recipe.isAllergenic === true
+              ? "text-red-500 border-red-500"
+              : "text-[#969393] border-[#969393]"
+              }`}
           >
             {recipe.isAllergenic === true
               ? "تحتوي هذه الوصفة علي احد مسببات حساسية"
@@ -55,9 +54,9 @@ const RecipeCard = ({ recipe }) => {
         <div className="flex justify-between items-center gap-2">
           <FavouriteRecipe
             itemId={recipe.id}
-            isInitiallyFavorited={recipe.isFavorited}
+            isInitiallyFavorited={true}
+            onUnfavorite={onUnfavorite}
           />
-
           {/* Navigate Button */}
           <Link to={`/recipe/${recipe.id}`} className="flex-1">
             <div className="bg-primary-1 hover:bg-red-700 text-white py-2 rounded-lg text-sm text-center w-full">

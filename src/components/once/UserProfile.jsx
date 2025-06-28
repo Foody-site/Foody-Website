@@ -134,12 +134,21 @@ const UserProfile = () => {
     return (
       <div
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 rtl"
-        
+
       >
         {activeTab === "recipes" &&
           favorites.map((item) =>
-            item && item.id ? <RecipeCard key={item.id} recipe={item} /> : null
-          )}
+            item && item.id ? (
+              <RecipeCard
+                key={item.id}
+                recipe={item}
+                onUnfavorite={(id) =>
+                  setFavorites((prev) => prev.filter((f) => f.id !== id))
+                }
+              />
+            ) : null
+          )
+        }
 
         {activeTab === "chefs" &&
           favorites.map((item) =>
@@ -148,7 +157,15 @@ const UserProfile = () => {
 
         {activeTab === "stores" &&
           favorites.map((item) =>
-            item && item.id ? <FoodCard key={item.id} store={item} /> : null
+            item && item.id ? (
+              <FoodCard
+                key={item.id}
+                store={{ ...item, isFavorited: true }}
+                onUnfavorite={(id) =>
+                  setFavorites((prev) => prev.filter((fav) => fav.id !== id))
+                }
+              />
+            ) : null
           )}
       </div>
     );
@@ -233,31 +250,28 @@ const UserProfile = () => {
           <div className="flex justify-end mb-6 border-b">
             <button
               onClick={() => handleTabChange("recipes")}
-              className={`px-4 py-2 font-medium ${
-                activeTab === "recipes"
-                  ? "text-primary-1 border-b-2 border-primary-1"
-                  : "text-gray-600 hover:text-primary-1"
-              }`}
+              className={`px-4 py-2 font-medium ${activeTab === "recipes"
+                ? "text-primary-1 border-b-2 border-primary-1"
+                : "text-gray-600 hover:text-primary-1"
+                }`}
             >
               الوصفات
             </button>
             <button
               onClick={() => handleTabChange("chefs")}
-              className={`px-4 py-2 font-medium ${
-                activeTab === "chefs"
-                  ? "text-primary-1 border-b-2 border-primary-1"
-                  : "text-gray-600 hover:text-primary-1"
-              }`}
+              className={`px-4 py-2 font-medium ${activeTab === "chefs"
+                ? "text-primary-1 border-b-2 border-primary-1"
+                : "text-gray-600 hover:text-primary-1"
+                }`}
             >
               الشيفات{" "}
             </button>
             <button
               onClick={() => handleTabChange("stores")}
-              className={`px-4 py-2 font-medium ${
-                activeTab === "stores"
-                  ? "text-primary-1 border-b-2 border-primary-1"
-                  : "text-gray-600 hover:text-primary-1"
-              }`}
+              className={`px-4 py-2 font-medium ${activeTab === "stores"
+                ? "text-primary-1 border-b-2 border-primary-1"
+                : "text-gray-600 hover:text-primary-1"
+                }`}
             >
               المطاعم
             </button>
