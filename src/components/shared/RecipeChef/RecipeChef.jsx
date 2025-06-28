@@ -103,11 +103,10 @@ const RecipeChef = () => {
 
               <div>
                 <p
-                  className={`border p-2 rounded-md text-[16px] my-2 ${
-                    recipe.isAllergenic === true
+                  className={`border p-2 rounded-md text-[16px] my-2 ${recipe.isAllergenic === true
                       ? "text-red-500 border-red-500"
                       : "text-[#969393] border-[#969393]"
-                  }`}
+                    }`}
                 >
                   {recipe.isAllergenic === true
                     ? "تحتوي هذه الوصفة علي احد مسببات حساسية"
@@ -116,20 +115,16 @@ const RecipeChef = () => {
               </div>
 
               <div className="flex justify-between items-center gap-2">
-                <FavouriteRecipe
-                  itemId={recipe.id}
-                  isInitiallyFavorited={recipe.isFavorited}
-                />
-
-                {/* Navigate Button */}
+                <RecipeShare recipeId={recipe.id} />
                 <Link to={`/recipe/${recipe.id}`} className="flex-1">
                   <div className="bg-primary-1 hover:bg-red-700 text-white py-2 rounded-lg text-sm text-center w-full">
                     عرض التفاصيل
                   </div>
                 </Link>
-
-                {/* Share Button */}
-                <RecipeShare recipeId={recipe.id} />
+                <FavouriteRecipe
+                  itemId={recipe.id}
+                  isInitiallyFavorited={recipe.isFavorited}
+                />
               </div>
             </div>
           </div>
@@ -141,11 +136,10 @@ const RecipeChef = () => {
         <button
           onClick={() => handlePageChange(pagination.currentPage - 1)}
           disabled={pagination.currentPage === 1}
-          className={`w-10 h-10 border rounded flex items-center justify-center ${
-            pagination.currentPage > 1
+          className={`w-10 h-10 border rounded flex items-center justify-center ${pagination.currentPage > 1
               ? "bg-primary-1 text-white"
               : "border-primary-1 text-primary-1 opacity-50 cursor-not-allowed"
-          }`}
+            }`}
         >
           <FaArrowLeft />
         </button>
@@ -156,11 +150,10 @@ const RecipeChef = () => {
             <button
               key={i}
               onClick={() => handlePageChange(page)}
-              className={`w-10 h-10 border rounded flex items-center justify-center ${
-                pagination.currentPage === page
+              className={`w-10 h-10 border rounded flex items-center justify-center ${pagination.currentPage === page
                   ? "bg-primary-1 text-white"
                   : "border-primary-1 text-primary-1 hover:bg-primary-1 hover:text-white"
-              }`}
+                }`}
             >
               {String(page).padStart(2, "0")}
             </button>
@@ -170,11 +163,10 @@ const RecipeChef = () => {
         <button
           onClick={() => handlePageChange(pagination.currentPage + 1)}
           disabled={pagination.currentPage === pagination.totalPages}
-          className={`w-10 h-10 border rounded flex items-center justify-center ${
-            pagination.currentPage < pagination.totalPages
+          className={`w-10 h-10 border rounded flex items-center justify-center ${pagination.currentPage < pagination.totalPages
               ? "bg-primary-1 text-white"
               : "border-primary-1 text-primary-1 opacity-50 cursor-not-allowed"
-          }`}
+            }`}
         >
           <FaArrowRight />
         </button>

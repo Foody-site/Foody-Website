@@ -1,14 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { FaHeart } from "react-icons/fa";
 import { api_url } from "../../../utils/ApiClient";
 
 const FavouriteRecipe = ({ itemId, isInitiallyFavorited }) => {
     const [isLoading, setIsLoading] = useState(false);
-    const [isFavorited, setIsFavorited] = useState(isInitiallyFavorited || false);
+    const [isFavorited, setIsFavorited] = useState(false);
 
     const token = localStorage.getItem("token");
     const favoriteType = "Recipe";
+
+    useEffect(() => {
+        setIsFavorited(Boolean(isInitiallyFavorited));
+    }, [isInitiallyFavorited]);
 
     const handleFavorite = async () => {
         if (!token) {

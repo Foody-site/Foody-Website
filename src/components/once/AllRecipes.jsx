@@ -23,12 +23,15 @@ const AllRecipes = ({ searchParams = {} }) => {
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
+        const token = localStorage.getItem("token");
+
         const res = await axios.get(`${api_url}/recipe`, {
           params: {
             page,
             take: 9,
             ...searchParams,
           },
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
 
         const data = res.data?.data || [];
@@ -98,8 +101,8 @@ const AllRecipes = ({ searchParams = {} }) => {
                 <div>
                   <p
                     className={`border p-2 rounded-md text-[16px] my-2 ${recipe.isAllergenic === true
-                        ? "text-red-500 border-red-500"
-                        : "text-[#969393] border-[#969393]"
+                      ? "text-red-500 border-red-500"
+                      : "text-[#969393] border-[#969393]"
                       }`}
                   >
                     {recipe.isAllergenic === true
@@ -116,7 +119,7 @@ const AllRecipes = ({ searchParams = {} }) => {
                   </Link>
                   <FavouriteRecipe
                     itemId={recipe.id}
-                    isInitiallyFavorited={recipe.isFavorited}
+                    isInitiallyFavorited={!!recipe.isFavorited}
                   />
                 </div>
               </div>
