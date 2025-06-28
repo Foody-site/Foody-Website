@@ -5,7 +5,7 @@ import { MdVerified } from "react-icons/md";
 import FavoriteButton from "../Favourites/FavouriteStore";
 import StoreShare from "../Share/StoreShare";
 
-const FoodCard = ({ store = {}, loading = false }) => {
+const FoodCard = ({ store = {}, loading = false, onUnfavorite }) => {
   const navigate = useNavigate();
 
   const handleDetails = () => {
@@ -90,6 +90,7 @@ const FoodCard = ({ store = {}, loading = false }) => {
           <FavoriteButton
             itemId={store.id}
             isInitiallyFavorited={store.isFavorited === true}
+            onUnfavorite={onUnfavorite}
           />
         </div>
       </div>
