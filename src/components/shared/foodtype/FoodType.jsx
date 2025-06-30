@@ -59,7 +59,7 @@ const FoodType = ({ selected = [], onChange }) => {
                             <div
                                 key={opt.value}
                                 onClick={() => toggleSelect(opt.value)}
-                                className={`flex items-center justify-between px-4 py-2 cursor-pointer hover:bg-gray-100 ${isSelected ? "text-primary-1 font-semibold" : "text-gray-700"
+                                className={`flex flex-row-reverse items-center justify-between px-4 py-2 cursor-pointer hover:bg-gray-100 ${isSelected ? "text-primary-1 font-semibold" : "text-gray-700"
                                     }`}
                             >
                                 <span>{opt.label}</span>
