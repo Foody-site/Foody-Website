@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import AllRecipes from "../../components/once/AllRecipes";
-import PageWrapper from "../../components/common/PageWrapper";
 import CategoryTabs from "../../components/shared/category/CategoryTabs";
 import RecipeFilter from "../../components/shared/filters/RecipeFilter";
 
@@ -18,7 +17,6 @@ const Recipe = () => {
     };
 
     return (
-        <PageWrapper>
             <div className="w-full flex gap-4 mt-4">
                 <div className="flex-1 flex flex-col gap-4">
                     <CategoryTabs
@@ -27,11 +25,10 @@ const Recipe = () => {
                     />
                     <AllRecipes searchParams={searchParams} />
                 </div>
-                <div className="w-[250px] shrink-0">
+                <div>
                     <RecipeFilter onSearch={setSearchParams} />
                 </div>
             </div>
-        </PageWrapper>
     );
 };
 
