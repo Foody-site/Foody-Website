@@ -4,7 +4,6 @@ import axios from "axios";
 import PageWrapper from "../common/PageWrapper";
 import { api_url } from "../../utils/ApiClient";
 import {
-    FaHeart,
     FaFacebook,
     FaInstagram,
     FaSnapchatGhost,
@@ -16,6 +15,31 @@ import { SiTiktok } from "react-icons/si";
 import { MdVerified } from "react-icons/md";
 import FavoriteButton from "../shared/Favourites/FavouriteStore";
 import StoreShare from "../shared/Share/StoreShare";
+import careem from "/assets/store/careem.webp"
+import chefz from "/assets/store/chefz.webp"
+import hungerStation from "/assets/store/hungerStation.webp"
+import jahez from "/assets/store/jahez.webp"
+import keeta from "/assets/store/keeta.webp"
+import mandoob from "/assets/store/mandoob.webp"
+import marsool from "/assets/store/marsool.webp"
+import noon from "/assets/store/noon.webp"
+import shgardi from "/assets/store/shgardi.webp"
+import toYou from "/assets/store/toYou.webp"
+import uber from "/assets/store/uber.webp"
+
+const deliveryAppIcons = {
+    keeta,
+    hungerStation,
+    toYou,
+    mrsool: marsool,
+    theChefz: chefz,
+    mrMandoob: mandoob,
+    shgardi,
+    uber,
+    careem,
+    noon,
+    jahez,
+};
 
 const ProfileStore = () => {
     const { id } = useParams();
@@ -58,7 +82,7 @@ const ProfileStore = () => {
                 {/* Right Panel - Placeholder */}
                 <div className="w-full lg:w-2/3">
                     <div className="p-6 border rounded-2xl text-center text-gray-500">
-                        لا توجد وصفات لعرضها حالياً
+                        لا توجد وجبات لعرضها حالياً
                     </div>
                 </div>
 
@@ -112,36 +136,40 @@ const ProfileStore = () => {
                             )}
                         </div>
 
-                        {/* Main Delivery App */}
-                        {mainDeliveryAppLink && (
-                            <div className="mt-4">
-                                <a
-                                    href={mainDeliveryAppLink}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="w-full py-2 text-sm rounded bg-primary-1 text-white block hover:bg-red-700 text-center"
-                                >
-                                    {mainDeliveryAppName || "تطبيق التوصيل"}
-                                </a>
-                            </div>
-                        )}
-
                         {/* Other Delivery Apps */}
                         {Object.values(deliveryApps).filter(Boolean).length > 1 && (
                             <div className="mt-4">
                                 <p className="text-sm text-[#808080] mb-2">تطبيقات التوصيل</p>
-                                <div className="grid grid-cols-5 gap-2 justify-between">
+
+                                {mainDeliveryAppLink && (
+                                    <div className="my-4">
+                                        <a
+                                            href={mainDeliveryAppLink}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="w-full py-2 text-sm rounded bg-primary-1 text-white block hover:bg-red-700 text-center"
+                                        >
+                                            {mainDeliveryAppName || "تطبيق التوصيل"}
+                                        </a>
+                                    </div>
+                                )}
+
+                                <div className="grid grid-cols-6 gap-3 justify-between">
                                     {Object.entries(deliveryApps)
-                                        .filter(([_, link]) => link)
+                                        .filter(([name, link]) => link && deliveryAppIcons[name])
                                         .map(([name, link]) => (
                                             <a
                                                 key={name}
                                                 href={link}
                                                 target="_blank"
                                                 rel="noreferrer"
-                                                className="w-10 h-10 flex items-center justify-center rounded border hover:bg-gray-100"
+                                                className="w-10 h-10 flex items-center justify-between rounded-lg"
                                             >
-                                                <FaTwitter /> {/* Replace if needed */}
+                                                <img
+                                                    src={deliveryAppIcons[name]}
+                                                    alt={name}
+                                                    className="w-10 h-10 object-contain rounded-lg"
+                                                />
                                             </a>
                                         ))}
                                 </div>
