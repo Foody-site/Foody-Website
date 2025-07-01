@@ -138,13 +138,13 @@ const FoodFilter = ({ onSearch }) => {
 
             <div className="flex flex-row-reverse gap-2">
                 <button
-                    className="w-1/2 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg"
+                    className="w-1/2 bg-primary-1 hover:bg-red-700 text-white py-2 rounded-lg"
                     onClick={handleSearch}
                 >
                     عرض النتائج
                 </button>
                 <button
-                    className="w-1/2 border border-red-600 text-red-600 py-2 rounded-lg"
+                    className="w-1/2 border border-primary-1 text-primary-1 py-2 rounded-lg"
                     onClick={() => {
                         setSelectedRegion("");
                         setSelectedCity("");

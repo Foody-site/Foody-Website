@@ -3,9 +3,12 @@ import { FaUtensils, FaChevronDown, FaCheck } from "react-icons/fa";
 import { IoIosArrowDown } from "react-icons/io";
 
 const options = [
-    { value: "chicken", label: "دجاج" },
     { value: "meat", label: "لحم" },
-    { value: "vegetables", label: "خضروات" },
+    { value: "chicken", label: "دجاج" },
+    { value: "fish", label: "أسماك" },
+    { value: "vegetable", label: "خضار" },
+    { value: "rice", label: "أرز" },
+    { value: "macaroni", label: "مكرونة" },
 ];
 
 const MainIngredients = ({ selected = [], onChange }) => {
@@ -22,7 +25,7 @@ const MainIngredients = ({ selected = [], onChange }) => {
     };
 
     const getDisplay = () => {
-        if (selected.length === 0) return "تم اختيار المكونات الرئيسية";
+        if (selected.length === 0) return "اختر المكونات الرئيسية";
         const first = options.find((o) => o.value === selected[0])?.label;
         const restCount = selected.length - 1;
         return restCount > 0 ? `${first}, (${restCount}) أخرى` : first;
@@ -46,7 +49,7 @@ const MainIngredients = ({ selected = [], onChange }) => {
                 onClick={() => setIsOpen(!isOpen)}
             >
                 <IoIosArrowDown className="text-black text-lg" />
-                <span className="text-sm text-gray-600 flex-1 text-right">{getDisplay()}</span>
+                <span className="text-sm text-gray-400 flex-1 text-right">{getDisplay()}</span>
                 <span className="text-gray-300 font-bold mx-2">|</span>
                 <FaUtensils className="text-gray-400 mr-2" />
             </div>
@@ -59,7 +62,7 @@ const MainIngredients = ({ selected = [], onChange }) => {
                             <div
                                 key={opt.value}
                                 onClick={() => toggleSelect(opt.value)}
-                                className={`flex items-center justify-between px-4 py-2 cursor-pointer hover:bg-gray-100 ${isSelected ? "text-primary-1 font-semibold" : "text-gray-700"
+                                className={`flex flex-row-reverse items-center justify-between px-4 py-2 cursor-pointer hover:bg-gray-100 ${isSelected ? "text-primary-1 font-semibold" : "text-gray-700"
                                     }`}
                             >
                                 <span>{opt.label}</span>
