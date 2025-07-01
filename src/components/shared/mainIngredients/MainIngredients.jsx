@@ -25,7 +25,7 @@ const MainIngredients = ({ selected = [], onChange }) => {
     };
 
     const getDisplay = () => {
-        if (selected.length === 0) return "تم اختيار المكونات الرئيسية";
+        if (selected.length === 0) return "اختر المكونات الرئيسية";
         const first = options.find((o) => o.value === selected[0])?.label;
         const restCount = selected.length - 1;
         return restCount > 0 ? `${first}, (${restCount}) أخرى` : first;
@@ -49,7 +49,7 @@ const MainIngredients = ({ selected = [], onChange }) => {
                 onClick={() => setIsOpen(!isOpen)}
             >
                 <IoIosArrowDown className="text-black text-lg" />
-                <span className="text-sm text-gray-600 flex-1 text-right">{getDisplay()}</span>
+                <span className="text-sm text-gray-400 flex-1 text-right">{getDisplay()}</span>
                 <span className="text-gray-300 font-bold mx-2">|</span>
                 <FaUtensils className="text-gray-400 mr-2" />
             </div>
