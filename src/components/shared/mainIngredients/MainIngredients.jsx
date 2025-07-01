@@ -3,9 +3,12 @@ import { FaUtensils, FaChevronDown, FaCheck } from "react-icons/fa";
 import { IoIosArrowDown } from "react-icons/io";
 
 const options = [
-    { value: "chicken", label: "دجاج" },
     { value: "meat", label: "لحم" },
-    { value: "vegetables", label: "خضروات" },
+    { value: "chicken", label: "دجاج" },
+    { value: "fish", label: "أسماك" },
+    { value: "vegetable", label: "خضار" },
+    { value: "rice", label: "أرز" },
+    { value: "macaroni", label: "مكرونة" },
 ];
 
 const MainIngredients = ({ selected = [], onChange }) => {

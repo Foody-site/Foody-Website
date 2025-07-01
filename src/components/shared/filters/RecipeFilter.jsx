@@ -74,13 +74,13 @@ const RecipeFilter = ({ onSearch }) => {
 
             <div className="flex flex-row-reverse gap-3 mt-4">
                 <button
-                    className="w-full bg-primary-1 hover:opacity-90 text-white font-bold py-2 rounded-md"
+                    className="w-full bg-primary-1 hover:opacity-90 text-white py-2 rounded-md"
                     onClick={handleSearch}
                 >
                     عرض النتائج
                 </button>
                 <button
-                    className="w-full border border-primary-1 text-primary-1 font-bold py-2 rounded-md"
+                    className="w-full border border-primary-1 text-primary-1 py-2 rounded-md"
                     onClick={handleClear}
                 >
                     الغاء التصفيات

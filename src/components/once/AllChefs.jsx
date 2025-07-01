@@ -118,10 +118,10 @@ const AllChefs = ({ searchParams = {} }) => {
                   </div>
                 </div>
 
-                <div className="flex justify-between gap-2 mt-2">
+                <div className="flex flex-wrap justify-between gap-2 mt-2">
                   <Link
                     to={`/chef/${chef.id}`}
-                    className="w-1/2 bg-[#D71313] text-white rounded-md py-2 text-center hover:opacity-90 transition"
+                    className="flex-1 bg-[#D71313] text-white rounded-md py-2 text-center hover:opacity-90 transition"
                   >
                     المزيد من التفاصيل
                   </Link>
