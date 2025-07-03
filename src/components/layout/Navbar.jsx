@@ -62,6 +62,16 @@ const Navbar = () => {
     fetchUserRole();
   }, [api_url]);
 
+  const getInitialsAvatar = (name) => {
+    if (!name) return "";
+    const parts = name.trim().split(" ");
+    const initials =
+      parts.length === 1
+        ? parts[0][0]
+        : parts[0][0] + (parts[1]?.[0] || "");
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&background=D71313&color=fff&bold=true`;
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
@@ -100,7 +110,7 @@ const Navbar = () => {
         >
           <span className="text-gray-700">{fullName || "المستخدم"}</span>
           <img
-            src="https://randomuser.me/api/portraits/women/44.jpg"
+            src={getInitialsAvatar(fullName)}
             alt="user"
             className="w-6 h-6 rounded-full"
           />

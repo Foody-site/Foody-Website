@@ -7,11 +7,13 @@ const FollowChef = ({ followingId, isInitiallyFollowing = false, className }) =>
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        const storedFollowStatus = localStorage.getItem(`followed_chef_${followingId}`);
-        if (storedFollowStatus !== null) {
-            setIsFollowing(storedFollowStatus === "true");
-        } else {
+        if (typeof isInitiallyFollowing === "boolean") {
             setIsFollowing(isInitiallyFollowing);
+        } else {
+            const storedFollowStatus = localStorage.getItem(`followed_chef_${followingId}`);
+            if (storedFollowStatus !== null) {
+                setIsFollowing(storedFollowStatus === "true");
+            }
         }
     }, [followingId, isInitiallyFollowing]);
 
@@ -36,11 +38,10 @@ const FollowChef = ({ followingId, isInitiallyFollowing = false, className }) =>
         }
     };
 
-    const defaultStyle = `flex-1 py-2 rounded border transition ${
-        isFollowing
+    const defaultStyle = `flex-1 py-2 rounded border transition ${isFollowing
             ? "bg-primary-1 text-white border-primary-1 hover:bg-red-600"
             : "border-primary-1 text-primary-1 hover:bg-primary-50"
-    }`;
+        }`;
 
     return (
         <button
