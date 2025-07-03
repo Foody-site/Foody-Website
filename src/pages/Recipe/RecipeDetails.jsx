@@ -16,8 +16,14 @@ const RecipeDetails = () => {
 
   useEffect(() => {
     if (id) {
+      const token = localStorage.getItem("token");
+
       axios
-        .get(`${api_url}/recipe/${id}`)
+        .get(`${api_url}/recipe/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
         .then((res) => setRecipe(res.data))
         .catch((err) => console.error(err));
     }
