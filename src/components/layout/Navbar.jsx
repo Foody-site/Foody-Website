@@ -76,6 +76,13 @@ const Navbar = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
     localStorage.removeItem("refreshToken");
+
+    Object.keys(localStorage).forEach((key) => {
+      if (key.startsWith("followed_chef_")) {
+        localStorage.removeItem(key);
+      }
+    });
+
     window.location.reload();
   };
 
