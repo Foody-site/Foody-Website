@@ -120,7 +120,7 @@ const ChefPage = () => {
             <div className="flex justify-center gap-2 mt-4">
               <FollowChef
                 followingId={chef.id}
-                isInitiallyFollowing={chef.isFollowed}
+                isInitiallyFollowing={chef.isFollowing}
               />
               <button
                 className="flex-1 py-2 rounded bg-primary-1 text-white hover:bg-red-700"
