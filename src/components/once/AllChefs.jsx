@@ -127,7 +127,7 @@ const AllChefs = ({ searchParams = {} }) => {
                   </Link>
                   <FollowChef
                     followingId={chef.id}
-                    isInitiallyFollowing={chef.isFollowing}
+                    isInitiallyFollowing={chef.isFollowed}
                   />
                 </div>
               </div>
