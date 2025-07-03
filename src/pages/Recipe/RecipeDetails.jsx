@@ -100,7 +100,10 @@ const RecipeDetails = () => {
 
               {/* Actions */}
               <div className="flex justify-between gap-2 mt-2">
-                <FollowChef />
+                <FollowChef
+                  followingId={chef.id}
+                  isInitiallyFollowing={chef.isFollowed}
+                />
                 <button
                   className="w-1/2 bg-[#D71313] text-white rounded-md py-2 text-center hover:opacity-90 transition"
                   onClick={handleRequestChef}
