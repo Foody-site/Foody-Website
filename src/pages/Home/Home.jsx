@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router";
 import FoodFilter from "../../components/shared/filters/FoodFilter";
 import Store from "../../components/once/Store";
@@ -19,6 +19,10 @@ const Home = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [view, setView] = useState(defaultView);
 
+    const chefRef = useRef(null);
+    const recipeRef = useRef(null);
+    const restaurantRef = useRef(null);
+
     useEffect(() => {
         const savedTab = sessionStorage.getItem("tabState");
         const stateFromNav = location.state;
@@ -26,6 +30,23 @@ const Home = () => {
         if (stateFromNav) {
             setView(stateFromNav);
             sessionStorage.setItem("tabState", JSON.stringify(stateFromNav));
+
+            setTimeout(() => {
+                const sectionMap = {
+                    Chef: chefRef,
+                    Recipe: recipeRef,
+                    restaurant: restaurantRef,
+                };
+
+                const ref =
+                    stateFromNav.type === "component"
+                        ? sectionMap[stateFromNav.component]
+                        : sectionMap[stateFromNav.enum];
+
+                if (ref?.current) {
+                    ref.current.scrollIntoView({ behavior: "smooth", block: "start" });
+                }
+            }, 100);
         } else if (savedTab) {
             setView(JSON.parse(savedTab));
         }
@@ -42,28 +63,37 @@ const Home = () => {
     return (
         <div>
             <Hero />
-            <PageWrapper>
-                {view.type === "component" && view.component === "Chef" && <Chef />}
-                {view.type === "component" && view.component === "Recipe" && <Recipe />}
 
-                {view.type === "category" && (
-                    <div className="flex flex-col gap-4 mt-4">
-                        <div className="flex gap-4">
-                            <div className="flex-1">
-                                <CategoryTabs
-                                    onCategoryChange={handleCategoryChange}
-                                    activeTabLabel={view.label}
-                                />
-                                <div className="w-full">
+            <PageWrapper>
+                {/* Chef Section */}
+                <div ref={chefRef}>
+                    {view.type === "component" && view.component === "Chef" && <Chef />}
+                </div>
+
+                {/* Recipe Section */}
+                <div ref={recipeRef}>
+                    {view.type === "component" && view.component === "Recipe" && <Recipe />}
+                </div>
+
+                {/* Restaurant/Store Section */}
+                <div ref={restaurantRef}>
+                    {view.type === "category" && (
+                        <div className="flex flex-col gap-4 mt-4">
+                            <div className="flex gap-4">
+                                <div className="flex-1">
+                                    <CategoryTabs
+                                        onCategoryChange={handleCategoryChange}
+                                        activeTabLabel={view.label}
+                                    />
                                     <Store searchTerm={searchTerm} categoryType={view.enum} />
                                 </div>
-                            </div>
-                            <div className="w-auto">
-                                <FoodFilter onSearch={handleSearch} />
+                                <div className="w-auto">
+                                    <FoodFilter onSearch={handleSearch} />
+                                </div>
                             </div>
                         </div>
-                    </div>
-                )}
+                    )}
+                </div>
             </PageWrapper>
         </div>
     );

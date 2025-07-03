@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 
 const tabs = [
     { label: "الشيفات", type: "component", component: "Chef" },
@@ -12,6 +13,7 @@ const tabs = [
 
 const CategoryTabs = ({ onCategoryChange, activeTabLabel }) => {
     const [active, setActive] = useState(activeTabLabel || "مطاعم");
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (activeTabLabel) {
@@ -21,12 +23,9 @@ const CategoryTabs = ({ onCategoryChange, activeTabLabel }) => {
 
     const handleClick = (tab) => {
         setActive(tab.label);
-        if (tab.type === "component") {
-            window.history.replaceState(null, '', '/');
-            window.location.href = "/";
+        if (tab.type === "component" || tab.type === "category") {
             sessionStorage.setItem("tabState", JSON.stringify(tab));
-        } else {
-            onCategoryChange?.(tab);
+            navigate("/", { state: tab });
         }
     };
 
