@@ -166,7 +166,7 @@ const ChefPage = () => {
             <div className="space-y-3">
               {/* Likes Section */}
               <div className="flex items-center gap-3">
-                <div className="flex justify-between items-center flex-1 border rounded-md p-3">
+                <div className="flex flex-row-reverse justify-between items-center flex-1 border rounded-md p-3">
                   <p className="text-[#808080] text-sm">الاعجابات</p>
                   <span className="text-[#808080] font-semibold text-base">
                     {chef.favoritesCount || 0}
@@ -181,7 +181,7 @@ const ChefPage = () => {
 
               {/* Shares Section */}
               <div className="flex items-center gap-3">
-                <div className="flex justify-between items-center flex-1 border rounded-md p-3">
+                <div className="flex flex-row-reverse justify-between items-center flex-1 border rounded-md p-3">
                   <p className="text-[#808080] text-sm">المشاركة بواسطة</p>
                   <span className="text-[#808080] font-semibold text-base">
                     {chef.totalShares || 0}

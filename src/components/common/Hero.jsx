@@ -47,7 +47,7 @@ const Hero = () => {
                 <div className="border-2 border-primary-1 rounded-lg hover:bg-primary-1/60 transition duration-300 shadow-xl cursor-pointer">
                   <div className="p-3 text-black hover:text-white">
                     {/* Two-column layout inside the card */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2" dir="rtl">
                       {/* Image */}
                       <img
                         src={slider_photo2 || "https://dummyimage.com/187"}
@@ -61,7 +61,7 @@ const Hero = () => {
                         <p className="mt-2 text-[#808080]">الوصف</p>
 
                         {/* Stats */}
-                        <div className="flex flex-wrap justify-end gap-4 items-center mt-4 text-sm">
+                        <div className="flex flex-wrap justify-start gap-4 items-center mt-4 text-sm">
                           <div className="flex items-center gap-1 text-[#C7C7C7] border-2 p-1 rounded-md">
                             <span>42</span>
                             <FaUtensils />
@@ -73,7 +73,7 @@ const Hero = () => {
                         </div>
 
                         {/* Link */}
-                        <div className="mt-4 flex items-center justify-end gap-1 text-primary-1 hover:text-white">
+                        <div className="mt-4 flex items-center justify-start gap-1 text-primary-1 hover:text-white">
                           <FaArrowLeft />
                           <a className="hover:underline">رؤية المزيد</a>
                         </div>
@@ -85,7 +85,7 @@ const Hero = () => {
                 {/* Card 2 – Same structure */}
                 <div className="border-2 border-primary-1 rounded-lg hover:bg-primary-1/60 transition duration-300 shadow-xl cursor-pointer">
                   <div className="p-3 text-black hover:text-white">
-                    <div className="grid grid-cols-1 sm:grid-cols-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2" dir="rtl">
                       <img
                         src={slider_photo || "https://dummyimage.com/187"}
                         alt="image"
@@ -95,7 +95,7 @@ const Hero = () => {
                         <h3 className="font-bold text-lg">الاسم</h3>
                         <p className="mt-2 text-[#808080]">الوصف</p>
 
-                        <div className="flex flex-wrap justify-end gap-4 items-center mt-4 text-sm">
+                        <div className="flex flex-wrap justify-start gap-4 items-center mt-4 text-sm">
                           <div className="flex items-center gap-1 text-[#C7C7C7] border-2 p-1 rounded-md">
                             <span>42</span>
                             <FaUtensils />
@@ -106,7 +106,7 @@ const Hero = () => {
                           </div>
                         </div>
 
-                        <div className="mt-4 flex items-center justify-end gap-1 text-primary-1 hover:text-white">
+                        <div className="mt-4 flex items-center justify-start gap-1 text-primary-1 hover:text-white">
                           <FaArrowLeft />
                           <a className="hover:underline">رؤية المزيد</a>
                         </div>

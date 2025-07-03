@@ -113,13 +113,13 @@ const AllRecipes = ({ searchParams = {} }) => {
                   <div>
                     <p
                       className={`border p-2 rounded-md text-[16px] my-2 ${recipe.isAllergenic
-                          ? "text-red-500 border-red-500"
-                          : "text-[#969393] border-[#969393]"
+                          ? "text-[#969393] border-[#969393]"
+                          : "text-red-500 border-red-500"
                         }`}
                     >
                       {recipe.isAllergenic
-                        ? "تحتوي هذه الوصفة علي احد مسببات حساسية"
-                        : "لا تحتوي هذه الوصفة علي احد مسببات حساسية"}
+                        ? "لا تحتوي هذه الوصفة علي احد مسببات حساسية"
+                        : "تحتوي هذه الوصفة علي احد مسببات حساسية"}
                     </p>
                   </div>
 

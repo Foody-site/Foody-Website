@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { FaHome, FaUtensils } from "react-icons/fa";
 import SearchFilter from "../search/SearchFilter";
 import MoreDetails from "../MoreDetails/MoreDetails";
 import FoodType from "../foodtype/FoodType";
