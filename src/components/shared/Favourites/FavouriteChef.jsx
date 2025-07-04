@@ -5,7 +5,7 @@ import { api_url } from "../../../utils/ApiClient";
 
 const FavouriteChef = ({ itemId, isInitiallyFavorited, onUnfavorite }) => {
     const [isLoading, setIsLoading] = useState(false);
-    const [isFavorited, setIsFavorited] = useState(true); // default true
+    const [isFavorited, setIsFavorited] = useState(true);
 
     const token = localStorage.getItem("token");
     const favoriteType = "Chef";
@@ -45,11 +45,20 @@ const FavouriteChef = ({ itemId, isInitiallyFavorited, onUnfavorite }) => {
         <button
             disabled={isLoading}
             onClick={handleFavorite}
-            className={`w-10 h-10 flex items-center justify-center border rounded-lg 
-        ${isFavorited ? "bg-primary-1 text-white" : "border-primary-1 text-primary-1"} 
-        hover:bg-primary-1 hover:text-white transition`}
+            className={`w-10 h-10 flex items-center justify-center border rounded-lg transition
+                ${isFavorited ? "bg-primary-1 text-white" : "border-primary-1 text-primary-1"} 
+                ${isLoading ? "opacity-70 cursor-not-allowed" : "hover:bg-primary-1 hover:text-white"}
+            `}
         >
-            <FaHeart />
+            {isLoading ? (
+                <div
+                    className={`animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 
+                        ${isFavorited ? "border-white" : "border-primary-1"}
+            `}
+                ></div>
+            ) : (
+                <FaHeart />
+            )}
         </button>
     );
 };

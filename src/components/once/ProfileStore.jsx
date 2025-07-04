@@ -7,6 +7,7 @@ import {
     FaFacebook,
     FaInstagram,
     FaSnapchatGhost,
+    FaStar,
     FaTwitter,
     FaWhatsapp,
     FaYoutube,
@@ -26,6 +27,8 @@ import noon from "/assets/store/noon.webp"
 import shgardi from "/assets/store/shgardi.webp"
 import toYou from "/assets/store/toYou.webp"
 import uber from "/assets/store/uber.webp"
+import StoreReview from "../shared/reviews/StoreReview";
+import MakeReview from "../shared/reviews/MakeReview";
 
 const deliveryAppIcons = {
     keeta,
@@ -84,34 +87,36 @@ const ProfileStore = () => {
                     <div className="p-6 border rounded-2xl text-center text-gray-500">
                         لا توجد وجبات لعرضها حالياً
                     </div>
+
+                    <StoreReview />
                 </div>
 
                 {/* Left Panel - Store Info */}
                 <div className="w-full lg:w-1/3 h-fit text-right">
-                    <div className="bg-white rounded-2xl shadow px-4 py-2">
-
-                        {/* Store Header */}
-                        <div className="flex items-center justify-between mb-2">
-                            {store.averageRating > 0 && (
-                                <div className="flex items-center gap-1 bg-yellow-100 text-yellow-700 text-xs font-bold px-2 py-1 rounded">
-                                    <FaStar className="text-[#FFDB43] text-sm" /> {store.averageRating.toFixed(1)}
-                                </div>
-                            )}
-                        </div>
-
+                    <div className="bg-white rounded-2xl border border-[#C7C7C7] px-4 py-2">
                         {/* Logo + Name */}
-                        <div className="flex flex-row-reverse items-center">
-                            <img
-                                src={store.profilePicture || "https://via.placeholder.com/150"}
-                                alt="Store Logo"
-                                className="w-24 h-24 rounded object-cover"
-                            />
-                            <div className="flex flex-col me-2">
-                                <h2 className="mt-3 font-bold text-lg text-gray-800 flex items-center justify-center gap-1">
-                                    {store.name}
-                                    {store.isVerified && <MdVerified className="text-primary-1" />}
-                                </h2>
-                                <p className="text-sm text-[#808080]">{store.type || "مطعم"}</p>
+                        <div className="flex flex-row items-center justify-between">
+                            {/* Store Header */}
+                            <div className="flex items-center justify-between mb-2">
+                                {store.averageRating > 0 && (
+                                    <div className="flex items-center gap-1 border border-[#C7C7C7] text-[#030303] text-xs font-bold px-2 py-1 rounded">
+                                        <FaStar className="text-[#FFDB43] text-sm" /> {store.averageRating.toFixed(1)}
+                                    </div>
+                                )}
+                            </div>
+                            <div className="flex flex-row-reverse">
+                                <img
+                                    src={store.profilePicture || "https://via.placeholder.com/150"}
+                                    alt="Store Logo"
+                                    className="w-24 h-24 rounded object-cover"
+                                />
+                                <div className="flex flex-col me-2">
+                                    <h2 className="mt-3 font-bold text-lg text-gray-800 flex items-center justify-center gap-1">
+                                        {store.name}
+                                        {store.isVerified && <MdVerified className="text-primary-1" />}
+                                    </h2>
+                                    <p className="text-sm text-[#808080]">{store.type || "مطعم"}</p>
+                                </div>
                             </div>
                         </div>
 
@@ -120,16 +125,14 @@ const ProfileStore = () => {
                         </p>
 
                         {/* Action Buttons */}
-                        <div className="flex gap-2 mt-4">
-                            <button className="flex-1 py-2 text-sm rounded bg-primary-1 text-white">
-                                المنيو / العنوان
-                            </button>
+                        <div className="flex flex-row-reverse gap-2 mt-4">
+                            <MakeReview />
                             {store.mapLink && (
                                 <a
                                     href={store.mapLink}
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="flex-1 py-2 text-sm rounded bg-primary-1 text-white text-center"
+                                    className="flex-1 py-2 text-sm rounded text-primary-1 border border-primary-1 bg-white text-center"
                                 >
                                     الموقع
                                 </a>
@@ -138,7 +141,7 @@ const ProfileStore = () => {
 
                         {/* Other Delivery Apps */}
                         {Object.values(deliveryApps).filter(Boolean).length > 1 && (
-                            <div className="mt-4">
+                            <div className="mt-4 border border-[#C7C7C7] p-4 rounded-md">
                                 <p className="text-sm text-[#808080] mb-2">تطبيقات التوصيل</p>
 
                                 {mainDeliveryAppLink && (
@@ -154,7 +157,7 @@ const ProfileStore = () => {
                                     </div>
                                 )}
 
-                                <div className="grid grid-cols-6 gap-3 justify-between">
+                                <div className="grid grid-cols-6 gap-3 justify-end" dir="rtl">
                                     {Object.entries(deliveryApps)
                                         .filter(([name, link]) => link && deliveryAppIcons[name])
                                         .map(([name, link]) => (
@@ -163,7 +166,7 @@ const ProfileStore = () => {
                                                 href={link}
                                                 target="_blank"
                                                 rel="noreferrer"
-                                                className="w-10 h-10 flex items-center justify-between rounded-lg"
+                                                className="w-10 h-10 flex items-end justify-between rounded-lg"
                                             >
                                                 <img
                                                     src={deliveryAppIcons[name]}
@@ -178,15 +181,15 @@ const ProfileStore = () => {
 
                         {/* Contact Info */}
                         <div className="mt-4 space-y-3">
-                            <div className="p-3 rounded border">
+                            <div className="p-3 rounded border border-[#C7C7C7]">
                                 <p className="text-[#808080] text-sm">رقم التواصل للطلبات</p>
                                 <p className="font-bold text-lg text-[#030303]">{store.deliveryPhone || "—"}</p>
                             </div>
-                            <div className="p-3 rounded border">
+                            <div className="p-3 rounded border border-[#C7C7C7]">
                                 <p className="text-[#808080] text-sm">المسافة</p>
                                 <p className="font-bold text-lg text-[#030303]">12Km</p>
                             </div>
-                            <div className="p-3 rounded border">
+                            <div className="p-3 rounded border border-[#C7C7C7]">
                                 <p className="text-[#808080] text-sm">معلومات أخرى</p>
                                 <p className="font-bold text-sm text-[#030303] whitespace-pre-line">
                                     {Object.entries(additionalInfo)
@@ -210,17 +213,17 @@ const ProfileStore = () => {
                     </div>
 
                     {/* Likes & Shares */}
-                    <div className="mt-4 space-y-3 shadow p-4 rounded-md">
+                    <div className="mt-4 space-y-3 border border-[#C7C7C7] p-4 rounded-md">
                         <div className="flex flex-row-reverse items-center gap-3">
                             <FavoriteButton itemId={store.id} isInitiallyFavorited={store.isFavorited} />
-                            <div className="flex flex-row-reverse justify-between items-center flex-1 border rounded-md p-3">
+                            <div className="flex flex-row-reverse justify-between items-center flex-1 border border-[#C7C7C7] rounded-md p-3">
                                 <p className="text-[#808080] text-sm">الاعجابات</p>
                                 <span className="text-[#808080] font-semibold text-base">{store.favoritesCount || 0}</span>
                             </div>
                         </div>
                         <div className="flex flex-row-reverse items-center gap-3">
                             <StoreShare storeId={store.id} />
-                            <div className="flex flex-row-reverse justify-between items-center flex-1 border rounded-md p-3">
+                            <div className="flex flex-row-reverse justify-between items-center flex-1 border border-[#C7C7C7] rounded-md p-3">
                                 <p className="text-[#808080] text-sm">المشاركة بواسطة</p>
                                 <span className="text-[#808080] font-semibold text-base">{store.totalShares || 0}</span>
                             </div>
@@ -228,7 +231,7 @@ const ProfileStore = () => {
                     </div>
 
                     {/* Social Media Icons at Bottom */}
-                    <div className="flex flex-col shadow p-4 rounded-md mt-3">
+                    <div className="flex flex-col border border-[#C7C7C7] p-4 rounded-md mt-3">
                         <h2 className="text-[#808080] text-sm">تواصل معنا</h2>
                         <div className="flex justify-between flex-wrap gap-2 mt-6">
                             {social.whatsappNumber && (
