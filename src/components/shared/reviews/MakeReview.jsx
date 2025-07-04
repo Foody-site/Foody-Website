@@ -4,7 +4,7 @@ import axios from "axios";
 import { api_url } from "../../../utils/ApiClient";
 import { FaStar } from "react-icons/fa";
 
-const MakeReview = () => {
+const MakeReview = ({ isUserRated, initialRating, initialComment }) => {
     const { id } = useParams();
     const [visible, setVisible] = useState(false);
     const [rating, setRating] = useState(0);
@@ -12,6 +12,12 @@ const MakeReview = () => {
     const [comment, setComment] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
+
+    const openModal = () => {
+        setRating(initialRating || 0);
+        setComment(initialComment || "");
+        setVisible(true);
+    };
 
     const handleSubmit = async () => {
         const token = localStorage.getItem("token");
@@ -27,12 +33,10 @@ const MakeReview = () => {
             setSuccessMessage("تم إرسال التقييم بنجاح!");
             setTimeout(() => {
                 setVisible(false);
-                setRating(0);
-                setComment("");
                 setSuccessMessage("");
             }, 2000);
         } catch (err) {
-            console.error("Failed to submit rating:", err);
+            console.error("فشل إرسال التقييم:", err);
         } finally {
             setIsSubmitting(false);
         }
@@ -42,9 +46,9 @@ const MakeReview = () => {
         <>
             <button
                 className="flex-1 py-2 text-sm rounded bg-primary-1 text-white"
-                onClick={() => setVisible(true)}
+                onClick={openModal}
             >
-                تقييم / تعليق
+                {isUserRated ? "تعديل التعليق" : "تقييم / تعليق"}
             </button>
 
             {visible && (
@@ -57,11 +61,10 @@ const MakeReview = () => {
                             {[1, 2, 3, 4, 5].map((value) => (
                                 <FaStar
                                     key={value}
-                                    className={`cursor-pointer text-xl ${
-                                        (hoverRating || rating) >= value
+                                    className={`cursor-pointer text-xl ${(hoverRating || rating) >= value
                                             ? "text-[#FFDB43]"
                                             : "text-gray-300"
-                                    }`}
+                                        }`}
                                     onMouseEnter={() => setHoverRating(value)}
                                     onMouseLeave={() => setHoverRating(0)}
                                     onClick={() => setRating(value)}

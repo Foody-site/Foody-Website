@@ -126,7 +126,9 @@ const ProfileStore = () => {
 
                         {/* Action Buttons */}
                         <div className="flex flex-row-reverse gap-2 mt-4">
-                            <MakeReview />
+                            <MakeReview
+                                isUserRated={store.isUserRated}
+                            />
                             {store.mapLink && (
                                 <a
                                     href={store.mapLink}
