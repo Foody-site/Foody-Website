@@ -92,7 +92,7 @@ const ChefPage = () => {
         </div>
         {/* Right Panel */}
         <div className="w-full h-fit lg:w-1/3 ">
-          <div className="bg-white rounded-2xl shadow p-2">
+          <div className="bg-white rounded-2xl border border-[#C7C7C7] p-2">
             <div className="flex justify-end space-x-3">
               <div className="ms-3">
                 <h2 className="mt-3 font-bold text-lg text-gray-800 flex items-center justify-end gap-1">
@@ -131,13 +131,13 @@ const ChefPage = () => {
             </div>
 
             <div className="mt-4 space-y-3">
-              <div className="p-3 rounded border ">
+              <div className="p-3 rounded border border-[#C7C7C7] ">
                 <p className="text-[#808080] text-sm text-right">عدد الزوار</p>
                 <p className="font-bold text-lg text-[#030303] text-right">
                   {chef.totalViews || 0}
                 </p>
               </div>
-              <div className="p-3 rounded border">
+              <div className="p-3 rounded border border-[#C7C7C7]">
                 <p className="text-[#808080] text-sm text-right">
                   عدد المتابعين
                 </p>
@@ -145,13 +145,13 @@ const ChefPage = () => {
                   {chef.totalFollowers || 0}
                 </p>
               </div>
-              <div className="p-3 rounded border">
+              <div className="p-3 rounded border border-[#C7C7C7]">
                 <p className="text-[#808080] text-sm text-right">عدد الوصفات</p>
                 <p className="font-bold text-lg text-[#030303] text-right">
                   {chef.totalRecipes || 0}
                 </p>
               </div>
-              <div className="p-3 rounded border">
+              <div className="p-3 rounded border border-[#C7C7C7]">
                 <p className="text-[#808080] text-sm text-right">
                   رقم التواصل للطلبات
                 </p>
@@ -162,11 +162,11 @@ const ChefPage = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow p-4 mt-4">
+          <div className="bg-white rounded-2xl border border-[#C7C7C7] p-4 mt-4">
             <div className="space-y-3">
               {/* Likes Section */}
               <div className="flex items-center gap-3">
-                <div className="flex flex-row-reverse justify-between items-center flex-1 border rounded-md p-3">
+                <div className="flex flex-row-reverse justify-between items-center flex-1 border border-[#C7C7C7] rounded-md p-3">
                   <p className="text-[#808080] text-sm">الاعجابات</p>
                   <span className="text-[#808080] font-semibold text-base">
                     {chef.favoritesCount || 0}
@@ -181,7 +181,7 @@ const ChefPage = () => {
 
               {/* Shares Section */}
               <div className="flex items-center gap-3">
-                <div className="flex flex-row-reverse justify-between items-center flex-1 border rounded-md p-3">
+                <div className="flex flex-row-reverse justify-between items-center flex-1 border border-[#C7C7C7] rounded-md p-3">
                   <p className="text-[#808080] text-sm">المشاركة بواسطة</p>
                   <span className="text-[#808080] font-semibold text-base">
                     {chef.totalShares || 0}
@@ -192,7 +192,7 @@ const ChefPage = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow p-4 mt-4">
+          <div className="bg-white rounded-2xl border border-[#C7C7C7] p-4 mt-4">
             <p className="text-[#808080] text-sm mb-2 text-right">
               وسائل التواصل
             </p>

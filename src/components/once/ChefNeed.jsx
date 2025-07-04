@@ -145,11 +145,14 @@ const ChefNeed = () => {
                                             </div>
                                         </div>
 
-                                        {recipe.isAllergenic && (
-                                            <p className="text-[#C7C7C7] border border-[#C7C7C7] p-2 rounded-md text-[16px] my-2">
-                                                تحتوي هذه الوصفة على أحد مسببات الحساسية
-                                            </p>
-                                        )}
+                                        <p
+                                            className={`border p-2 rounded-md text-[16px] my-2 ${recipe.isAllergenic
+                                                    ? "text-primary-1 border-primary-1"
+                                                    : "text-[#C7C7C7] border-[#C7C7C7]"
+                                                }`}
+                                        >
+                                            تحتوي هذه الوصفة على أحد مسببات الحساسية
+                                        </p>
 
                                         <div className="flex justify-between items-center gap-2">
                                             <FavouriteRecipe itemId={recipe.id} isInitiallyFavorited={recipe.isFavorited} />
