@@ -12,12 +12,8 @@ const RecipeShare = ({ recipeId }) => {
     const handleCopyAndShare = async () => {
         try {
             await navigator.clipboard.writeText(currentUrl);
-
-            // Send POST request to share endpoint
+            setVisible(false);
             await axios.post(`${api_url}/recipe/${recipeId}/share`);
-            console.log("Recipe shared successfully");
-
-            // Show toast
             setShowToast(true);
             setTimeout(() => setShowToast(false), 2000);
         } catch (err) {
@@ -27,7 +23,6 @@ const RecipeShare = ({ recipeId }) => {
 
     return (
         <>
-            {/* Share Button */}
             <button
                 className="w-10 h-10 flex items-center justify-center border border-primary-1 rounded-lg text-primary-1"
                 onClick={() => setVisible(true)}
@@ -35,7 +30,12 @@ const RecipeShare = ({ recipeId }) => {
                 <FaShareAlt />
             </button>
 
-            {/* Share Modal */}
+            {showToast && (
+                <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-4 py-2 rounded shadow-lg z-[100000]">
+                    تم نسخ رابط الوصفة بنجاح!
+                </div>
+            )}
+
             {visible && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
                     <div className="bg-white rounded-xl p-6 w-[90%] max-w-md shadow-lg text-right relative">
@@ -64,13 +64,6 @@ const RecipeShare = ({ recipeId }) => {
                             </button>
                         </div>
                     </div>
-                </div>
-            )}
-
-            {/* Toast Notification */}
-            {showToast && (
-                <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-4 py-2 rounded shadow-lg z-[100000]">
-                    تم نسخ رابط الوصفة بنجاح!
                 </div>
             )}
         </>

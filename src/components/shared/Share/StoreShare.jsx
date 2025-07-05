@@ -12,6 +12,7 @@ const StoreShare = ({ storeId, onShare }) => {
     const handleCopyAndShare = async () => {
         try {
             await navigator.clipboard.writeText(currentUrl);
+            setVisible(false);
             await axios.post(`${api_url}/store/${storeId}/share`);
             onShare?.();
             setShowToast(true);

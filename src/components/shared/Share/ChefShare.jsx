@@ -12,6 +12,7 @@ const ChefShare = ({ chefId, onShare }) => {
     const handleCopyAndShare = async () => {
         try {
             await navigator.clipboard.writeText(currentUrl);
+            setVisible(false);
             await axios.post(`${api_url}/chef/${chefId}/share`);
             onShare?.();
             setShowToast(true);
