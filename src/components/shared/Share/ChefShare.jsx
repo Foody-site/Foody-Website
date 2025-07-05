@@ -5,18 +5,17 @@ import { api_url } from "../../../utils/ApiClient";
 
 const ChefShare = ({ chefId, onShare }) => {
     const [visible, setVisible] = useState(false);
-    const [copied, setCopied] = useState(false);
+    const [showToast, setShowToast] = useState(false);
 
     const currentUrl = `${window.location.origin}/chef/${chefId}`;
 
     const handleCopyAndShare = async () => {
         try {
             await navigator.clipboard.writeText(currentUrl);
-            setCopied(true);
             await axios.post(`${api_url}/chef/${chefId}/share`);
             onShare?.();
-
-            setTimeout(() => setCopied(false), 2000);
+            setShowToast(true);
+            setTimeout(() => setShowToast(false), 2000);
         } catch (err) {
             console.error("Copy or share failed:", err);
         }
@@ -30,6 +29,12 @@ const ChefShare = ({ chefId, onShare }) => {
             >
                 <FaShareAlt />
             </button>
+
+            {showToast && (
+                <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-4 py-2 rounded shadow-lg z-[100000]">
+                    تم نسخ رابط الشيف بنجاح!
+                </div>
+            )}
 
             {visible && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
@@ -46,7 +51,7 @@ const ChefShare = ({ chefId, onShare }) => {
                                 onClick={handleCopyAndShare}
                                 className="px-4 py-2 bg-primary-1 text-white rounded-md text-sm hover:bg-primary-1/90"
                             >
-                                {copied ? "تم النسخ" : "نسخ"}
+                                نسخ
                             </button>
                         </div>
 
