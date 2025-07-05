@@ -176,6 +176,20 @@ const ChefPage = () => {
                 <FavouriteChef
                   itemId={chef.id}
                   isInitiallyFavorited={chef.isFavorited}
+                  onFavorite={() =>
+                    setChef((prev) => ({
+                      ...prev,
+                      isFavorited: true,
+                      favoritesCount: (prev.favoritesCount || 0) + 1,
+                    }))
+                  }
+                  onUnfavorite={() =>
+                    setChef((prev) => ({
+                      ...prev,
+                      isFavorited: false,
+                      favoritesCount: Math.max((prev.favoritesCount || 1) - 1, 0),
+                    }))
+                  }
                 />
               </div>
 
