@@ -5,20 +5,21 @@ import { api_url } from "../../../utils/ApiClient";
 
 const RecipeShare = ({ recipeId }) => {
     const [visible, setVisible] = useState(false);
-    const [copied, setCopied] = useState(false);
+    const [showToast, setShowToast] = useState(false);
 
     const currentUrl = `${window.location.origin}/recipe/${recipeId}`;
 
     const handleCopyAndShare = async () => {
         try {
             await navigator.clipboard.writeText(currentUrl);
-            setCopied(true);
 
             // Send POST request to share endpoint
             await axios.post(`${api_url}/recipe/${recipeId}/share`);
             console.log("Recipe shared successfully");
 
-            setTimeout(() => setCopied(false), 2000);
+            // Show toast
+            setShowToast(true);
+            setTimeout(() => setShowToast(false), 2000);
         } catch (err) {
             console.error("Copy or share failed:", err);
         }
@@ -26,6 +27,7 @@ const RecipeShare = ({ recipeId }) => {
 
     return (
         <>
+            {/* Share Button */}
             <button
                 className="w-10 h-10 flex items-center justify-center border border-primary-1 rounded-lg text-primary-1"
                 onClick={() => setVisible(true)}
@@ -33,9 +35,10 @@ const RecipeShare = ({ recipeId }) => {
                 <FaShareAlt />
             </button>
 
+            {/* Share Modal */}
             {visible && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-                    <div className="bg-white rounded-xl p-6 w-[90%] max-w-md shadow-lg text-right">
+                    <div className="bg-white rounded-xl p-6 w-[90%] max-w-md shadow-lg text-right relative">
                         <h3 className="font-bold text-lg mb-4 text-primary-1">مشاركة الوصفة</h3>
                         <p className="text-sm text-gray-600 mb-2">رابط الوصفة:</p>
                         <div className="flex items-center gap-2">
@@ -48,7 +51,7 @@ const RecipeShare = ({ recipeId }) => {
                                 onClick={handleCopyAndShare}
                                 className="px-4 py-2 bg-primary-1 text-white rounded-md text-sm hover:bg-primary-1/90"
                             >
-                                {copied ? "تم النسخ" : "نسخ"}
+                                نسخ
                             </button>
                         </div>
 
@@ -61,6 +64,13 @@ const RecipeShare = ({ recipeId }) => {
                             </button>
                         </div>
                     </div>
+                </div>
+            )}
+
+            {/* Toast Notification */}
+            {showToast && (
+                <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-4 py-2 rounded shadow-lg z-[100000]">
+                    تم نسخ رابط الوصفة بنجاح!
                 </div>
             )}
         </>
