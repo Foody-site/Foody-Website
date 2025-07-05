@@ -5,7 +5,7 @@ import { FaStar, FaRegStar } from "react-icons/fa";
 import Pagination2 from "../../common/Pagination2";
 import { api_url } from "../../../utils/ApiClient";
 
-const StoreReview = () => {
+const StoreReview = ({ refreshTrigger }) => {
     const { id } = useParams();
     const [page, setPage] = useState(1);
     const [paginatedReviews, setPaginatedReviews] = useState([]);
@@ -60,7 +60,7 @@ const StoreReview = () => {
         if (id) {
             fetchReviews();
         }
-    }, [id, page]);
+    }, [id, page, refreshTrigger]);
 
     return (
         <div className="my-10 bg-white rounded-xl">

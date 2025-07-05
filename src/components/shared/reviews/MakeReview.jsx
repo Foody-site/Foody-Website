@@ -4,7 +4,7 @@ import axios from "axios";
 import { api_url } from "../../../utils/ApiClient";
 import { FaStar } from "react-icons/fa";
 
-const MakeReview = ({ isUserRated, initialRating, initialComment }) => {
+const MakeReview = ({ isUserRated, initialRating, initialComment, onSuccess }) => {
     const { id } = useParams();
     const [visible, setVisible] = useState(false);
     const [rating, setRating] = useState(0);
@@ -33,6 +33,7 @@ const MakeReview = ({ isUserRated, initialRating, initialComment }) => {
 
             setShowToast(true);
             setVisible(false);
+            onSuccess?.();
 
             setTimeout(() => {
                 setShowToast(false);
