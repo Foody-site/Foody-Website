@@ -201,7 +201,15 @@ const ChefPage = () => {
                     {chef.totalShares || 0}
                   </span>
                 </div>
-                <ChefShare chefId={chef.id} />
+                <ChefShare
+                  chefId={chef.id}
+                  onShare={() =>
+                    setChef((prev) => ({
+                      ...prev,
+                      totalShares: (prev.totalShares || 0) + 1,
+                    }))
+                  }
+                />
               </div>
             </div>
           </div>

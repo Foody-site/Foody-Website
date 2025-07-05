@@ -241,7 +241,15 @@ const ProfileStore = () => {
                             </div>
                         </div>
                         <div className="flex flex-row-reverse items-center gap-3">
-                            <StoreShare storeId={store.id} />
+                            <StoreShare
+                                storeId={store.id}
+                                onShare={() =>
+                                    setStore((prev) => ({
+                                        ...prev,
+                                        totalShares: (prev.totalShares || 0) + 1,
+                                    }))
+                                }
+                            />
                             <div className="flex flex-row-reverse justify-between items-center flex-1 border border-[#C7C7C7] rounded-md p-3">
                                 <p className="text-[#808080] text-sm">المشاركة بواسطة</p>
                                 <span className="text-[#808080] font-semibold text-base">{store.totalShares || 0}</span>
