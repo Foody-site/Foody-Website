@@ -2,7 +2,12 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { api_url } from "../../../utils/ApiClient";
 
-const FollowChef = ({ followingId, isInitiallyFollowing = false, className }) => {
+const FollowChef = ({
+    followingId,
+    isInitiallyFollowing = false,
+    className,
+    onFollowChange,
+}) => {
     const [isFollowing, setIsFollowing] = useState(isInitiallyFollowing);
     const [loading, setLoading] = useState(false);
 
@@ -25,7 +30,9 @@ const FollowChef = ({ followingId, isInitiallyFollowing = false, className }) =>
                 }
             );
 
-            setIsFollowing((prev) => !prev);
+            const newState = !isFollowing;
+            setIsFollowing(newState);
+            onFollowChange?.(newState);
         } catch (err) {
             console.error("Follow/unfollow failed:", err);
         } finally {
@@ -34,15 +41,15 @@ const FollowChef = ({ followingId, isInitiallyFollowing = false, className }) =>
     };
 
     const defaultStyle = `flex-1 py-2 rounded border transition ${isFollowing
-            ? "bg-primary-1 text-white border-primary-1 hover:bg-red-600"
-            : "border-primary-1 text-primary-1 hover:bg-primary-50"
+        ? "bg-primary-1 text-white border-primary-1 hover:bg-red-600"
+        : "border-primary-1 text-primary-1 hover:bg-primary-50"
         }`;
 
     return (
         <button
             onClick={handleToggleFollow}
             disabled={loading}
-            className={className || defaultStyle}
+            className={`${defaultStyle} ${className || ""}`}
         >
             {loading
                 ? isFollowing

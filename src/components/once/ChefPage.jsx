@@ -121,6 +121,13 @@ const ChefPage = () => {
               <FollowChef
                 followingId={chef.id}
                 isInitiallyFollowing={chef.isFollowed}
+                onFollowChange={(isNowFollowing) =>
+                  setChef((prev) => ({
+                    ...prev,
+                    isFollowed: isNowFollowing,
+                    totalFollowers: (prev.totalFollowers || 0) + (isNowFollowing ? 1 : -1),
+                  }))
+                }
               />
               <button
                 className="flex-1 py-2 rounded bg-primary-1 text-white hover:bg-red-700"

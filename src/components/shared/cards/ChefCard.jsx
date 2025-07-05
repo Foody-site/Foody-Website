@@ -1,10 +1,19 @@
+import { useState } from "react";
 import { Link } from "react-router";
 import FollowChef from "../FollowChef/FollowChef";
 
 const ChefCard = ({ chef }) => {
+  const [followersCount, setFollowersCount] = useState(chef.totalFollowers || 0);
+  const [isFollowed, setIsFollowed] = useState(chef.isFollowed || false);
+
+  const handleFollowChange = (newState) => {
+    setIsFollowed(newState);
+    setFollowersCount((prev) => prev + (newState ? 1 : -1));
+  };
+
   return (
     <div className="bg-white p-4 rounded-lg shadow-md border flex flex-col gap-4 text-right">
-      {/* Header: Image & Info */}
+      {/* Header */}
       <div className="flex flex-row-reverse items-center gap-4 border-b pb-4">
         <img
           src={
@@ -19,13 +28,12 @@ const ChefCard = ({ chef }) => {
         <div className="flex flex-col">
           <h3 className="text-xl font-bold">{chef.name}</h3>
           <p className="text-sm text-gray-500">
-            {chef.recipeTypes?.map((t) => t.name?.ar).join("، ") ||
-              "أنواع وصفات الطبخ هنا"}
+            {chef.recipeTypes?.map((t) => t.name?.ar).join("، ") || "أنواع وصفات الطبخ هنا"}
           </p>
         </div>
       </div>
 
-      {/* Stats Section */}
+      {/* Stats */}
       <div className="flex justify-between items-center text-center border-y py-3 text-sm text-gray-700">
         <div className="flex-1">
           <p className="font-bold text-gray-900">{chef.totalRecipes || 0}</p>
@@ -33,7 +41,7 @@ const ChefCard = ({ chef }) => {
         </div>
         <div className="h-10 w-px bg-gray-300"></div>
         <div className="flex-1">
-          <p className="font-bold text-gray-900">{chef.totalFollowers || 0}</p>
+          <p className="font-bold text-gray-900">{followersCount}</p>
           <p>عدد المتابعين</p>
         </div>
         <div className="h-10 w-px bg-gray-300"></div>
@@ -43,11 +51,12 @@ const ChefCard = ({ chef }) => {
         </div>
       </div>
 
-      {/* Actions: Follow & Details */}
+      {/* Actions */}
       <div className="flex flex-col sm:flex-row gap-2 mt-4">
         <FollowChef
           followingId={chef.id}
-          isInitiallyFollowing={chef.isFollowing}
+          isInitiallyFollowing={isFollowed}
+          onFollowChange={handleFollowChange}
           className="w-full sm:w-1/2 text-primary-1 border border-primary-1 py-2 rounded-md text-sm font-semibold transition"
         />
         <Link

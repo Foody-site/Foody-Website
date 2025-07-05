@@ -109,6 +109,18 @@ const RecipeDetails = () => {
                 <FollowChef
                   followingId={chef.id}
                   isInitiallyFollowing={chef.isFollowed}
+                  onFollowChange={(isNowFollowing) =>
+                    setRecipe((prev) => ({
+                      ...prev,
+                      chef: {
+                        ...prev.chef,
+                        isFollowed: isNowFollowing,
+                        totalFollowers: isNowFollowing
+                          ? prev.chef.totalFollowers + 1
+                          : Math.max(prev.chef.totalFollowers - 1, 0),
+                      },
+                    }))
+                  }
                 />
                 <button
                   className="w-1/2 bg-[#D71313] text-white rounded-md py-2 text-center hover:opacity-90 transition"
