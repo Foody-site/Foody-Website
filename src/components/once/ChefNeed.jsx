@@ -98,7 +98,17 @@ const ChefNeed = () => {
                             <div className="mt-4">
                                 <FollowChef
                                     followingId={chef.id}
-                                    className="w-full bg-primary-1 hover:bg-red-700 text-white py-2 rounded-md text-sm font-semibold transition"
+                                    isInitiallyFollowing={chef.isFollowed}
+                                    onFollowChange={(isNowFollowing) =>
+                                        setChef((prev) => ({
+                                            ...prev,
+                                            isFollowed: isNowFollowing,
+                                            totalFollowers: isNowFollowing
+                                                ? prev.totalFollowers + 1
+                                                : Math.max(prev.totalFollowers - 1, 0),
+                                        }))
+                                    }
+                                    className="w-full text-primary-1 py-2 rounded-md text-sm font-semibold transition"
                                 />
                             </div>
                         </div>
@@ -147,8 +157,8 @@ const ChefNeed = () => {
 
                                         <p
                                             className={`border p-2 rounded-md text-[16px] my-2 ${recipe.isAllergenic
-                                                    ? "text-primary-1 border-primary-1"
-                                                    : "text-[#C7C7C7] border-[#C7C7C7]"
+                                                ? "text-primary-1 border-primary-1"
+                                                : "text-[#C7C7C7] border-[#C7C7C7]"
                                                 }`}
                                         >
                                             تحتوي هذه الوصفة على أحد مسببات الحساسية
