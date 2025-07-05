@@ -217,14 +217,39 @@ const ProfileStore = () => {
                     {/* Likes & Shares */}
                     <div className="mt-4 space-y-3 border border-[#C7C7C7] p-4 rounded-md">
                         <div className="flex flex-row-reverse items-center gap-3">
-                            <FavoriteButton itemId={store.id} isInitiallyFavorited={store.isFavorited} />
+                            <FavoriteButton
+                                itemId={store.id}
+                                isInitiallyFavorited={store.isFavorited}
+                                onUnfavorite={() =>
+                                    setStore((prev) => ({
+                                        ...prev,
+                                        isFavorited: false,
+                                        favoritesCount: Math.max((prev.favoritesCount || 1) - 1, 0),
+                                    }))
+                                }
+                                onFavorite={() =>
+                                    setStore((prev) => ({
+                                        ...prev,
+                                        isFavorited: true,
+                                        favoritesCount: (prev.favoritesCount || 0) + 1,
+                                    }))
+                                }
+                            />
                             <div className="flex flex-row-reverse justify-between items-center flex-1 border border-[#C7C7C7] rounded-md p-3">
                                 <p className="text-[#808080] text-sm">الاعجابات</p>
                                 <span className="text-[#808080] font-semibold text-base">{store.favoritesCount || 0}</span>
                             </div>
                         </div>
                         <div className="flex flex-row-reverse items-center gap-3">
-                            <StoreShare storeId={store.id} />
+                            <StoreShare
+                                storeId={store.id}
+                                onShare={() =>
+                                    setStore((prev) => ({
+                                        ...prev,
+                                        totalShares: (prev.totalShares || 0) + 1,
+                                    }))
+                                }
+                            />
                             <div className="flex flex-row-reverse justify-between items-center flex-1 border border-[#C7C7C7] rounded-md p-3">
                                 <p className="text-[#808080] text-sm">المشاركة بواسطة</p>
                                 <span className="text-[#808080] font-semibold text-base">{store.totalShares || 0}</span>

@@ -3,7 +3,7 @@ import { FaShareAlt } from "react-icons/fa";
 import axios from "axios";
 import { api_url } from "../../../utils/ApiClient";
 
-const ChefShare = ({ chefId }) => {
+const ChefShare = ({ chefId, onShare }) => {
     const [visible, setVisible] = useState(false);
     const [copied, setCopied] = useState(false);
 
@@ -13,10 +13,8 @@ const ChefShare = ({ chefId }) => {
         try {
             await navigator.clipboard.writeText(currentUrl);
             setCopied(true);
-
-            // Send POST request to share endpoint
             await axios.post(`${api_url}/chef/${chefId}/share`);
-            console.log("Chef shared successfully");
+            onShare?.();
 
             setTimeout(() => setCopied(false), 2000);
         } catch (err) {

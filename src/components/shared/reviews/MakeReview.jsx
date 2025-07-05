@@ -11,7 +11,7 @@ const MakeReview = ({ isUserRated, initialRating, initialComment }) => {
     const [hoverRating, setHoverRating] = useState(0);
     const [comment, setComment] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [successMessage, setSuccessMessage] = useState("");
+    const [showToast, setShowToast] = useState(false);
 
     const openModal = () => {
         setRating(initialRating || 0);
@@ -30,11 +30,13 @@ const MakeReview = ({ isUserRated, initialRating, initialComment }) => {
                 { rating, comment },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
-            setSuccessMessage("تم إرسال التقييم بنجاح!");
+
+            setShowToast(true);
+            setVisible(false);
+
             setTimeout(() => {
-                setVisible(false);
-                setSuccessMessage("");
-            }, 2000);
+                setShowToast(false);
+            }, 3000);
         } catch (err) {
             console.error("فشل إرسال التقييم:", err);
         } finally {
@@ -51,6 +53,14 @@ const MakeReview = ({ isUserRated, initialRating, initialComment }) => {
                 {isUserRated ? "تعديل التعليق" : "تقييم / تعليق"}
             </button>
 
+            {/* Toast */}
+            {showToast && (
+                <div className="fixed top-4 left-1/2 -translate-x-1/2 bg-green-500 text-white px-4 py-2 rounded shadow-lg z-50 animate-fadeIn">
+                    تم إرسال التقييم بنجاح!
+                </div>
+            )}
+
+            {/* Modal */}
             {visible && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
                     <div className="bg-white rounded-xl p-6 w-[90%] max-w-md shadow-lg text-right">
@@ -62,8 +72,8 @@ const MakeReview = ({ isUserRated, initialRating, initialComment }) => {
                                 <FaStar
                                     key={value}
                                     className={`cursor-pointer text-xl ${(hoverRating || rating) >= value
-                                            ? "text-[#FFDB43]"
-                                            : "text-gray-300"
+                                        ? "text-[#FFDB43]"
+                                        : "text-gray-300"
                                         }`}
                                     onMouseEnter={() => setHoverRating(value)}
                                     onMouseLeave={() => setHoverRating(0)}
@@ -74,15 +84,11 @@ const MakeReview = ({ isUserRated, initialRating, initialComment }) => {
 
                         <label className="block text-sm text-gray-600 mb-2">تعليقك:</label>
                         <textarea
-                            className="w-full border border-gray-300 rounded-md p-2 text-sm mb-4"
+                            className="w-full border border-gray-300 rounded-md p-2 text-sm mb-4 text-right"
                             rows={4}
                             value={comment}
                             onChange={(e) => setComment(e.target.value)}
                         />
-
-                        {successMessage && (
-                            <p className="text-green-600 text-sm mb-4">{successMessage}</p>
-                        )}
 
                         <div className="flex justify-between items-center">
                             <button

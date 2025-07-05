@@ -3,7 +3,7 @@ import { FaShareAlt } from "react-icons/fa";
 import axios from "axios";
 import { api_url } from "../../../utils/ApiClient";
 
-const StoreShare = ({ storeId }) => {
+const StoreShare = ({ storeId, onShare }) => {
     const [visible, setVisible] = useState(false);
     const [copied, setCopied] = useState(false);
 
@@ -13,10 +13,8 @@ const StoreShare = ({ storeId }) => {
         try {
             await navigator.clipboard.writeText(currentUrl);
             setCopied(true);
-
-            // Send POST request to share endpoint
             await axios.post(`${api_url}/store/${storeId}/share`);
-            console.log("Store shared successfully");
+            onShare?.();
 
             setTimeout(() => setCopied(false), 2000);
         } catch (err) {
