@@ -49,6 +49,7 @@ const ProfileStore = () => {
     const [store, setStore] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [refreshReviewsTrigger, setRefreshReviewsTrigger] = useState(0);
 
     useEffect(() => {
         const fetchStore = async () => {
@@ -88,7 +89,7 @@ const ProfileStore = () => {
                         لا توجد وجبات لعرضها حالياً
                     </div>
 
-                    <StoreReview />
+                    <StoreReview refreshTrigger={refreshReviewsTrigger} />
                 </div>
 
                 {/* Left Panel - Store Info */}
@@ -128,6 +129,9 @@ const ProfileStore = () => {
                         <div className="flex flex-row-reverse gap-2 mt-4">
                             <MakeReview
                                 isUserRated={store.isUserRated}
+                                initialRating={store.userRating}
+                                initialComment={store.userComment}
+                                onSuccess={() => setRefreshReviewsTrigger(prev => prev + 1)}
                             />
                             {store.mapLink && (
                                 <a
