@@ -9,6 +9,7 @@ const PreparationTimePicker = ({
   error,
   hourValue, // قيمة افتراضية للساعات
   minuteValue, // قيمة افتراضية للدقائق
+  required = false, // Added required prop with default value
 }) => {
   const [hours, setHours] = useState(hourValue !== undefined ? hourValue : 0);
   const [minutes, setMinutes] = useState(
@@ -47,7 +48,10 @@ const PreparationTimePicker = ({
   return (
     <div className={`w-full ${className}`}>
       <label className="flex items-center justify-end text-gray-700 text-sm font-medium mb-2">
-        {label || "وقت الطهي"}
+        <div className="flex items-center">
+          {required && <span className="text-red-600 mr-1 text-lg">*</span>}
+          {label || "وقت الطهي"}
+        </div>
       </label>
       <div className="flex gap-2 w-full">
         {/* Minutes selection */}
@@ -59,6 +63,7 @@ const PreparationTimePicker = ({
             <select
               value={minutes}
               onChange={(e) => handleMinuteChange(e.target.value)}
+              required={required}
               className="w-full appearance-none py-2 px-1 bg-transparent text-gray-700 text-right focus:outline-none"
             >
               {[...Array(61).keys()].map((minute) => (
@@ -80,6 +85,7 @@ const PreparationTimePicker = ({
             <select
               value={hours}
               onChange={(e) => handleHourChange(e.target.value)}
+              required={required}
               className="w-full appearance-none py-2 px-1 bg-transparent text-gray-700 text-right focus:outline-none"
             >
               {[...Array(25).keys()].map((hour) => (

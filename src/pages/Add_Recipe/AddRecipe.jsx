@@ -270,15 +270,6 @@ const AddRecipe = () => {
     if (!formData.mainIngredient || formData.mainIngredient.trim() === "")
       newErrors.mainIngredient = "المكون الرئيسي مطلوب";
 
-    // اختياري: التحقق من وجود نوع طعام واحد على الأقل
-    if (
-      !formData.selectedRecipeTypes ||
-      formData.selectedRecipeTypes.length === 0
-    ) {
-      newErrors.selectedRecipeTypes =
-        "يرجى اختيار نوع واحد على الأقل من أنواع الطعام";
-    }
-
     // Check ingredients
     const ingredientErrors = [];
     formData.ingredients.forEach((ingredient, index) => {
@@ -443,19 +434,17 @@ const AddRecipe = () => {
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-10 text-right">
               <div>
-                <label className="block text-gray-700 font-medium mb-2 text-right">
-                  نوع الطعام
-                </label>
                 <div className="relative">
                   {availableRecipeTypes.length > 0 ? (
                     <CheckboxSelectInput
                       name="selectedRecipeTypes"
-                      label=""
+                      label="نوع الطعام"
                       options={availableRecipeTypes}
                       onChange={handleRecipeTypesChange}
                       value={formData.selectedRecipeTypes}
                       ref={recipeTypeRef}
                       key="recipe-types-input"
+                      required={true}
                     />
                   ) : (
                     <div className="text-gray-500">
@@ -480,6 +469,7 @@ const AddRecipe = () => {
                 onChange={handleChange}
                 error={errors.name}
                 maxLength={200}
+                required={true} // Added required prop
               />
             </div>
 
@@ -495,6 +485,7 @@ const AddRecipe = () => {
                 onChange={handleChange}
                 error={errors.description}
                 maxLength={300}
+                required={true} // Added required prop
               />
             </div>
 
@@ -506,6 +497,7 @@ const AddRecipe = () => {
                 onMinuteChange={handleCookTimeMinuteChange}
                 className="w-[27%]"
                 error={errors.cookingTime}
+                required={true}
               />
               <PreparationTimePicker
                 label="وقت الإعداد"
@@ -513,6 +505,7 @@ const AddRecipe = () => {
                 onMinuteChange={handlePrepTimeMinuteChange}
                 className="w-[27%]"
                 error={errors.preparationTime}
+                required={true}
               />
             </div>
 
@@ -534,6 +527,7 @@ const AddRecipe = () => {
                       { value: "macaroni", label: "مكرونة" },
                     ]}
                     error={errors.mainIngredient}
+                    required={true}
                   />
                 </div>
                 <div className="w-[50%]">
@@ -545,12 +539,16 @@ const AddRecipe = () => {
                     value={formData.youtubeLink}
                     onChange={handleChange}
                     error={errors.youtubeLink}
+                    required={true}
                   />
                 </div>
               </div>
             </div>
-            <label className="block text-gray-700 font-medium mb-2 text-right pt-10">
-              خطوات التحضير للوصفة
+            <label className="flex items-center justify-end text-gray-700 font-medium mb-2 text-right pt-10">
+              <div className="flex items-center">
+                <span className="text-red-600 mr-1 text-lg">*</span>
+                خطوات التحضير للوصفة
+              </div>
             </label>
             <div className="col-span-full w-full pt-10 bg-gray-100 rounded-lg ">
               <PreparationSteps
@@ -566,8 +564,11 @@ const AddRecipe = () => {
                 </p>
               )}
             </div>
-            <label className="block text-gray-700 font-medium mb-2 text-right pt-10">
-              الكمية و المقادير{" "}
+            <label className="flex items-center justify-end text-gray-700 font-medium mb-2 text-right pt-10">
+              <div className="flex items-center">
+                <span className="text-red-600 mr-1 text-lg">*</span>
+                الكمية و المقادير
+              </div>
             </label>
             <div className="pt-8 bg-gray-100 rounded-lg p-4 px-16 mx-[-40px]">
               {formData.ingredients.map((ingredient, index) => (

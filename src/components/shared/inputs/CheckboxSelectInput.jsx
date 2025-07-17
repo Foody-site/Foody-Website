@@ -9,6 +9,7 @@ const CheckboxSelectInput = ({
   className = "",
   value = [], // إضافة وسيط لقيمة افتراضية
   error,
+  required = false, // إضافة خاصية required
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState(value || []);
@@ -93,10 +94,12 @@ const CheckboxSelectInput = ({
 
   return (
     <div className={`relative ${className} ${name}-dropdown`}>
-      <label className="block text-gray-700 font-medium mb-1 text-right">
-        {label}
+      <label className="flex items-center justify-end text-gray-700 font-medium mb-1 text-right">
+        <div className="flex items-center">
+          {required && <span className="text-red-600 mr-1 text-lg">*</span>}
+          {label}
+        </div>
       </label>
-
       <button
         type="button"
         className="w-full text-right border border-gray-300 p-2 bg-white rounded-md flex justify-between items-center"

@@ -476,6 +476,7 @@ const EditRecipe = () => {
                 options={availableRecipeTypes}
                 onChange={handleChange}
                 value={formData.selectedRecipeTypes}
+                required={true}
               />
 
               <Inputs
@@ -488,6 +489,7 @@ const EditRecipe = () => {
                 onChange={handleChange}
                 error={errors.name}
                 maxLength={200}
+                required={true}
               />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-1 gap-x-10 gap-y-10 text-right pt-10">
@@ -501,6 +503,7 @@ const EditRecipe = () => {
                 onChange={handleChange}
                 error={errors.description}
                 maxLength={300}
+                required={true}
               />
             </div>
 
@@ -513,6 +516,7 @@ const EditRecipe = () => {
                 error={errors.cookingTime}
                 hourValue={getCookTimeHours()}
                 minuteValue={getCookTimeMinutes()}
+                required={true}
               />
               <PreparationTimePicker
                 label="وقت الإعداد"
@@ -522,6 +526,7 @@ const EditRecipe = () => {
                 error={errors.preparationTime}
                 hourValue={getPrepTimeHours()}
                 minuteValue={getPrepTimeMinutes()}
+                required={true}
               />
             </div>
 
@@ -543,6 +548,7 @@ const EditRecipe = () => {
                       { value: "macaroni", label: "مكرونة" },
                     ]}
                     error={errors.mainIngredient}
+                    required={true}
                   />
                 </div>
                 <div className="w-[50%]">
@@ -554,12 +560,16 @@ const EditRecipe = () => {
                     value={formData.youtubeLink}
                     onChange={handleChange}
                     error={errors.youtubeLink}
+                    required={true}
                   />
                 </div>
               </div>
             </div>
-            <label className="block text-gray-700 font-medium mb-2 text-right pt-10">
-              خطوات التحضير للوصفة
+            <label className="flex items-center justify-end text-gray-700 font-medium mb-2 text-right pt-10">
+              <div className="flex items-center">
+                <span className="text-red-600 mr-1 text-lg">*</span>
+                خطوات التحضير للوصفة
+              </div>
             </label>
             <div className="col-span-full w-full pt-10 bg-gray-100 rounded-lg ">
               <PreparationSteps
@@ -575,8 +585,11 @@ const EditRecipe = () => {
                 </p>
               )}
             </div>
-            <label className="block text-gray-700 font-medium mb-2 text-right pt-10">
-              الكمية و المقادير{" "}
+            <label className="flex items-center justify-end text-gray-700 font-medium mb-2 text-right pt-10">
+              <div className="flex items-center">
+                <span className="text-red-600 mr-1 text-lg">*</span>
+                الكمية و المقادير
+              </div>
             </label>
             <div className="pt-8 bg-gray-100 rounded-lg p-4 px-16 mx-[-40px]">
               {formData.ingredients.map((ingredient, index) => (

@@ -12,6 +12,7 @@ const Inputs = ({
   onChange,
   placeholder,
   disabled,
+  required = false, // Added required prop with default value
   ...otherProps
 }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -27,7 +28,10 @@ const Inputs = ({
   return (
     <div className="w-full">
       <label className="flex items-center justify-end text-gray-700 font-medium mb-1 gap-2">
-        {label}
+        <div className="flex items-center">
+          {required && <span className="text-red-600 ml-1 text-lg">*</span>}
+          {label}
+        </div>
         {Icon && <Icon size={20} />}
       </label>
 
@@ -45,6 +49,7 @@ const Inputs = ({
             type="file"
             onChange={handleFileChange}
             disabled={disabled}
+            required={required}
             className="absolute inset-0 opacity-0 cursor-pointer"
             {...otherProps}
           />
@@ -58,6 +63,7 @@ const Inputs = ({
             onChange={onChange}
             placeholder={placeholder}
             disabled={disabled}
+            required={required}
             dir="rtl"
             className={`w-full px-4 py-3 border border-gray-400 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-hover_primary-1 ${
               isPassword || Icon_2 ? "pr-10" : ""

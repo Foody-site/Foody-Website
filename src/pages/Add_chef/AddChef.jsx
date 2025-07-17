@@ -474,6 +474,7 @@ const AddChef = () => {
                 placeholder="قم بادخال رقم التواصل الخاص هنا"
                 onChange={handleChange}
                 helperText="سيتم إضافة +966 تلقائيًا إذا لم تقم بكتابتها"
+                required={true}
               />
 
               <Inputs
@@ -483,6 +484,7 @@ const AddChef = () => {
                 className="w-full h-12 px-6 text-xl py-4 placeholder:text-sm"
                 placeholder="قم بادخال اسم الشيف هنا"
                 onChange={handleChange}
+                required={true}
               />
             </div>
 
@@ -494,6 +496,7 @@ const AddChef = () => {
                 className="w-full h-36 px-6 text-xl py-4 placeholder:text-sm"
                 placeholder="قم بادخال وصف مختصر عن الشيف هنا"
                 onChange={handleChange}
+                required={true}
               />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-10 text-right">
