@@ -787,6 +787,7 @@ const Add_Store = () => {
                     type="text"
                     className="w-full h-12 px-6 text-xl py-4"
                     onChange={handleMapLinkChange}
+                    required={true}
                   />
                   {mapLinkError && (
                     <p className="text-primary-1 text-sm mt-1 text-right">
@@ -820,6 +821,7 @@ const Add_Store = () => {
                   ]}
                   selectedOptions={selectedMealTimes}
                   onChange={handleMealTypeChange}
+                  required={true}
                 />
               </div>
 

@@ -542,6 +542,7 @@ const EditChef = () => {
                 placeholder="قم بادخال رقم التواصل الخاص هنا"
                 value={formData.phone}
                 onChange={handleChange}
+                required={true}
               />
 
               <Inputs
@@ -552,6 +553,7 @@ const EditChef = () => {
                 placeholder="قم بادخال اسم الشيف هنا"
                 value={formData.name}
                 onChange={handleChange}
+                required={true}
               />
             </div>
 
@@ -564,6 +566,7 @@ const EditChef = () => {
                 placeholder="قم بادخال وصف مختصر عن الشيف هنا"
                 value={formData.description}
                 onChange={handleChange}
+                required={true}
               />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-10 text-right">

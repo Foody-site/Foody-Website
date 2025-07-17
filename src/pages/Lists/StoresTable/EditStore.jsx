@@ -1130,6 +1130,7 @@ const EditStore = () => {
                     className="w-full h-12 px-6 text-xl py-4"
                     value={formData.mapLink}
                     onChange={handleMapLinkChange}
+                    required={true}
                   />
                   {mapLinkError && (
                     <p className="text-primary-1 text-sm mt-1 text-right">
@@ -1176,6 +1177,7 @@ const EditStore = () => {
                   ]}
                   selectedOptions={formData.selectedMealTimes}
                   onChange={handleMealTypeChange}
+                  required={true}
                 />
               </div>
 
