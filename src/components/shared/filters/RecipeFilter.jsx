@@ -31,7 +31,9 @@ const RecipeFilter = ({ onSearch }) => {
         }
 
         Object.entries(moreDetails).forEach(([key, value]) => {
-            if (value === true) {
+            if (key === "isAllergenic" && value === true) {
+                filters[key] = false;
+            } else if (value === true) {
                 filters[key] = true;
             }
         });
