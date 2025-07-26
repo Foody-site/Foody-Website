@@ -16,6 +16,9 @@ const StoreReview = ({ refreshTrigger }) => {
         totalPages: 1,
     });
 
+    const [showModal, setShowModal] = useState(false);
+    const [activeReview, setActiveReview] = useState(null);
+
     const pageSize = 6;
 
     useEffect(() => {
@@ -35,15 +38,17 @@ const StoreReview = ({ refreshTrigger }) => {
                     return {
                         id: item.id,
                         name: name,
-                        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                            name
-                        )}&background=FFDB43&color=000&size=128`,
+                        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=FFDB43&color=000&size=128`,
                         rating: item.rating,
                         content: item.comment || "",
+                        storeResponse: item.storeResponse || "",
+                        storeName: item.store?.name || "اسم المتجر",
+                        storeImage: item.store?.photo || "https://via.placeholder.com/150",
                     };
                 });
 
                 setPaginatedReviews(transformed);
+
                 const pag = response.data.pagination;
 
                 setPagination({
@@ -98,6 +103,20 @@ const StoreReview = ({ refreshTrigger }) => {
                                         )
                                     )}
                                 </div>
+
+                                {review.storeResponse && (
+                                    <div className="py-2">
+                                        <button
+                                            onClick={() => {
+                                                setActiveReview(review);
+                                                setShowModal(true);
+                                            }}
+                                            className="underline text-primary-1 text-sm"
+                                        >
+                                            رد المتجر
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     ))}
@@ -105,6 +124,37 @@ const StoreReview = ({ refreshTrigger }) => {
             )}
 
             <Pagination2 pagination={pagination} setPage={setPage} />
+
+            {/* Store Response Modal */}
+            {showModal && activeReview && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+                    <div className="bg-white rounded-xl p-6 w-[90%] max-w-md shadow-lg text-right">
+                        <h3 className="text-lg font-bold text-primary-1 mb-4">رد المتجر</h3>
+
+                        <div className="flex items-center gap-3 mb-4 justify-end">
+                            <img
+                                src={activeReview.storeImage}
+                                alt="store"
+                                className="w-12 h-12 rounded-full border object-cover"
+                            />
+                            <span className="text-sm font-semibold">{activeReview.storeName}</span>
+                        </div>
+
+                        <div className="mb-4 text-sm text-gray-700 leading-loose">
+                            {activeReview.storeResponse}
+                        </div>
+
+                        <div className="flex justify-end">
+                            <button
+                                onClick={() => setShowModal(false)}
+                                className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 text-sm"
+                            >
+                                إغلاق
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
