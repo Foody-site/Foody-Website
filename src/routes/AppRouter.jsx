@@ -25,6 +25,7 @@ import AuthCallback from "../components/Auth/AuthCallback";
 import ChooseRoleWithGoogle from "../components/Auth/ChooseRoleWithGoogle";
 import StoreProfile from "../pages/Product/StoreProfile";
 import UnderConstruction from "../pages/UnderConstruction/UnderConstruction";
+import Favorites from "../components/once/Favorites";
 
 const AppRouter = () => {
   return (
@@ -58,6 +59,7 @@ const AppRouter = () => {
         <Route path="/add-recipe" element={<AddRecipe />} />
         <Route path="/add-store" element={<Add_Store />} />
         <Route path="/chefneed/:id" element={<NeedChef />} />
+        <Route path="/favorites" element={<Favorites />} />
         <Route path="/under-construction" element={<UnderConstruction />} />
       </Route>
     </Routes>
