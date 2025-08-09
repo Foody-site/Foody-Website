@@ -26,6 +26,7 @@ import ChooseRoleWithGoogle from "../components/Auth/ChooseRoleWithGoogle";
 import StoreProfile from "../pages/Product/StoreProfile";
 import UnderConstruction from "../pages/UnderConstruction/UnderConstruction";
 import Favorites from "../components/once/Favorites";
+import AddMeal from "../pages/Add_Meal/AddMeal";
 
 const AppRouter = () => {
   return (
@@ -35,7 +36,10 @@ const AppRouter = () => {
       <Route path="/login2" element={<Login_2 />} />
       <Route path="/register" element={<Register />} />
       <Route path="/choose-role" element={<ChooseRole />} />
-      <Route path="/choose-role-with-google" element={<ChooseRoleWithGoogle />} />
+      <Route
+        path="/choose-role-with-google"
+        element={<ChooseRoleWithGoogle />}
+      />
       <Route path="/auth/callback" element={<AuthCallback />} />
 
       {/* 🔒 Protected routes inside Layout */}
@@ -51,7 +55,7 @@ const AppRouter = () => {
         <Route path="/store/edit/:id" element={<EditStore />} />
         <Route path="/user-profile" element={<UserProfile />} />
         <Route path="/chef" element={<Chef />} />
-        <Route path="/user-profile" element={<UserProfile />} /> 
+        <Route path="/user-profile" element={<UserProfile />} />
         <Route path="/chef/:id" element={<ChefProfile />} />
         <Route path="/store/:id" element={<StoreProfile />} />
         <Route path="/add-chef" element={<AddChef />} />
@@ -61,6 +65,7 @@ const AppRouter = () => {
         <Route path="/chefneed/:id" element={<NeedChef />} />
         <Route path="/favorites" element={<Favorites />} />
         <Route path="/under-construction" element={<UnderConstruction />} />
+        <Route path="/add-meal" element={<AddMeal />} />
       </Route>
     </Routes>
   );
