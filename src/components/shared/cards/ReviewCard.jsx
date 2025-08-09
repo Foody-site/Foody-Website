@@ -1,8 +1,10 @@
 import React from "react";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { FaUser, FaStore } from "react-icons/fa";
+import DeleteReviewButton from "../buttons/DeleteReviewButton";
+import ReplyReviewButton from "../buttons/ReplyReviewButton";
 
-const ReviewCard = ({ review }) => {
+const ReviewCard = ({ review, onDelete, onReply, showActions = false }) => {
   const renderStars = (rating) => {
     const stars = [];
     const fullStars = Math.floor(rating);
@@ -125,16 +127,16 @@ const ReviewCard = ({ review }) => {
         </div>
 
         {/* Rating - النجوم تحت معلومات اليوزر */}
-        <div className="flex items-center gap-1 justify-center">
+        <div className="flex items-center gap-1">
           {renderStars(review.rating)}
         </div>
       </div>
 
       {review.storeResponse && (
-        <div className="bg-blue-50 rounded-lg p-4 border-r-4 border-blue-500 mt-6">
+        <div className="bg-blue-50 rounded-lg p-4 border-r-4 border-primary-1 mt-6">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-              <FaStore className="w-5 h-5 text-blue-600" />
+              <FaStore className="w-5 h-5 text-primary-1" />
             </div>
             <span className="text-sm font-semibold text-gray-900">
               رد من {review.store.name}
@@ -143,6 +145,14 @@ const ReviewCard = ({ review }) => {
           <p className="text-gray-700 text-sm leading-relaxed">
             {review.storeResponse}
           </p>
+        </div>
+      )}
+
+      {/* Action Buttons */}
+      {showActions && (
+        <div className="flex gap-3 mt-6 pt-4 border-t border-gray-200 w-full">
+          <ReplyReviewButton ratingId={review.id} onReply={onReply} />
+          <DeleteReviewButton rateId={review.id} onDelete={onDelete} />
         </div>
       )}
     </div>

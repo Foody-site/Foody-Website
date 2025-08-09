@@ -61,11 +61,7 @@ const ReviewsTable = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
+    return <div className="text-center py-12">جاري تحميل التقييمات...</div>;
   }
 
   if (error) {
@@ -98,7 +94,23 @@ const ReviewsTable = () => {
           </div>
         ) : (
           reviews.map((review) => (
-            <ReviewCard key={review.id} review={review} />
+            <ReviewCard
+              key={review.id}
+              review={review}
+              showActions={true}
+              onDelete={(rateId) => {
+                // Remove review from state after deletion
+                setReviews((prev) => prev.filter((r) => r.id !== rateId));
+              }}
+              onReply={(ratingId, response) => {
+                // Update review with store response
+                setReviews((prev) =>
+                  prev.map((r) =>
+                    r.id === ratingId ? { ...r, storeResponse: response } : r
+                  )
+                );
+              }}
+            />
           ))
         )}
       </div>
