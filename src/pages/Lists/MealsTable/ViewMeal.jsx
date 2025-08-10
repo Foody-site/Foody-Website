@@ -41,7 +41,6 @@ const ViewMeal = () => {
     fetchMealData();
   }, [id]);
 
-  // معالج إغلاق التنبيه
   const handleAlertClose = () => {
     setAlertOpen(false);
   };
