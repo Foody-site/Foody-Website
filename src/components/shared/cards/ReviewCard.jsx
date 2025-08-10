@@ -3,6 +3,7 @@ import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { FaUser, FaStore } from "react-icons/fa";
 import DeleteReviewButton from "../buttons/DeleteReviewButton";
 import ReplyReviewButton from "../buttons/ReplyReviewButton";
+import ViewReplyButton from "../buttons/ViewReplyButton";
 
 const ReviewCard = ({ review, onDelete, onReply, showActions = false }) => {
   const renderStars = (rating) => {
@@ -132,26 +133,14 @@ const ReviewCard = ({ review, onDelete, onReply, showActions = false }) => {
         </div>
       </div>
 
-      {review.storeResponse && (
-        <div className="bg-blue-50 rounded-lg p-4 border-r-4 border-primary-1 mt-6">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-              <FaStore className="w-5 h-5 text-primary-1" />
-            </div>
-            <span className="text-sm font-semibold text-gray-900">
-              رد من {review.store.name}
-            </span>
-          </div>
-          <p className="text-gray-700 text-sm leading-relaxed">
-            {review.storeResponse}
-          </p>
-        </div>
-      )}
-
       {/* Action Buttons */}
       {showActions && (
         <div className="flex gap-3 mt-6 pt-4 border-t border-gray-200 w-full">
-          <ReplyReviewButton ratingId={review.id} onReply={onReply} />
+          {review.storeResponse ? (
+            <ViewReplyButton review={review} />
+          ) : (
+            <ReplyReviewButton ratingId={review.id} onReply={onReply} />
+          )}
           <DeleteReviewButton rateId={review.id} onDelete={onDelete} />
         </div>
       )}
