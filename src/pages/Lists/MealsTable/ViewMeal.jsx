@@ -18,7 +18,6 @@ const ViewMeal = () => {
   const [photo, setPhoto] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
 
-  // حالات التنبيه
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertType, setAlertType] = useState("success");
   const [alertMessage, setAlertMessage] = useState("");
