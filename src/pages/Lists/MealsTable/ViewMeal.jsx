@@ -1,4 +1,3 @@
-import { TbCameraPlus } from "react-icons/tb";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
 import axios from "axios";
@@ -18,6 +17,7 @@ const ViewMeal = () => {
   const [photo, setPhoto] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
 
+  // حالات التنبيه
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertType, setAlertType] = useState("success");
   const [alertMessage, setAlertMessage] = useState("");
@@ -38,8 +38,9 @@ const ViewMeal = () => {
   useEffect(() => {
     fetchStores();
     fetchMealData();
-  }, [id]);
+  }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // معالج إغلاق التنبيه
   const handleAlertClose = () => {
     setAlertOpen(false);
   };
