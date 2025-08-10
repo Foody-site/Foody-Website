@@ -2,14 +2,15 @@ import { useState, useRef } from "react";
 import { PiChefHatLight } from "react-icons/pi";
 import { MdOutlineStoreMallDirectory } from "react-icons/md";
 import { CiForkAndKnife } from "react-icons/ci";
-import { FaStar } from "react-icons/fa";
+import { FaStar, FaUtensils } from "react-icons/fa";
 import { HiOutlineCreditCard } from "react-icons/hi2";
 import Button from "../../components/shared/Buttons/Button";
 import { StoresTable } from "./StoresTable/StoresTable";
 import { ChefsTable } from "./ChefsTable/ChefsTable";
 import { RecipesTable } from "./RecipesTable/RecipesTable";
 import ReviewsTable from "./ReviewsTable/ReviewsTable";
-import  ReservationsTable  from "./ReservationsTable/ReservationsTable";
+import ReservationsTable from "./ReservationsTable/ReservationsTable";
+import MealsTable from "./MealsTable/MealsTable";
 import { useNavigate } from "react-router";
 
 export default function List() {
@@ -21,6 +22,7 @@ export default function List() {
 
   const menuItems = [
     { label: "المتاجر", icon: <MdOutlineStoreMallDirectory size={20} /> },
+    { label: "الوجبات", icon: <FaUtensils size={20} /> },
     { label: "الشيفات", icon: <PiChefHatLight size={20} /> },
     { label: "الوصفات", icon: <CiForkAndKnife size={20} /> },
     { label: "التقييمات", icon: <FaStar size={20} /> },
@@ -29,6 +31,7 @@ export default function List() {
 
   const tabTitles = {
     المتاجر: "المتاجر الخاصة بك",
+    الوجبات: "الوجبات الخاصة بك",
     الشيفات: "الشيفات",
     الوصفات: "الوصفات الخاصة بالشفات",
     التقييمات: "التقيمات الخاصه بالمتجر",
@@ -39,6 +42,8 @@ export default function List() {
     switch (activeTab) {
       case "المتاجر":
         return <StoresTable />;
+      case "الوجبات":
+        return <MealsTable />;
       case "الشيفات":
         return (
           <ChefsTable
@@ -70,6 +75,8 @@ export default function List() {
     switch (activeTab) {
       case "المتاجر":
         return "إضافة متجر جديد";
+      case "الوجبات":
+        return "إضافة وجبة جديدة";
       case "الشيفات":
         return "إضافة شيف جديد";
       case "الوصفات":
@@ -97,6 +104,9 @@ export default function List() {
     switch (activeTab) {
       case "المتاجر":
         navigate("/add-store");
+        break;
+      case "الوجبات":
+        navigate("/add-meal");
         break;
       case "الشيفات":
         navigate("/add-chef");
@@ -147,7 +157,7 @@ export default function List() {
         </div>
 
         <div className="pt-3 flex flex-col lg:flex-row-reverse gap-4">
-          <div className="w-full lg:w-40 max-w-full lg:max-w-[160px] max-h-72 overflow-auto rounded-lg border p-2 flex flex-row lg:flex-col gap-2 bg-white">
+          <div className="w-full lg:w-40 max-w-full lg:max-w-[160px] max-h-[325px] overflow-auto rounded-lg border p-2 flex flex-row lg:flex-col gap-2 bg-white">
             {menuItems.map((item) => (
               <button
                 key={item.label}
