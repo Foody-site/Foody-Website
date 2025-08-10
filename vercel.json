@@ -1,4 +1,11 @@
 {
+    "buildCommand": "npm run build",
+    "outputDirectory": "dist",
+    "installCommand": "npm install",
+    "framework": "vite",
+    "env": {
+        "DISABLE_ESLINT_PLUGIN": "true"
+    },
     "rewrites": [
         {
             "source": "/(.*)",
@@ -6,5 +13,10 @@
         }
     ],
     "cleanUrls": true,
-    "trailingSlash": false
+    "trailingSlash": false,
+    "functions": {
+        "app/api/**/*.js": {
+            "runtime": "nodejs18.x"
+        }
+    }
 }
