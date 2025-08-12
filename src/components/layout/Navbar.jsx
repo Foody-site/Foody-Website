@@ -4,7 +4,8 @@ import { FiSearch } from "react-icons/fi";
 import { GiKnifeFork } from "react-icons/gi";
 import { MdDiscount } from "react-icons/md";
 import { MdStorefront } from "react-icons/md";
-import { api_url } from './../../utils/ApiClient';
+import { MdFavorite } from "react-icons/md";
+import { api_url } from "./../../utils/ApiClient";
 
 const Navbar = () => {
   const [fullName, setFullName] = useState("");
@@ -66,10 +67,10 @@ const Navbar = () => {
     if (!name) return "";
     const parts = name.trim().split(" ");
     const initials =
-      parts.length === 1
-        ? parts[0][0]
-        : parts[0][0] + (parts[1]?.[0] || "");
-    return `https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&background=D71313&color=fff&bold=true`;
+      parts.length === 1 ? parts[0][0] : parts[0][0] + (parts[1]?.[0] || "");
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(
+      initials
+    )}&background=D71313&color=fff&bold=true`;
   };
 
   const handleLogout = () => {
@@ -101,6 +102,12 @@ const Navbar = () => {
           >
             <MdDiscount className="text-lg" />
           </div>
+          <div
+            className="bg-primary-1 text-white p-2 rounded-full"
+            onClick={() => navigate("/favorites")}
+          >
+            <MdFavorite className="text-lg" />
+          </div>
         </div>
 
         {/* Logo Center */}
@@ -129,12 +136,17 @@ const Navbar = () => {
         <div className="flex justify-center gap-4 text-sm font-medium">
           <div className="flex flex-row-reverse justify-center gap-4 text-sm font-medium">
             <button
-              className={`px-3 py-1 rounded ${activeTab === "الشيفات"
-                ? "bg-primary-1 text-white"
-                : "hover:text-primary-1"
-                }`}
+              className={`px-3 py-1 rounded ${
+                activeTab === "الشيفات"
+                  ? "bg-primary-1 text-white"
+                  : "hover:text-primary-1"
+              }`}
               onClick={() => {
-                const tab = { label: "الشيفات", type: "component", component: "Chef" };
+                const tab = {
+                  label: "الشيفات",
+                  type: "component",
+                  component: "Chef",
+                };
                 sessionStorage.setItem("tabState", JSON.stringify(tab));
                 navigate("/", { state: tab });
               }}
@@ -143,12 +155,17 @@ const Navbar = () => {
             </button>
 
             <button
-              className={`px-3 py-1 rounded ${activeTab === "وصفات"
-                ? "bg-primary-1 text-white"
-                : "hover:text-primary-1"
-                }`}
+              className={`px-3 py-1 rounded ${
+                activeTab === "وصفات"
+                  ? "bg-primary-1 text-white"
+                  : "hover:text-primary-1"
+              }`}
               onClick={() => {
-                const tab = { label: "وصفات", type: "component", component: "Recipe" };
+                const tab = {
+                  label: "وصفات",
+                  type: "component",
+                  component: "Recipe",
+                };
                 sessionStorage.setItem("tabState", JSON.stringify(tab));
                 navigate("/", { state: tab });
               }}
@@ -157,12 +174,17 @@ const Navbar = () => {
             </button>
 
             <button
-              className={`px-3 py-1 rounded ${activeTab === "مطاعم"
-                ? "bg-primary-1 text-white"
-                : "hover:text-primary-1"
-                }`}
+              className={`px-3 py-1 rounded ${
+                activeTab === "مطاعم"
+                  ? "bg-primary-1 text-white"
+                  : "hover:text-primary-1"
+              }`}
               onClick={() => {
-                const tab = { label: "مطاعم", type: "category", enum: "restaurant" };
+                const tab = {
+                  label: "مطاعم",
+                  type: "category",
+                  enum: "restaurant",
+                };
                 sessionStorage.setItem("tabState", JSON.stringify(tab));
                 navigate("/", { state: tab });
               }}
