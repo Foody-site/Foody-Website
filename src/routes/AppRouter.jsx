@@ -29,6 +29,7 @@ import Favorites from "../components/once/Favorites";
 import AddMeal from "../pages/Add_Meal/AddMeal";
 import ViewMeal from "../pages/Lists/MealsTable/ViewMeal";
 import EditMeal from "../pages/Lists/MealsTable/EditMeal";
+import Discount from "../pages/Discount/Discount";
 
 const AppRouter = () => {
   return (
@@ -64,6 +65,7 @@ const AppRouter = () => {
         <Route path="/recipe/:id" element={<RecipeDetails />} />
         <Route path="/add-recipe" element={<AddRecipe />} />
         <Route path="/add-store" element={<Add_Store />} />
+        <Route path="/discount" element={<Discount />} />
         <Route path="/chefneed/:id" element={<NeedChef />} />
         <Route path="/favorites" element={<Favorites />} />
         <Route path="/under-construction" element={<UnderConstruction />} />
