@@ -98,7 +98,7 @@ const Navbar = () => {
         <div className="flex items-center gap-2">
           <div
             className="bg-primary-1 text-white p-2 rounded-full"
-            onClick={() => navigate("/under-construction")}
+            onClick={() => navigate("/discount")}
           >
             <MdDiscount className="text-lg" />
           </div>
