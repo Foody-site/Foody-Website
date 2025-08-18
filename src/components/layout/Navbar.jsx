@@ -6,6 +6,7 @@ import { MdDiscount } from "react-icons/md";
 import { MdStorefront } from "react-icons/md";
 import { MdFavorite } from "react-icons/md";
 import { api_url } from "./../../utils/ApiClient";
+import logo from "/public/assets/common/logo.webp";
 
 const Navbar = () => {
   const [fullName, setFullName] = useState("");
@@ -88,10 +89,7 @@ const Navbar = () => {
   };
 
   return (
-    <div
-      className="w-full border-b bg-white shadow-sm text-sm font-medium"
-      dir="rtl"
-    >
+    <div className="w-full border-b bg-white shadow-sm text-sm font-medium">
       {/* Top Row */}
       <div className="flex items-center justify-between px-4 py-2">
         {/* Left Icons */}
@@ -111,10 +109,8 @@ const Navbar = () => {
         </div>
 
         {/* Logo Center */}
-        <div className="flex flex-col items-center text-primary-1 font-bold text-sm">
-          <GiKnifeFork className="text-2xl" />
-          <span>FOODY</span>
-          <span className="text-xs text-red-500">فودي</span>
+        <div className="flex items-center">
+          <img src={logo} alt="Foody Logo" className="h-12 w-auto" />
         </div>
 
         {/* User Info Clickable */}
@@ -206,15 +202,6 @@ const Navbar = () => {
 
         {/* Search Input with Business Button */}
         <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center">
-          <div className="relative flex items-center border rounded overflow-hidden">
-            <input
-              type="text"
-              placeholder="البحث"
-              className="px-2 py-1 w-64 max-w-full text-sm focus:outline-none text-right"
-            />
-            <FiSearch className="mx-2 text-gray-500" />
-          </div>
-
           {/* Business Button - Only shown if role is BUSINESS */}
           {userRole === "BUSINESS" && (
             <button
@@ -225,6 +212,15 @@ const Navbar = () => {
               <span>خاص بحساب الاعمال</span>
             </button>
           )}
+
+          <div className="relative flex items-center border rounded overflow-hidden">
+            <input
+              type="text"
+              placeholder="البحث"
+              className="px-2 py-1 w-64 max-w-full text-sm focus:outline-none text-right"
+            />
+            <FiSearch className="mx-2 text-gray-500" />
+          </div>
         </div>
       </div>
     </div>
