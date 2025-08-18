@@ -7,10 +7,14 @@ import { MdFavorite } from "react-icons/md";
 import { FaBell } from "react-icons/fa";
 import { api_url } from "./../../utils/ApiClient";
 import logo from "/public/assets/common/logo.webp";
+import NotificationDropdown from "../shared/Notifications/NotificationDropdown";
 
 const Navbar = () => {
   const [fullName, setFullName] = useState("");
   const [userRole, setUserRole] = useState("");
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [readTimeout, setReadTimeout] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState("مطاعم");
@@ -64,6 +68,39 @@ const Navbar = () => {
     fetchUserRole();
   }, [api_url]);
 
+  // دالة جلب عدد الرسائل غير المقروءة
+  const fetchUnreadCount = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) return;
+
+      const response = await fetch(`${api_url}/notifications/unread-count`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setUnreadCount(data.count || 0);
+      }
+    } catch (error) {
+      console.error("Error fetching unread count:", error);
+    }
+  };
+
+  // جلب عدد الرسائل غير المقروءة عند تحميل الصفحة
+  useEffect(() => {
+    fetchUnreadCount();
+
+    // تحديث العدد كل 30 ثانية
+    const interval = setInterval(fetchUnreadCount, 30000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   const getInitialsAvatar = (name) => {
     if (!name) return "";
     const parts = name.trim().split(" ");
@@ -88,27 +125,95 @@ const Navbar = () => {
     window.location.reload();
   };
 
+  // دالة تمييز كل الرسائل كمقروءة
+  const markAllAsRead = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) return;
+
+      const response = await fetch(`${api_url}/notifications/read-all`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        setUnreadCount(0);
+      }
+    } catch (error) {
+      console.error("Error marking notifications as read:", error);
+    }
+  };
+
+  // معالج النقر على أيقونة الجرس
+  const handleNotificationClick = () => {
+    const wasOpen = showNotifications;
+    setShowNotifications(!showNotifications);
+
+    if (!wasOpen && unreadCount > 0) {
+      // إذا فُتحت الإشعارات، انتظر 3 ثواني ثم ميّز كل الرسائل كمقروءة
+      const timeout = setTimeout(() => {
+        markAllAsRead();
+      }, 3000);
+      setReadTimeout(timeout);
+    } else if (wasOpen && readTimeout) {
+      // إذا أُغلقت الإشعارات قبل انتهاء الوقت، ألغي التايمر
+      clearTimeout(readTimeout);
+      setReadTimeout(null);
+    }
+  };
+
+  // إغلاق الإشعارات
+  const handleCloseNotifications = () => {
+    setShowNotifications(false);
+
+    // إلغاء التايمر إذا كان شغال
+    if (readTimeout) {
+      clearTimeout(readTimeout);
+      setReadTimeout(null);
+    }
+  };
+
   return (
     <div className="w-full border-b bg-white shadow-sm text-sm font-medium">
       {/* Top Row */}
       <div className="flex items-center justify-between px-4 py-2">
         {/* Left Icons */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 relative">
           <div
-            className="bg-primary-1 text-white p-2 rounded-full"
+            className="bg-primary-1 text-white p-2 rounded-full cursor-pointer"
             onClick={() => navigate("/discount")}
           >
             <MdDiscount className="text-lg" />
           </div>
           <div
-            className="bg-primary-1 text-white p-2 rounded-full"
+            className="bg-primary-1 text-white p-2 rounded-full cursor-pointer"
             onClick={() => navigate("/favorites")}
           >
             <MdFavorite className="text-lg" />
           </div>
-          <div className="bg-primary-1 text-white p-2 rounded-full">
+          <div
+            className="bg-primary-1 text-white p-2 rounded-full cursor-pointer relative notification-bell"
+            onClick={handleNotificationClick}
+          >
             <FaBell className="text-lg" />
+
+            {/* عداد الرسائل غير المقروءة */}
+            {unreadCount > 0 && (
+              <div className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                {unreadCount > 99 ? "99+" : unreadCount}
+              </div>
+            )}
           </div>
+
+          {/* Notifications Dropdown Component */}
+          <NotificationDropdown
+            isOpen={showNotifications}
+            onClose={handleCloseNotifications}
+          />
         </div>
 
         {/* Logo Center */}
