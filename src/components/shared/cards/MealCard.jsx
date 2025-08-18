@@ -4,16 +4,21 @@ import { FaHeart, FaRegHeart } from "react-icons/fa";
 import axios from "axios";
 import { api_url } from "../../../utils/ApiClient";
 
-const MealCard = ({ meal }) => {
+const MealCard = ({ meal, onUnfavorite, onFavoriteToggle }) => {
   const [isFavorite, setIsFavorite] = useState(meal?.isFavorite || false);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Update isFavorite when meal.isFavorite changes
+  useEffect(() => {
+    setIsFavorite(meal?.isFavorite || false);
+  }, [meal?.isFavorite]);
 
   const addToFavorites = async () => {
     try {
       setIsLoading(true);
       const token = localStorage.getItem("token");
 
-      console.log("Meal data:", meal);  
+      console.log("Meal data:", meal);
       console.log("Sending data:", {
         itemId: meal._id || meal.id,
         favoriteType: "Meal",
@@ -34,6 +39,11 @@ const MealCard = ({ meal }) => {
       );
 
       setIsFavorite(true);
+
+      // Call onFavoriteToggle if provided (for other pages)
+      if (onFavoriteToggle) {
+        onFavoriteToggle(meal._id || meal.id, true);
+      }
     } catch (error) {
       console.error("خطأ في إضافة المفضلة:", error);
       console.error("Response data:", error.response?.data);
@@ -55,6 +65,16 @@ const MealCard = ({ meal }) => {
       });
 
       setIsFavorite(false);
+
+      // Call onUnfavorite if provided (for Favorites page)
+      if (onUnfavorite) {
+        onUnfavorite(meal._id || meal.id);
+      }
+
+      // Call onFavoriteToggle if provided (for other pages)
+      if (onFavoriteToggle) {
+        onFavoriteToggle(meal._id || meal.id, false);
+      }
     } catch (error) {
       console.error("خطأ في إزالة المفضلة:", error);
       console.error("Response data:", error.response?.data);
