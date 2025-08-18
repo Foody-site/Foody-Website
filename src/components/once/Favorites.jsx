@@ -5,12 +5,13 @@ import { api_url } from "../../utils/ApiClient";
 import FoodCard from "../shared/cards/FoodCard";
 import ChefCard from "../shared/cards/ChefCard";
 import RecipeCard from "../shared/cards/RecipeCard";
+import MealCard from "../shared/cards/MealCard";
 import { Pagination } from "../shared/Pagination/Pagination";
 
 const Favorites = () => {
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState("recipes");
+  const [activeTab, setActiveTab] = useState("meals");
   const [pagination, setPagination] = useState({
     page: 1,
     take: 6,
@@ -32,6 +33,9 @@ const Favorites = () => {
 
     let favoriteType;
     switch (activeTab) {
+      case "meals":
+        favoriteType = "Meal";
+        break;
       case "recipes":
         favoriteType = "Recipe";
         break;
@@ -42,7 +46,7 @@ const Favorites = () => {
         favoriteType = "Store";
         break;
       default:
-        favoriteType = "Recipe";
+        favoriteType = "Meal";
     }
 
     try {
@@ -101,6 +105,19 @@ const Favorites = () => {
 
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 rtl">
+        {activeTab === "meals" &&
+          favorites.map((item) =>
+            item && item.id ? (
+              <MealCard
+                key={item.id}
+                meal={{ ...item, isFavorite: true }}
+                onUnfavorite={(id) =>
+                  setFavorites((prev) => prev.filter((f) => f.id !== id))
+                }
+              />
+            ) : null
+          )}
+
         {activeTab === "recipes" &&
           favorites.map((item) =>
             item && item.id ? (
@@ -142,6 +159,16 @@ const Favorites = () => {
 
         {/* Tabs */}
         <div className="flex justify-end mb-6 border-b">
+          <button
+            onClick={() => handleTabChange("meals")}
+            className={`px-4 py-2 font-medium ${
+              activeTab === "meals"
+                ? "text-primary-1 border-b-2 border-primary-1"
+                : "text-gray-600 hover:text-primary-1"
+            }`}
+          >
+            الوجبات
+          </button>
           <button
             onClick={() => handleTabChange("recipes")}
             className={`px-4 py-2 font-medium ${
