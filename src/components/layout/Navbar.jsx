@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { FiSearch } from "react-icons/fi";
-import { GiKnifeFork } from "react-icons/gi";
 import { MdDiscount } from "react-icons/md";
 import { MdStorefront } from "react-icons/md";
 import { MdFavorite } from "react-icons/md";
+import { FaBell } from "react-icons/fa";
 import { api_url } from "./../../utils/ApiClient";
 import logo from "/public/assets/common/logo.webp";
 
@@ -106,6 +106,9 @@ const Navbar = () => {
           >
             <MdFavorite className="text-lg" />
           </div>
+          <div className="bg-primary-1 text-white p-2 rounded-full">
+            <FaBell className="text-lg" />
+          </div>
         </div>
 
         {/* Logo Center */}
@@ -131,6 +134,25 @@ const Navbar = () => {
       <div className="relative border-t text-gray-700 py-2 px-4">
         <div className="flex justify-center gap-4 text-sm font-medium">
           <div className="flex flex-row-reverse justify-center gap-4 text-sm font-medium">
+            <button
+              className={`px-3 py-1 rounded ${
+                activeTab === "مطاعم"
+                  ? "bg-primary-1 text-white"
+                  : "hover:text-primary-1"
+              }`}
+              onClick={() => {
+                const tab = {
+                  label: "مطاعم",
+                  type: "category",
+                  enum: "restaurant",
+                };
+                sessionStorage.setItem("tabState", JSON.stringify(tab));
+                navigate("/", { state: tab });
+              }}
+            >
+              الرئيسية
+            </button>
+
             <button
               className={`px-3 py-1 rounded ${
                 activeTab === "الشيفات"
@@ -167,25 +189,6 @@ const Navbar = () => {
               }}
             >
               الوصفات
-            </button>
-
-            <button
-              className={`px-3 py-1 rounded ${
-                activeTab === "مطاعم"
-                  ? "bg-primary-1 text-white"
-                  : "hover:text-primary-1"
-              }`}
-              onClick={() => {
-                const tab = {
-                  label: "مطاعم",
-                  type: "category",
-                  enum: "restaurant",
-                };
-                sessionStorage.setItem("tabState", JSON.stringify(tab));
-                navigate("/", { state: tab });
-              }}
-            >
-              الرئيسية
             </button>
           </div>
         </div>
