@@ -1,10 +1,57 @@
-import { FaFireAlt, FaUtensils, FaArrowLeft } from "react-icons/fa";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { Link } from "react-router";
 import PageWrapper from "./PageWrapper";
 import Slider from "./Slider";
-import slider_photo2 from "/assets/home/slider_2.webp";
-import slider_photo from "/assets/home/slider.webp";
+import MealCard from "../shared/cards/MealCard";
+import { api_url } from "../../utils/ApiClient";
+
 
 const Hero = () => {
+  const [discountMeals, setDiscountMeals] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchDiscountMeals();
+  }, []);
+
+  const fetchDiscountMeals = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+
+      const params = new URLSearchParams({
+        page: "1",
+        take: "2", // نجيب آخر كاردين بس
+      });
+
+      params.append("storeType", "restaurant"); // نجيب من المطاعم
+
+      // Prepare headers - add token only if available
+      const headers = {
+        "Content-Type": "application/json",
+      };
+
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+
+      const response = await axios.get(`${api_url}/meal/discount?${params}`, {
+        headers,
+      });
+
+      const responseData = response.data;
+      const mealsData = responseData?.data || responseData || [];
+      setDiscountMeals(Array.isArray(mealsData) ? mealsData : []);
+    } catch (error) {
+      console.error("Error fetching discount meals:", error);
+      // If API fails, don't show error to user, just don't display cards
+      setDiscountMeals([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="hero py-10">
       <PageWrapper>
@@ -28,7 +75,7 @@ const Hero = () => {
                 تفصيلية وشاملة للمنتجات والخدمات الغذائية والعروض التي تقدمها
                 المطاعم والكافيهات وتعريفها، كما أنها تقدم معلومات عن الطهاة
                 (شيف) ومهاراتهم، وتسهل المنصة على استكشاف الطعام والمشروبات ونشر
-                من نشء الأعمال 
+                من نشء الأعمال
               </p>
             </div>
 
@@ -36,84 +83,40 @@ const Hero = () => {
             <div>
               <div className="flex flex-row-reverse justify-between items-center mb-4 px-2">
                 <h2 className="text-2xl font-normal">عروض وخصومات</h2>
-                <a href="#" className="text-primary-1 hover:underline">
+                <Link to="/discount" className="text-primary-1 hover:underline">
                   مشاهدة المزيد
-                </a>
+                </Link>
               </div>
 
               {/* Cards */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-2">
-                {/* Card 1 */}
-                <div className="border-2 border-primary-1 rounded-lg hover:bg-primary-1/60 transition duration-300 shadow-xl cursor-pointer">
-                  <div className="p-3 text-black hover:text-white">
-                    {/* Two-column layout inside the card */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2" dir="rtl">
-                      {/* Image */}
-                      <img
-                        src={slider_photo2 || "https://dummyimage.com/187"}
-                        alt="image"
-                        className="w-full h-full rounded-lg object-cover"
-                      />
-
-                      {/* Text Details */}
-                      <div className="ms-3 space-y-10">
-                        <h3 className="font-bold text-lg">الاسم</h3>
-                        <p className="mt-2 text-[#808080]">الوصف</p>
-
-                        {/* Stats */}
-                        <div className="flex flex-wrap justify-start gap-4 items-center mt-4 text-sm">
-                          <div className="flex items-center gap-1 text-[#C7C7C7] border-2 p-1 rounded-md">
-                            <span>42</span>
-                            <FaUtensils />
-                          </div>
-                          <div className="flex items-center gap-1 text-[#C7C7C7] border-2 p-1 rounded-md">
-                            <FaFireAlt />
-                            <span>1030 سعر حراري</span>
-                          </div>
-                        </div>
-
-                        {/* Link */}
-                        <div className="mt-4 flex items-center justify-start gap-1 text-primary-1 hover:text-white">
-                          <FaArrowLeft />
-                          <a className="hover:underline">رؤية المزيد</a>
-                        </div>
-                      </div>
+                {loading ? (
+                  // Loading state
+                  <>
+                    <div className="border-2 border-gray-200 rounded-lg p-4 animate-pulse">
+                      <div className="h-32 bg-gray-200 rounded mb-4"></div>
+                      <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                      <div className="h-4 bg-gray-200 rounded w-3/4"></div>
                     </div>
-                  </div>
-                </div>
-
-                {/* Card 2 – Same structure */}
-                <div className="border-2 border-primary-1 rounded-lg hover:bg-primary-1/60 transition duration-300 shadow-xl cursor-pointer">
-                  <div className="p-3 text-black hover:text-white">
-                    <div className="grid grid-cols-1 sm:grid-cols-2" dir="rtl">
-                      <img
-                        src={slider_photo || "https://dummyimage.com/187"}
-                        alt="image"
-                        className="w-full h-full rounded-lg object-cover"
-                      />
-                      <div className="ms-3 space-y-10">
-                        <h3 className="font-bold text-lg">الاسم</h3>
-                        <p className="mt-2 text-[#808080]">الوصف</p>
-
-                        <div className="flex flex-wrap justify-start gap-4 items-center mt-4 text-sm">
-                          <div className="flex items-center gap-1 text-[#C7C7C7] border-2 p-1 rounded-md">
-                            <span>42</span>
-                            <FaUtensils />
-                          </div>
-                          <div className="flex items-center gap-1 text-[#C7C7C7] border-2 p-1 rounded-md">
-                            <FaFireAlt />
-                            <span>1030 سعر حراري</span>
-                          </div>
-                        </div>
-
-                        <div className="mt-4 flex items-center justify-start gap-1 text-primary-1 hover:text-white">
-                          <FaArrowLeft />
-                          <a className="hover:underline">رؤية المزيد</a>
-                        </div>
-                      </div>
+                    <div className="border-2 border-gray-200 rounded-lg p-4 animate-pulse">
+                      <div className="h-32 bg-gray-200 rounded mb-4"></div>
+                      <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                      <div className="h-4 bg-gray-200 rounded w-3/4"></div>
                     </div>
+                  </>
+                ) : discountMeals.length > 0 ? (
+                  // Display discount meals using MealCard
+                  discountMeals
+                    .slice(0, 2)
+                    .map((meal) => (
+                      <MealCard key={meal._id || meal.id} meal={meal} />
+                    ))
+                ) : (
+                  // No data state
+                  <div className="col-span-2 text-center py-8 text-gray-500">
+                    لا توجد عروض متاحة حالياً
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </div>
