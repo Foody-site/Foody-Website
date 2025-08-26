@@ -51,9 +51,37 @@ const ChefBookingForm = ({ chefId }) => {
         </div>
     );
 
+    const validateForm = () => {
+        if (!bookingType) return "يرجى اختيار نوع المناسبة";
+        if (!bookingDate) return "يرجى تحديد تاريخ المناسبة";
+
+        const today = new Date();
+        const selectedDate = new Date(bookingDate);
+        if (selectedDate < today.setHours(0, 0, 0, 0)) {
+            return "لا يمكن اختيار تاريخ سابق";
+        }
+
+        if (!city) return "يرجى اختيار المدينة";
+
+        if (!numOfPeople || isNaN(numOfPeople) || parseInt(numOfPeople) <= 0) {
+            return "يرجى إدخال عدد مدعوين صحيح";
+        }
+
+        if (!phoneNumber) return "يرجى إدخال رقم التواصل";
+
+        const saudiPhoneRegex = /^(?:\+9665\d{8}|05\d{8})$/;
+
+        if (!saudiPhoneRegex.test(phoneNumber)) {
+            return "يرجى إدخال رقم جوال سعودي صحيح";
+        }
+        
+        return null;
+    };
+
     const handleSubmit = async () => {
-        if (!bookingType || !bookingDate || !city || !numOfPeople || !phoneNumber) {
-            setModal({ message: "يرجى تعبئة جميع الحقول", isError: true });
+        const validationError = validateForm();
+        if (validationError) {
+            setModal({ message: validationError, isError: true });
             return;
         }
 
@@ -115,7 +143,6 @@ const ChefBookingForm = ({ chefId }) => {
                 ))}
             </div>
 
-            {/* تاريخ المناسبة */}
             <div className="mb-4">
                 <label className="block mb-2 text-right font-medium">تاريخ المناسبة</label>
                 <div className={inputWrapper}>
@@ -129,7 +156,6 @@ const ChefBookingForm = ({ chefId }) => {
                 </div>
             </div>
 
-            {/* المدينة */}
             <div className="mb-4">
                 <label className="block mb-2 text-right font-medium">المدينة</label>
                 <div className={inputWrapper}>
@@ -147,7 +173,6 @@ const ChefBookingForm = ({ chefId }) => {
                 </div>
             </div>
 
-            {/* عدد المدعوين */}
             <div className="mb-4">
                 <label className="block mb-2 text-right font-medium">عدد المدعوين</label>
                 <div className={inputWrapper}>
@@ -162,7 +187,6 @@ const ChefBookingForm = ({ chefId }) => {
                 </div>
             </div>
 
-            {/* رقم الهاتف */}
             <div className="mb-6">
                 <label className="block mb-2 text-right font-medium">رقم التواصل</label>
                 <div className={inputWrapper}>
