@@ -7,6 +7,7 @@ import Hero from "../../components/common/Hero";
 import Chef from "../Chef/Chef";
 import Recipe from "../Recipe/Recipe";
 import CategoryTabs from "../../components/shared/category/CategoryTabs";
+import FoodFilterWrapper from "../../components/shared/wrapper/FoodFilterWrapper";
 
 const defaultView = {
     label: "مطاعم",
@@ -88,7 +89,7 @@ const Home = () => {
                                     <Store searchTerm={searchTerm} categoryType={view.enum} />
                                 </div>
                                 <div className="w-auto">
-                                    <FoodFilter onSearch={handleSearch} />
+                                    <FoodFilterWrapper onSearch={handleSearch} />
                                 </div>
                             </div>
                         </div>

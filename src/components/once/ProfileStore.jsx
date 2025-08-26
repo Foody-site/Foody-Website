@@ -29,6 +29,7 @@ import toYou from "/assets/store/toYou.webp"
 import uber from "/assets/store/uber.webp"
 import StoreReview from "../shared/reviews/StoreReview";
 import MakeReview from "../shared/reviews/MakeReview";
+import AllMeals from "./AllMeals";
 
 const deliveryAppIcons = {
     keeta,
@@ -85,9 +86,7 @@ const ProfileStore = () => {
 
                 {/* Right Panel - Placeholder */}
                 <div className="w-full lg:w-2/3">
-                    <div className="p-6 border rounded-2xl text-center text-gray-500">
-                        لا توجد وجبات لعرضها حالياً
-                    </div>
+                    <AllMeals storeId={id} />
 
                     <StoreReview refreshTrigger={refreshReviewsTrigger} />
                 </div>

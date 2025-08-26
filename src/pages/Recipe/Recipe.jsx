@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import AllRecipes from "../../components/once/AllRecipes";
 import CategoryTabs from "../../components/shared/category/CategoryTabs";
 import RecipeFilter from "../../components/shared/filters/RecipeFilter";
+import RecipeFilterWrapper from "../../components/shared/wrapper/RecipeFilterWrapper";
 
 const Recipe = () => {
     const [activeTab, setActiveTab] = useState("وصفات");
@@ -26,7 +27,7 @@ const Recipe = () => {
                     <AllRecipes searchParams={searchParams} />
                 </div>
                 <div>
-                    <RecipeFilter onSearch={setSearchParams} />
+                    <RecipeFilterWrapper onSearch={setSearchParams} />
                 </div>
             </div>
     );

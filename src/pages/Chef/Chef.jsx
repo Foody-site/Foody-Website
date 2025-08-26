@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import ChefFilter from "../../components/shared/filters/ChefFilter";
 import AllChefs from "../../components/once/AllChefs";
 import CategoryTabs from "../../components/shared/category/CategoryTabs";
+import ChefFilterWrapper from "../../components/shared/wrapper/ChefFilterWrapper";
 
 const Chef = () => {
     const [activeTab, setActiveTab] = useState("الشيفات");
@@ -28,7 +29,7 @@ const Chef = () => {
                     </div>
 
                     <div>
-                        <ChefFilter onSearch={setSearchParams} />
+                        <ChefFilterWrapper onSearch={setSearchParams} />
                     </div>
                 </div>
         </div>
