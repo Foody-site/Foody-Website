@@ -27,12 +27,15 @@ const FoodFilterWrapper = ({ onSearch }) => {
                         />
 
                         <div className="relative w-4/5 max-w-sm h-full bg-white shadow-2xl p-4 overflow-y-auto z-50">
-                            <button
-                                className="absolute top-4 right-4 text-gray-600"
-                                onClick={() => setIsOpen(false)}
-                            >
-                                ✕
-                            </button>
+                            <div className="flex flex-row-reverse items-center justify-between mb-4 border-b pb-2">
+                                <h2 className="text-lg font-semibold text-gray-800">تصفيه</h2>
+                                <button
+                                    className="text-gray-600 text-xl"
+                                    onClick={() => setIsOpen(false)}
+                                >
+                                    ✕
+                                </button>
+                            </div>
 
                             <FoodFilter onSearch={onSearch} />
                         </div>
