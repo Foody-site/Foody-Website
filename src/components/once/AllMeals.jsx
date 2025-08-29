@@ -3,7 +3,6 @@ import axios from "axios";
 import { api_url } from "../../utils/ApiClient";
 import Pagination2 from "../common/Pagination2";
 import MealCard2 from "../shared/cards/MealCard2";
-import MealCategoryTabs from "../shared/category/MealCategoryTabs";
 
 const LoadingCard = () => (
     <div className="bg-white p-4 rounded-lg shadow-md border h-72 flex justify-center items-center">
@@ -11,12 +10,12 @@ const LoadingCard = () => (
     </div>
 );
 
-const AllMeals = ({ storeId }) => {
+const AllMeals = ({ storeId, mealTypes }) => {
     const [meals, setMeals] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [page, setPage] = useState(1);
-    const [category, setCategory] = useState("main");
+    const [category, setCategory] = useState(mealTypes[0] || "Main Meals");
     const [pagination, setPagination] = useState({
         hasNextPage: false,
         hasPreviousPage: false,
@@ -31,21 +30,13 @@ const AllMeals = ({ storeId }) => {
             setLoading(true);
             try {
                 const token = localStorage.getItem("token");
-
                 const response = await axios.get(`${api_url}/meal/store/${storeId}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                    params: {
-                        page,
-                        take: pageSize,
-                        category,
-                    },
+                    headers: { Authorization: `Bearer ${token}` },
+                    params: { page, take: pageSize, category },
                 });
 
                 setMeals(response.data.data || []);
                 const pag = response.data.pagination;
-
                 setPagination({
                     hasNextPage: pag?.hasNextPage || false,
                     hasPreviousPage: pag?.hasPreviousPage || false,
@@ -66,21 +57,30 @@ const AllMeals = ({ storeId }) => {
 
     return (
         <div>
-            <MealCategoryTabs
-                activeTabLabel="الوجبات الرئيسية"
-                onTabChange={(selectedCategory) => {
-                    setCategory(selectedCategory);
-                    setPage(1);
-                }}
-            />
+            {/* Dynamic Meal Types Tabs */}
+            <div className="w-full flex flex-wrap p-2 rounded-xl border border-[#808080]">
+                {mealTypes.map((type) => (
+                    <button
+                        key={type}
+                        onClick={() => {
+                            setCategory(type);
+                            setPage(1);
+                        }}
+                        className={`flex-1 min-w-[100px] m-1 px-4 py-2 rounded-lg text-sm border transition-all duration-200 text-center ${category === type
+                                ? "bg-primary-1 text-white"
+                                : "text-black border-[#808080]"
+                            }`}
+                    >
+                        {type}
+                    </button>
+                ))}
+            </div>
 
             {error && <p className="text-center text-red-500">{error}</p>}
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 grid-cols-1 gap-6 mt-4">
                 {loading
-                    ? Array.from({ length: pageSize }).map((_, i) => (
-                        <LoadingCard key={i} />
-                    ))
+                    ? Array.from({ length: pageSize }).map((_, i) => <LoadingCard key={i} />)
                     : meals.length > 0
                         ? meals.map((meal) => (
                             <MealCard2
@@ -102,9 +102,7 @@ const AllMeals = ({ storeId }) => {
                                 }
                             />
                         ))
-                        : (
-                            <p className="text-center w-full mt-4">لا توجد نتائج حالياً</p>
-                        )}
+                        : <p className="text-center w-full mt-4">لا توجد نتائج حالياً</p>}
             </div>
 
             {!loading && meals.length > 0 && (

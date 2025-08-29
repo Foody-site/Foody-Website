@@ -86,8 +86,7 @@ const ProfileStore = () => {
 
                 {/* Right Panel - Placeholder */}
                 <div className="w-full lg:w-2/3">
-                    <AllMeals storeId={id} />
-
+                    <AllMeals storeId={id} mealTypes={store.mealTypes || []} />
                     <StoreReview refreshTrigger={refreshReviewsTrigger} />
                 </div>
 
