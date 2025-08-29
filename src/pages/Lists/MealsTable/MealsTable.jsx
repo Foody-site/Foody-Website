@@ -22,17 +22,21 @@ const formatCategory = (category) => {
   if (!category) return "غير محدد";
 
   const categoryMap = {
-    breakfast: "إفطار",
-    lunch: "غداء",
-    dinner: "عشاء",
-    snack: "وجبة خفيفة",
-    dessert: "حلويات",
-    appetizer: "مقبلات",
-    main: "طبق رئيسي",
-    side: "طبق جانبي",
+    Offers: "العروض",
+    News: "جديدنا",
+    "Main Meals": "الوجبات الرئيسيه",
+    "Side Meals": "الوجبات الفرعيه",
+    Drinks: "مشروبات",
+    "Oriental Sweets": "حلويات شرقيه",
+    "Western Sweets": "حلويات غربيه",
+    Other: "اخرى",
+    "Baked Goods and Crackers": "المخبوزات والمقرمشات",
+    "Diet Meals": "وجبات دايت",
+    Juices: "عصائر",
+    "Ice Cream": "ايس كريم",
   };
 
-  return categoryMap[category.toLowerCase()] || category;
+  return categoryMap[category] || category;
 };
 
 const formatDescription = (description) => {
@@ -87,15 +91,7 @@ const MealsTable = forwardRef((props, ref) => {
       // Try different endpoints and parameter combinations
       let url;
       let parameterSets = [
-        // Try without pagination first
-        { endpoint: "/meal", params: {} },
-        // Try with different parameter names and values using current page
         { endpoint: "/meal", params: { page: page, take: itemsPerPage } },
-        { endpoint: "/meal", params: { page: page, limit: itemsPerPage } },
-        { endpoint: "/meal", params: { page: page, size: itemsPerPage } },
-        { endpoint: "/meal", params: { page: page, take: 5 } }, // Smaller take value
-        { endpoint: "/meals", params: {} },
-        { endpoint: "/meals", params: { page: page, take: itemsPerPage } },
       ];
 
       for (let { endpoint, params } of parameterSets) {
