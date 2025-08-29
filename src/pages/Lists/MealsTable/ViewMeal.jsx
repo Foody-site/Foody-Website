@@ -167,10 +167,21 @@ const ViewMeal = () => {
                 value={formData.category}
                 disabled={true}
                 options={[
-                  { value: "appetizer", label: "مقبلات" },
-                  { value: "main", label: "أطباق رئيسية" },
-                  { value: "dessert", label: "حلويات" },
-                  { value: "beverage", label: "مشروبات" },
+                  { value: "Offers", label: "العروض" },
+                  { value: "News", label: "جديدنا" },
+                  { value: "Main Meals", label: "الوجبات الرئيسيه" },
+                  { value: "Side Meals", label: "الوجبات الفرعيه" },
+                  { value: "Drinks", label: "مشروبات" },
+                  { value: "Oriental Sweets", label: "حلويات شرقيه" },
+                  { value: "Western Sweets", label: "حلويات غربيه" },
+                  { value: "Other", label: "اخرى" },
+                  {
+                    value: "Baked Goods and Crackers",
+                    label: "المخبوزات والمقرمشات",
+                  },
+                  { value: "Diet Meals", label: "وجبات دايت" },
+                  { value: "Juices", label: "عصائر" },
+                  { value: "Ice Cream", label: "ايس كريم" },
                 ]}
               />
 
