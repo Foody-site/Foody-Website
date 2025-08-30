@@ -30,6 +30,7 @@ import AddMeal from "../pages/Add_Meal/AddMeal";
 import ViewMeal from "../pages/Lists/MealsTable/ViewMeal";
 import EditMeal from "../pages/Lists/MealsTable/EditMeal";
 import Discount from "../pages/Discount/Discount";
+import AuthDebug from "../components/Debug/AuthDebug";
 
 const AppRouter = () => {
   return (
@@ -72,6 +73,9 @@ const AppRouter = () => {
         <Route path="/add-meal" element={<AddMeal />} />
         <Route path="/view-meal/:id" element={<ViewMeal />} />
         <Route path="/edit-meal/:id" element={<EditMeal />} />
+
+        {/* Debug route */}
+        <Route path="/debug/auth" element={<AuthDebug />} />
       </Route>
     </Routes>
   );

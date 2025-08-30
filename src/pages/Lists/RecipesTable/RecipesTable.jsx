@@ -1,11 +1,16 @@
-import { useState, useEffect, forwardRef, useImperativeHandle } from "react";
+import React, {
+  useState,
+  useEffect,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
 import { TbTrash } from "react-icons/tb";
 import { IoEyeOutline } from "react-icons/io5";
 import { LuPencilLine } from "react-icons/lu";
 import { Pagination } from "../../../components/shared/Pagination/Pagination";
-import { api_url } from "../../../utils/ApiClient";
+import apiClient from "../../../utils/ApiClient";
 import { useNavigate } from "react-router";
-import Alert from './../../../components/shared/Alert/Alert';
+import Alert from "./../../../components/shared/Alert/Alert";
 
 export const RecipesTable = forwardRef((props, ref) => {
   const { onRecipesChange, onLoadingChange } = props;
@@ -51,80 +56,54 @@ export const RecipesTable = forwardRef((props, ref) => {
       }
 
       try {
-        const token = localStorage.getItem("token");
-
-        // Add pagination parameters to the URL
-        const url = new URL(`${api_url}/recipe/chef`);
-        url.searchParams.append("page", currentPage.toString());
-        url.searchParams.append("take", itemsPerPage.toString());
-
-        const response = await fetch(url.toString(), {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
+        // Use apiClient for the API call
+        const response = await apiClient.get("/recipe/chef", {
+          params: {
+            page: currentPage.toString(),
+            take: itemsPerPage.toString(),
           },
         });
-        const result = await response.json();
-        console.log("API Response Status:", response.status);
+        const result = response.data;
         console.log("API Result:", result);
-        console.log("Is response OK?", response.ok);
 
-        if (response.ok) {
-          let recipesData = [];
+        let recipesData = [];
 
-          if (result && typeof result === "object") {
-            if (Array.isArray(result.data)) {
-              console.log("Setting recipes with result.data:", result.data);
-              recipesData = result.data;
-            } else if (Array.isArray(result)) {
-              console.log("Setting recipes with array:", result);
-              recipesData = result;
-            } else {
-              console.log("Setting recipes with single object:", [result]);
-              recipesData = [result];
-            }
-
-            // Handle pagination data
-            if (result.pagination) {
-              setPagination(result.pagination);
-              setTotalPages(
-                result.pagination.totalPages ||
-                  Math.ceil(result.pagination.total / itemsPerPage)
-              );
-            } else if (result.meta) {
-              // Some APIs use 'meta' instead of 'pagination'
-              setPagination(result.meta);
-              setTotalPages(
-                result.meta.totalPages ||
-                  Math.ceil(result.meta.total / itemsPerPage)
-              );
-            } else {
-              // If no pagination info is provided, assume single page
-              setTotalPages(1);
-            }
+        if (result && typeof result === "object") {
+          if (Array.isArray(result.data)) {
+            console.log("Setting recipes with result.data:", result.data);
+            recipesData = result.data;
+          } else if (Array.isArray(result)) {
+            console.log("Setting recipes with array:", result);
+            recipesData = result;
+          } else {
+            console.log("Setting recipes with single object:", [result]);
+            recipesData = [result];
           }
 
-          setRecipes(recipesData);
+          // Handle pagination data
+          if (result.pagination) {
+            setPagination(result.pagination);
+            setTotalPages(
+              result.pagination.totalPages ||
+                Math.ceil(result.pagination.total / itemsPerPage)
+            );
+          } else if (result.meta) {
+            // Some APIs use 'meta' instead of 'pagination'
+            setPagination(result.meta);
+            setTotalPages(
+              result.meta.totalPages ||
+                Math.ceil(result.meta.total / itemsPerPage)
+            );
+          } else {
+            // If no pagination info is provided, assume single page
+            setTotalPages(1);
+          }
+        }
 
-          if (onRecipesChange) {
-            onRecipesChange(recipesData.length > 0);
-          }
-        } else {
-          // Handle error response
-          console.error("API Error:", result);
-          setRecipes([]);
-          if (onRecipesChange) {
-            onRecipesChange(false);
-          }
+        setRecipes(recipesData);
 
-          // Show error message if available
-          if (result.message) {
-            const errorMessage = Array.isArray(result.message)
-              ? result.message.join(", ")
-              : result.message;
-            console.error("API Error Message:", errorMessage);
-            showAlert("خطأ في تحميل البيانات", errorMessage, "error");
-          }
+        if (onRecipesChange) {
+          onRecipesChange(recipesData.length > 0);
         }
       } catch (error) {
         console.error("Error fetching recipes:", error);
@@ -132,7 +111,11 @@ export const RecipesTable = forwardRef((props, ref) => {
         if (onRecipesChange) {
           onRecipesChange(false);
         }
-        showAlert("خطأ في تحميل البيانات", "حدث خطأ أثناء جلب الوصفات", "error");
+        showAlert(
+          "خطأ في تحميل البيانات",
+          "حدث خطأ أثناء جلب الوصفات",
+          "error"
+        );
       } finally {
         setLoading(false);
         if (onLoadingChange) {
@@ -160,56 +143,37 @@ export const RecipesTable = forwardRef((props, ref) => {
 
     setDeleteLoading(true);
     try {
-      const token = localStorage.getItem("token");
+      const response = await apiClient.delete(`/recipe/${recipeToDelete.id}`);
 
-      const response = await fetch(`${api_url}/recipe/${recipeToDelete.id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const updatedRecipes = recipes.filter(
+        (recipe) => recipe.id !== recipeToDelete.id
+      );
+      setRecipes(updatedRecipes);
 
-      if (response.ok) {
-        const updatedRecipes = recipes.filter(
-          (recipe) => recipe.id !== recipeToDelete.id
-        );
-        setRecipes(updatedRecipes);
-
-        if (onRecipesChange) {
-          onRecipesChange(updatedRecipes.length > 0);
-        }
-
-        setShowDeleteModal(false);
-        setRecipeToDelete(null);
-
-        // If this was the last item on the current page and we're not on page 1, go back one page
-        if (updatedRecipes.length === 0 && currentPage > 1) {
-          setCurrentPage(currentPage - 1);
-        }
-
-        // استخدام مكون Alert بدلاً من دالة alert
-        showAlert("تم الحذف بنجاح", `تم حذف الوصفة (${recipeToDelete.name}) بنجاح`, "success");
-      } else {
-        const errorData = await response.json().catch(() => null);
-        console.error("خطأ في حذف الوصفة:", errorData);
-        
-        // استخدام مكون Alert بدلاً من دالة alert
-        showAlert(
-          "خطأ في الحذف",
-          errorData?.message || "حدث خطأ أثناء حذف الوصفة",
-          "error"
-        );
-        
-        setShowDeleteModal(false);
-        setRecipeToDelete(null);
+      if (onRecipesChange) {
+        onRecipesChange(updatedRecipes.length > 0);
       }
+
+      setShowDeleteModal(false);
+      setRecipeToDelete(null);
+
+      // If this was the last item on the current page and we're not on page 1, go back one page
+      if (updatedRecipes.length === 0 && currentPage > 1) {
+        setCurrentPage(currentPage - 1);
+      }
+
+      // استخدام مكون Alert بدلاً من دالة alert
+      showAlert(
+        "تم الحذف بنجاح",
+        `تم حذف الوصفة (${recipeToDelete.name}) بنجاح`,
+        "success"
+      );
     } catch (error) {
       console.error("خطأ في حذف الوصفة:", error);
-      
+
       // استخدام مكون Alert بدلاً من دالة alert
       showAlert("خطأ في الحذف", "حدث خطأ أثناء حذف الوصفة", "error");
-      
+
       setShowDeleteModal(false);
       setRecipeToDelete(null);
     } finally {
@@ -300,7 +264,7 @@ export const RecipesTable = forwardRef((props, ref) => {
                         <IoEyeOutline size={16} />
                       </button>
                       <button
-                        onClick={() => handleEditRecipe(recipe)} 
+                        onClick={() => handleEditRecipe(recipe)}
                         className="text-blue-500 bg-blue-100 hover:bg-blue-300 p-1 rounded-md transition-colors"
                         title="تعديل الوصفة"
                       >

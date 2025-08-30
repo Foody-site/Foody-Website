@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import axios from "axios";
+import apiClient from "../../utils/ApiClient";
 import { TbCameraPlus } from "react-icons/tb";
 import Inputs from "../../components/shared/inputs/Inputs";
 import SelectInput from "../../components/shared/inputs/SelectInput";
@@ -17,7 +17,6 @@ import Button from "../../components/shared/Buttons/Button";
 import { useNavigate } from "react-router";
 import DeliveryForm from "../../components/shared/form/DeliveryForm";
 import CheckBoxWorkRange from "../../components/shared/inputs/CheckBoxWorkRange";
-import { api_url } from "../../utils/ApiClient";
 import Alert from "../../components/shared/Alert/Alert";
 
 // دالة لإضافة مقدمة +966 للرقم عند الإرسال
@@ -497,11 +496,9 @@ const Add_Store = () => {
       });
 
       // إرسال البيانات
-      const token = localStorage.getItem("token");
-      const response = await axios.post(`${api_url}/store`, formData, {
+      const response = await apiClient.post("/store", formData, {
         headers: {
           "Content-Type": "multipart/form-data", // مهم لإرسال FormData
-          Authorization: `Bearer ${token}`,
         },
       });
 

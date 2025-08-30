@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { api_url } from "../../utils/ApiClient";
+import apiClient from "../../utils/ApiClient";
 import Pagination2 from "../common/Pagination2";
 import ChefCard from "../shared/cards/ChefCard";
 
@@ -32,10 +31,7 @@ const AllChefs = ({ searchParams = {} }) => {
       setLoading(true);
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(`${api_url}/chef`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        const response = await apiClient.get("/chef", {
           params: {
             page,
             take: pageSize,
@@ -69,16 +65,16 @@ const AllChefs = ({ searchParams = {} }) => {
       {error && <p className="text-center text-red-500">{error}</p>}
 
       <div className="grid md:grid-cols-3 grid-cols-1 gap-6">
-        {loading
-          ? Array.from({ length: 6 }).map((_, i) => <LoadingCard key={i} />)
-          : chefs.length > 0
-          ? chefs.map((chef) => <ChefCard key={chef.id} chef={chef} />)
-          : <p className="text-center w-full mt-4">لا توجد نتائج حالياً</p>}
+        {loading ? (
+          Array.from({ length: 6 }).map((_, i) => <LoadingCard key={i} />)
+        ) : chefs.length > 0 ? (
+          chefs.map((chef) => <ChefCard key={chef.id} chef={chef} />)
+        ) : (
+          <p className="text-center w-full mt-4">لا توجد نتائج حالياً</p>
+        )}
       </div>
 
-      {!loading && (
-        <Pagination2 pagination={pagination} setPage={setPage} />
-      )}
+      {!loading && <Pagination2 pagination={pagination} setPage={setPage} />}
     </div>
   );
 };

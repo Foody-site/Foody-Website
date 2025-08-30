@@ -4,8 +4,7 @@ import Alert from "../shared/Alert/Alert";
 import Button from "../shared/Buttons/Button";
 import Inputs from "../shared/inputs/Inputs";
 //import Footer from "./../layout/Footer";
-import axios from "axios";
-import { api_url } from "../../utils/ApiClient";
+import apiClient from "../../utils/ApiClient";
 import TestimonialCard from "../shared/Testimonials/TestimonialCard";
 import { FcGoogle } from "react-icons/fc";
 
@@ -106,15 +105,11 @@ const Register = () => {
     try {
       console.log("Registering with role:", updatedData.role);
 
-      const res = await axios.post(`${api_url}/auth/register`, updatedData);
+      const res = await apiClient.post("/auth/register", updatedData);
       const token = res.data.accessToken;
       localStorage.setItem("token", token);
 
-      const userResponse = await axios.get(`${api_url}/auth/me`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const userResponse = await apiClient.get("/auth/me");
 
       const userData = userResponse.data;
       localStorage.setItem("user", JSON.stringify(userData));

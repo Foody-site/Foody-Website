@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import apiClient from "../../utils/ApiClient";
 import { Link } from "react-router";
 import PageWrapper from "./PageWrapper";
 import Slider from "./Slider";
 import MealCard from "../shared/cards/MealCard";
-import { api_url } from "../../utils/ApiClient";
-
 
 const Hero = () => {
   const [discountMeals, setDiscountMeals] = useState([]);
@@ -18,26 +16,12 @@ const Hero = () => {
   const fetchDiscountMeals = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem("token");
-
-      const params = new URLSearchParams({
-        page: "1",
-        take: "2", // نجيب آخر كاردين بس
-      });
-
-      params.append("storeType", "restaurant"); // نجيب من المطاعم
-
-      // Prepare headers - add token only if available
-      const headers = {
-        "Content-Type": "application/json",
-      };
-
-      if (token) {
-        headers.Authorization = `Bearer ${token}`;
-      }
-
-      const response = await axios.get(`${api_url}/meal/discount?${params}`, {
-        headers,
+      const response = await apiClient.get("/meal/discount", {
+        params: {
+          page: 1,
+          take: 6,
+          storeType: "restaurant", // نجيب من المطاعم
+        },
       });
 
       const responseData = response.data;

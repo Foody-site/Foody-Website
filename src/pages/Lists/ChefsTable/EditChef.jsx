@@ -9,13 +9,12 @@ import { TiSocialFacebook } from "react-icons/ti";
 import { IoLogoWhatsapp } from "react-icons/io";
 import { GrInstagram } from "react-icons/gr";
 import SelectInput from "../../../components/shared/inputs/SelectInput";
-import { api_url } from "../../../utils/ApiClient";
-import axios from "axios";
+import apiClient from "../../../utils/ApiClient";
 import CheckboxSelectInput from "../../../components/shared/inputs/CheckboxSelectInput";
 import countriesData from "../../../assets/countries.json";
 import TextAreaInput from "../../../components/shared/inputs/TextAreaInput ";
 import Checkbox from "../../../components/shared/inputs/Checkbox";
-import Alert from './../../../components/shared/Alert/Alert';
+import Alert from "./../../../components/shared/Alert/Alert";
 
 // دالة لإزالة بادئة +966 من رقم الهاتف للعرض
 const formatPhoneForDisplay = (phoneNumber) => {
@@ -98,13 +97,7 @@ const EditChef = () => {
     const fetchChefData = async () => {
       setFetchLoading(true);
       try {
-        const token = localStorage.getItem("token");
-
-        const response = await axios.get(`${api_url}/chef/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await apiClient.get(`/chef/${id}`);
 
         const chefData = response.data;
         console.log("Chef data:", chefData);
@@ -170,7 +163,7 @@ const EditChef = () => {
 
     const fetchRecipeTypes = async () => {
       try {
-        const response = await axios.get(`${api_url}/chef/recipe/types`);
+        const response = await apiClient.get("/chef/recipe/types");
         const formattedData = response.data.map((item) => ({
           value: item.id,
           label: item.name.ar,
@@ -390,16 +383,11 @@ const EditChef = () => {
       }
 
       // إرسال البيانات إلى الخادم
-      const response = await axios.patch(
-        `${api_url}/chef/${id}`,
-        formDataToSend,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await apiClient.patch(`/chef/${id}`, formDataToSend, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       console.log("استجابة الخادم:", response.data);
       // استخدام مكون Alert بدلاً من alert

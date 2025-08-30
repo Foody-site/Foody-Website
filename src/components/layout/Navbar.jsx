@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
-import { FiSearch } from "react-icons/fi";
+import { FiSearch, FiBell } from "react-icons/fi";
 import { MdDiscount } from "react-icons/md";
 import { MdStorefront } from "react-icons/md";
 import { MdFavorite } from "react-icons/md";
 import { FaBell } from "react-icons/fa";
-import { api_url } from "./../../utils/ApiClient";
 import logo from "/public/assets/common/logo.webp";
 import NotificationDropdown from "../shared/Notifications/NotificationDropdown";
+import apiClient from "../../utils/ApiClient";
 
 const Navbar = () => {
   const [fullName, setFullName] = useState("");
@@ -50,23 +50,16 @@ const Navbar = () => {
         const token = localStorage.getItem("token");
         if (!token) return;
 
-        const response = await fetch(`${api_url}/auth/me`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (response.ok) {
-          const userData = await response.json();
-          setUserRole(userData.role || "");
-        }
+        const response = await apiClient.get("/auth/me");
+        const userData = response.data;
+        setUserRole(userData.role || "");
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
     };
 
     fetchUserRole();
-  }, [api_url]);
+  }, []);
 
   // دالة جلب عدد الرسائل غير المقروءة
   const fetchUnreadCount = async () => {
@@ -75,17 +68,8 @@ const Navbar = () => {
 
       if (!token) return;
 
-      const response = await fetch(`${api_url}/notifications/unread-count`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setUnreadCount(data.count || 0);
-      }
+      const response = await apiClient.get("/notifications/unread-count");
+      setUnreadCount(response.data.count || 0);
     } catch (error) {
       console.error("Error fetching unread count:", error);
     }
@@ -128,21 +112,8 @@ const Navbar = () => {
   // دالة تمييز كل الرسائل كمقروءة
   const markAllAsRead = async () => {
     try {
-      const token = localStorage.getItem("token");
-
-      if (!token) return;
-
-      const response = await fetch(`${api_url}/notifications/read-all`, {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.ok) {
-        setUnreadCount(0);
-      }
+      const response = await apiClient.post("/notifications/mark-all-read");
+      setUnreadCount(0);
     } catch (error) {
       console.error("Error marking notifications as read:", error);
     }

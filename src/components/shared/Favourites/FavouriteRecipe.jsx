@@ -1,69 +1,73 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import apiClient from "../../../utils/ApiClient";
 import { FaHeart } from "react-icons/fa";
-import { api_url } from "../../../utils/ApiClient";
 
 const FavouriteRecipe = ({ itemId, isInitiallyFavorited, onUnfavorite }) => {
-    const [isLoading, setIsLoading] = useState(false);
-    const [isFavorited, setIsFavorited] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isFavorited, setIsFavorited] = useState(true);
 
-    const token = localStorage.getItem("token");
-    const favoriteType = "Recipe";
+  const token = localStorage.getItem("token");
+  const favoriteType = "Recipe";
 
-    useEffect(() => {
-        setIsFavorited(Boolean(isInitiallyFavorited));
-    }, [isInitiallyFavorited]);
+  useEffect(() => {
+    setIsFavorited(Boolean(isInitiallyFavorited));
+  }, [isInitiallyFavorited]);
 
-    const handleFavorite = async () => {
-        if (!token) {
-            console.error("User is not authenticated");
-            return;
-        }
+  const handleFavorite = async () => {
+    if (!token) {
+      console.error("User is not authenticated");
+      return;
+    }
 
-        setIsLoading(true);
+    setIsLoading(true);
 
-        try {
-            if (isFavorited) {
-                await axios.delete(`${api_url}/favorite/${itemId}/${favoriteType}`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-                setIsFavorited(false);
-                onUnfavorite?.(itemId);
-            } else {
-                await axios.post(
-                    `${api_url}/favorite`,
-                    { itemId, favoriteType },
-                    { headers: { Authorization: `Bearer ${token}` } }
-                );
-                setIsFavorited(true);
-            }
-        } catch (error) {
-            console.error("Favorite action failed", error?.response?.data || error.message);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    try {
+      if (isFavorited) {
+        await apiClient.delete(`/favorite/${itemId}/${favoriteType}`);
+        setIsFavorited(false);
+        onUnfavorite?.(itemId);
+      } else {
+        await apiClient.post("/favorite", { itemId, favoriteType });
+        setIsFavorited(true);
+      }
+    } catch (error) {
+      console.error(
+        "Favorite action failed",
+        error?.response?.data || error.message
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    return (
-        <button
-            disabled={isLoading}
-            onClick={handleFavorite}
-            className={`w-10 h-10 flex items-center justify-center border rounded-lg transition
-                ${isFavorited ? "bg-primary-1 text-white" : "border-primary-1 text-primary-1"} 
-                ${isLoading ? "opacity-70 cursor-not-allowed" : "hover:bg-primary-1 hover:text-white"}
+  return (
+    <button
+      disabled={isLoading}
+      onClick={handleFavorite}
+      className={`w-10 h-10 flex items-center justify-center border rounded-lg transition
+                ${
+                  isFavorited
+                    ? "bg-primary-1 text-white"
+                    : "border-primary-1 text-primary-1"
+                } 
+                ${
+                  isLoading
+                    ? "opacity-70 cursor-not-allowed"
+                    : "hover:bg-primary-1 hover:text-white"
+                }
             `}
-        >
-            {isLoading ? (
-                <div
-                    className={`animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 
+    >
+      {isLoading ? (
+        <div
+          className={`animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 
                         ${isFavorited ? "border-white" : "border-primary-1"}
             `}
-                ></div>
-            ) : (
-                <FaHeart />
-            )}
-        </button>
-    );
+        ></div>
+      ) : (
+        <FaHeart />
+      )}
+    </button>
+  );
 };
 
 export default FavouriteRecipe;

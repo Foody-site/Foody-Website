@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import apiClient, { api_url } from "../../utils/ApiClient";
+import { setAuthData } from "../../utils/AuthHelpers";
 import Button from "../shared/Buttons/Button";
 import Inputs from "../shared/inputs/Inputs";
 //import Footer from "../layout/Footer";
-import { api_url } from "../../utils/ApiClient";
 import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router";
 import TestimonialCard from "../shared/Testimonials/TestimonialCard";
@@ -65,13 +65,7 @@ const Login = () => {
     setError("");
 
     try {
-      const loginResponse = await axios.post(
-        `${api_url}/auth/login`,
-        formData,
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      const loginResponse = await apiClient.post("/auth/login", formData);
 
       const token = loginResponse.data.accessToken;
       const refreshToken = loginResponse.data.refreshToken;
@@ -79,11 +73,7 @@ const Login = () => {
       localStorage.setItem("token", token);
       localStorage.setItem("refreshToken", refreshToken);
 
-      const userResponse = await axios.get(`${api_url}/auth/me`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const userResponse = await apiClient.get("/auth/me");
 
       const userData = userResponse.data;
       localStorage.setItem("user", JSON.stringify(userData));
@@ -250,8 +240,6 @@ const Login = () => {
                 </button>
               </div>
             </div>
-
-            
           </div>
         </div>
       </div>

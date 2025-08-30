@@ -56,13 +56,12 @@ const AddMeal = () => {
 
   const fetchStores = async () => {
     try {
-      // Add pagination parameters as shown in the API documentation
-      const params = new URLSearchParams({
-        page: "1",
-        take: "25", // Get more stores to ensure we have all available
+      const response = await apiClient.get("/store/user", {
+        params: {
+          page: "1",
+          take: "25", // Get more stores to ensure we have all available
+        },
       });
-
-      const response = await apiClient.get(`/store/user?${params}`);
 
       // Convert stores to options format including mealTypes
       // Handle both direct array and paginated response
