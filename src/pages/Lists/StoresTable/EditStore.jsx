@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import axios from "axios";
+import apiClient from "../../../utils/ApiClient";
 import { TbCameraPlus } from "react-icons/tb";
 import Inputs from "../../../components/shared/inputs/Inputs";
 import SelectInput from "../../../components/shared/inputs/SelectInput";
@@ -17,7 +17,6 @@ import Button from "../../../components/shared/Buttons/Button";
 import { useNavigate, useParams, useLocation } from "react-router";
 import DeliveryForm from "../../../components/shared/form/DeliveryForm";
 import CheckBoxWorkRange from "../../../components/shared/inputs/CheckBoxWorkRange";
-import { api_url } from "../../../utils/ApiClient";
 import Alert from "./../../../components/shared/Alert/Alert";
 
 // دالة لإزالة مقدمة +966 من رقم الهاتف للعرض
@@ -207,16 +206,10 @@ const EditStore = () => {
         }
 
         // طباعة الـ URL الكامل للتحقق
-        const fullUrl = `${api_url}/store/${storeId}`;
-        console.log("Fetching from URL:", fullUrl);
+        console.log("Fetching store data for ID:", storeId);
 
         // إرسال طلب GET للحصول على بيانات المتجر
-        const response = await axios.get(fullUrl, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await apiClient.get(`/store/${storeId}`);
 
         if (!response || !response.data) {
           throw new Error("لم يتم استلام بيانات من الخادم!");
@@ -704,7 +697,6 @@ const EditStore = () => {
 
       // طباعة البيانات للتحقق
       console.log("FormData being sent for update to store ID:", storeId);
-      console.log("API URL:", `${api_url}/store/${storeId}`);
 
       // طباعة قيم الهاتف للتحقق
       console.log("Original contactPhone:", formData.contactPhone);
@@ -718,14 +710,12 @@ const EditStore = () => {
       console.log("Formatted whatsappNumber:", whatsappNumberForSubmit);
 
       // إرسال البيانات
-      const token = localStorage.getItem("token");
-      const response = await axios.patch(
-        `${api_url}/store/${storeId}`,
+      const response = await apiClient.patch(
+        `/store/${storeId}`,
         formDataToSend,
         {
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
           },
         }
       );

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { AiOutlineMessage } from "react-icons/ai";
-import { api_url } from "../../../utils/ApiClient";
+import apiClient from "../../../utils/ApiClient";
 import ReviewCard from "../../../components/shared/cards/ReviewCard";
 import { Pagination } from "./../../../components/shared/Pagination/Pagination";
 
@@ -20,34 +20,17 @@ const ReviewsTable = () => {
     try {
       setLoading(true);
 
-      const params = new URLSearchParams({
+      const params = {
         page: currentPage.toString(),
         take: pageSize.toString(),
-      });
-
-      const token = localStorage.getItem("token");
-
-      const headers = {
-        "Content-Type": "application/json",
       };
 
-      if (token) {
-        headers["Authorization"] = `Bearer ${token}`;
-      }
-
-      const response = await fetch(`${api_url}/store/rates?${params}`, {
-        method: "GET",
-        headers,
+      const response = await apiClient.get("/store/rates", {
+        params: params,
       });
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || "فشل في تحميل التقييمات");
-      }
-
-      const data = await response.json();
-      setReviews(data.data);
-      setPagination(data.pagination);
+      setReviews(response.data.data);
+      setPagination(response.data.pagination);
     } catch (err) {
       setError(err.message);
       console.error("Error fetching reviews:", err);

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router";
-import axios from "axios";
-import { api_url } from "../../utils/ApiClient";
+import apiClient from "../../utils/ApiClient";
 import BUSINESS_photo from "/assets/choose_role/BUSINESS_photo.webp";
 import CUSTOMER_photo from "/assets/choose_role/CUSTOMER_photo.webp";
 import Button from "../shared/Buttons/Button";
@@ -177,11 +176,7 @@ export default function ChooseRoleWithGoogle() {
   // وظيفة لجلب معلومات المستخدم إذا لم تكن متوفرة
   const fetchUserInfo = async (token) => {
     try {
-      const response = await axios.get(`${api_url}/auth/me`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await apiClient.get("/auth/me");
 
       if (response.data && response.data.id) {
         setUserId(response.data.id);
@@ -227,16 +222,9 @@ export default function ChooseRoleWithGoogle() {
         );
 
         // إرسال الدور إلى الخادم باستخدام طريقة PATCH
-        const response = await axios.patch(
-          `${api_url}/user/${userId}/role`,
-          { role: selectedRole },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await apiClient.patch(`/user/${userId}/role`, {
+          role: selectedRole,
+        });
 
         console.log("Role update response:", response.data);
 

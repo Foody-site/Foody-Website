@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import apiClient from "../../../utils/ApiClient";
 import { FaHeart } from "react-icons/fa";
-import { api_url } from "../../../utils/ApiClient";
 
 const FavoriteMeal = ({
   itemId,
@@ -130,19 +129,13 @@ const FavoriteMeal = ({
     try {
       if (isFavorited) {
         // Remove from favorites
-        await axios.delete(`${api_url}/favorite/${itemId}/${favoriteType}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        await apiClient.delete(`/favorite/${itemId}/${favoriteType}`);
         setIsFavorited(false);
         updateLocalStorageCache(itemId, false);
         onUnfavorite?.(itemId);
       } else {
         // Add to favorites
-        await axios.post(
-          `${api_url}/favorite`,
-          { itemId, favoriteType },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        await apiClient.post("/favorite", { itemId, favoriteType });
         setIsFavorited(true);
         updateLocalStorageCache(itemId, true);
         onFavorite?.(itemId);

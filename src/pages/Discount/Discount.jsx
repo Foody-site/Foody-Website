@@ -1,21 +1,20 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
-import { api_url } from "../../utils/ApiClient";
+import apiClient from "../../utils/ApiClient";
 import CategoryTabsDiscount from "../../components/shared/category/CategoryTabsDiscount";
 import MealCard from "../../components/shared/cards/MealCard";
 import Alert from "../../components/shared/Alert/Alert";
 import { Pagination } from "../../components/shared/Pagination/Pagination";
 
 const Discount = () => {
-  const [selectedCategory, setSelectedCategory] = useState("restaurant"); 
-  const [allMeals, setAllMeals] = useState([]); 
-  const [meals, setMeals] = useState([]); 
+  const [selectedCategory, setSelectedCategory] = useState("restaurant");
+  const [allMeals, setAllMeals] = useState([]);
+  const [meals, setMeals] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const itemsPerPage = 6; 
+  const itemsPerPage = 6;
 
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertType, setAlertType] = useState("success");
@@ -53,19 +52,11 @@ const Discount = () => {
       setLoading(true);
       setError(null);
 
-      const token = localStorage.getItem("token");
-
-      const params = new URLSearchParams({
-        page: "1",
-        take: "100", 
-      });
-
-      params.append("storeType", selectedCategory);
-
-      const response = await axios.get(`${api_url}/meal/discount?${params}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+      const response = await apiClient.get("/meal/discount", {
+        params: {
+          page: "1",
+          take: "100",
+          storeType: selectedCategory,
         },
       });
 
@@ -97,12 +88,12 @@ const Discount = () => {
     console.log("Selected tab:", tab);
     console.log("Selected enum:", tab.enum);
     setSelectedCategory(tab.enum || tab.label);
-    setCurrentPage(1); 
+    setCurrentPage(1);
   };
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: "smooth" }); 
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (

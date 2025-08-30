@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { FaTrash, FaTimes } from "react-icons/fa";
-import axios from "axios";
-import { api_url } from "../../../utils/ApiClient";
+import apiClient from "../../../utils/ApiClient";
 
 const DeleteReviewButton = ({ rateId, onDelete }) => {
   const [loading, setLoading] = useState(false);
@@ -9,12 +8,9 @@ const DeleteReviewButton = ({ rateId, onDelete }) => {
 
   const handleDeleteConfirm = async () => {
     setLoading(true);
-    const token = localStorage.getItem("token");
 
     try {
-      await axios.delete(`${api_url}/store/rates/${rateId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await apiClient.delete(`/store/rates/${rateId}`);
 
       if (onDelete) {
         onDelete(rateId);

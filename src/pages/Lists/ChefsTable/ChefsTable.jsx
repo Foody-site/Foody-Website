@@ -3,7 +3,7 @@ import { TbTrash } from "react-icons/tb";
 import { IoEyeOutline } from "react-icons/io5";
 import { LuPencilLine } from "react-icons/lu";
 import { Pagination } from "../../../components/shared/Pagination/Pagination";
-import { api_url } from "../../../utils/ApiClient";
+import apiClient from "../../../utils/ApiClient";
 import { useNavigate } from "react-router";
 import Alert from "../../../components/shared/Alert/Alert";
 
@@ -42,50 +42,34 @@ export const ChefsTable = forwardRef((props, ref) => {
       }
 
       try {
-        const token = localStorage.getItem("token");
-
-        const response = await fetch(`${api_url}/user/chef`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-        const result = await response.json();
-        console.log("API Response Status:", response.status);
+        const response = await apiClient.get("/user/chef");
+        const result = response.data;
         console.log("API Result:", result);
-        console.log("Is response OK?", response.ok);
 
-        if (response.ok) {
-          let chefsData = [];
+        let chefsData = [];
 
-          if (result && typeof result === "object") {
-            if (Array.isArray(result.data)) {
-              console.log("Setting chefs with result.data:", result.data);
-              chefsData = result.data;
-            } else if (Array.isArray(result)) {
-              console.log("Setting chefs with array:", result);
-              chefsData = result;
-            } else {
-              console.log("Setting chefs with single object:", [result]);
-              chefsData = [result];
-            }
-
-            if (result.pagination) {
-              setPagination(result.pagination);
-              setTotalPages(result.pagination.totalPages);
-            }
+        if (result && typeof result === "object") {
+          if (Array.isArray(result.data)) {
+            console.log("Setting chefs with result.data:", result.data);
+            chefsData = result.data;
+          } else if (Array.isArray(result)) {
+            console.log("Setting chefs with array:", result);
+            chefsData = result;
+          } else {
+            console.log("Setting chefs with single object:", [result]);
+            chefsData = [result];
           }
 
-          setChefs(chefsData);
+          if (result.pagination) {
+            setPagination(result.pagination);
+            setTotalPages(result.pagination.totalPages);
+          }
+        }
 
-          if (onChefsChange) {
-            onChefsChange(chefsData.length > 0);
-          }
-        } else {
-          setChefs([]);
-          if (onChefsChange) {
-            onChefsChange(false);
-          }
+        setChefs(chefsData);
+
+        if (onChefsChange) {
+          onChefsChange(chefsData.length > 0);
         }
       } catch (error) {
         console.error("Error fetching chefs:", error);
@@ -120,48 +104,27 @@ export const ChefsTable = forwardRef((props, ref) => {
 
     setDeleteLoading(true);
     try {
-      const token = localStorage.getItem("token");
+      const response = await apiClient.delete(`/chef/${chefToDelete.id}`);
 
-      const response = await fetch(`${api_url}/chef/${chefToDelete.id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const updatedChefs = chefs.filter((chef) => chef.id !== chefToDelete.id);
+      setChefs(updatedChefs);
 
-      if (response.ok) {
-        const updatedChefs = chefs.filter(
-          (chef) => chef.id !== chefToDelete.id
-        );
-        setChefs(updatedChefs);
-
-        if (onChefsChange) {
-          onChefsChange(updatedChefs.length > 0);
-        }
-
-        setShowDeleteModal(false);
-        setChefToDelete(null);
-
-        if (chefs.length === 1 && currentPage > 1) {
-          setCurrentPage(currentPage - 1);
-        }
-
-        // Replace the alert with the custom Alert component
-        setAlertMessage("تم حذف الشيف");
-        setAlertSubMessage(`تم حذف الشيف ${chefToDelete?.name} بنجاح`);
-        setAlertType("success");
-        setShowAlert(true);
-      } else {
-        const errorData = await response.json().catch(() => null);
-        console.error("خطأ في حذف الشيف:", errorData);
-
-        // Show error alert
-        setAlertMessage("حدث خطأ");
-        setAlertSubMessage(errorData?.message || "حدث خطأ أثناء حذف الشيف");
-        setAlertType("error");
-        setShowAlert(true);
+      if (onChefsChange) {
+        onChefsChange(updatedChefs.length > 0);
       }
+
+      setShowDeleteModal(false);
+      setChefToDelete(null);
+
+      if (chefs.length === 1 && currentPage > 1) {
+        setCurrentPage(currentPage - 1);
+      }
+
+      // Replace the alert with the custom Alert component
+      setAlertMessage("تم حذف الشيف");
+      setAlertSubMessage(`تم حذف الشيف ${chefToDelete?.name} بنجاح`);
+      setAlertType("success");
+      setShowAlert(true);
     } catch (error) {
       console.error("خطأ في حذف الشيف:", error);
 

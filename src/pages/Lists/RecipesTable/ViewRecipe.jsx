@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
-import axios from "axios";
-import { api_url } from "../../../utils/ApiClient";
+import apiClient from "../../../utils/ApiClient";
 import Button from "../../../components/shared/Buttons/Button";
 
 const ViewRecipe = () => {
@@ -11,18 +10,11 @@ const ViewRecipe = () => {
   const [recipe, setRecipe] = useState(null);
   const [error, setError] = useState("");
 
- 
   useEffect(() => {
     const fetchRecipe = async () => {
       setLoading(true);
       try {
-        const token = localStorage.getItem("token");
-
-        const response = await axios.get(`${api_url}/recipe/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await apiClient.get(`/recipe/${id}`);
 
         setRecipe(response.data);
         console.log("Recipe data:", response.data);
@@ -71,7 +63,6 @@ const ViewRecipe = () => {
     );
   }
 
-  
   const getTimeDisplay = (timeInMinutes) => {
     if (!timeInMinutes) return { hours: 0, minutes: 0 };
 
@@ -93,7 +84,6 @@ const ViewRecipe = () => {
             </h2>
           </div>
 
-       
           <div className="relative bg-gray-300 h-72 w-full rounded-lg flex justify-center items-center overflow-hidden mb-10">
             {recipe.photo ? (
               <img
@@ -107,9 +97,7 @@ const ViewRecipe = () => {
           </div>
 
           <div className="space-y-10">
-          
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-10 text-right">
-         
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
                   نوع الطعام
@@ -132,7 +120,6 @@ const ViewRecipe = () => {
                 </div>
               </div>
 
-           
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
                   اسم الوصفة
@@ -143,7 +130,6 @@ const ViewRecipe = () => {
               </div>
             </div>
 
-        
             <div className="grid grid-cols-1 md:grid-cols-1 gap-x-10 gap-y-10 text-right">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
@@ -155,9 +141,7 @@ const ViewRecipe = () => {
               </div>
             </div>
 
-           
             <div className="flex justify-end gap-x-8 col-span-full">
-            
               <div className="w-[27%]">
                 <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
                   وقت الطبخ
@@ -172,7 +156,6 @@ const ViewRecipe = () => {
                 </div>
               </div>
 
-              
               <div className="w-[27%]">
                 <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
                   وقت الإعداد
@@ -188,10 +171,8 @@ const ViewRecipe = () => {
               </div>
             </div>
 
-            
             <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-10 text-right mb-4">
               <div className="md:col-start-2 md:col-span-2 flex justify-end space-x-10">
-                
                 <div className="w-[50%]">
                   <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
                     المكونات الرئيسية
@@ -213,7 +194,6 @@ const ViewRecipe = () => {
                   </div>
                 </div>
 
-              
                 <div className="w-[50%]">
                   <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
                     رابط الفيديو الخاص بالوصفة
@@ -236,7 +216,6 @@ const ViewRecipe = () => {
               </div>
             </div>
 
-           
             <div>
               <h3 className="text-gray-700 font-medium text-right mb-2">
                 خطوات التحضير للوصفة
@@ -262,7 +241,6 @@ const ViewRecipe = () => {
               </div>
             </div>
 
-          
             <div>
               <h3 className="text-gray-700 font-medium text-right mb-2">
                 الكمية و المقادير
@@ -274,7 +252,6 @@ const ViewRecipe = () => {
                       key={index}
                       className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-5 text-right mb-4"
                     >
-                  
                       <div>
                         <label className="block text-xs font-medium text-gray-700 mb-1 text-right">
                           المقادير
@@ -284,7 +261,6 @@ const ViewRecipe = () => {
                         </div>
                       </div>
 
-                  
                       <div>
                         <label className="block text-xs font-medium text-gray-700 mb-1 text-right">
                           وحدة الكمية
@@ -308,7 +284,6 @@ const ViewRecipe = () => {
                         </div>
                       </div>
 
-                     
                       <div>
                         <label className="block text-xs font-medium text-gray-700 mb-1 text-right">
                           الكمية
@@ -327,7 +302,6 @@ const ViewRecipe = () => {
               </div>
             </div>
 
-          
             <div className="flex flex-row-reverse items-center gap-x-2 pt-6">
               <label className="text-lg font-medium text-gray-700">
                 هل الوصفة تحتوي على مسببات الحساسية؟
@@ -339,7 +313,6 @@ const ViewRecipe = () => {
               </div>
             </div>
 
-        
             <div className="flex justify-center mt-12">
               <div className="flex gap-4 w-full max-w-xs justify-center">
                 <Button

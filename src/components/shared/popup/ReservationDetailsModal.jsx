@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { api_url } from "../../../utils/ApiClient";
+import apiClient from "../../../utils/ApiClient";
 import { formatBookingType, formatDate } from "./../../../utils/Formatters";
 import Button from "../Buttons/Button";
 
@@ -14,38 +14,14 @@ const ReservationDetailsModal = ({ reservation, onClose, onStatusUpdate }) => {
     setUpdateError(null);
 
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        throw new Error("لم يتم العثور على رمز المصادقة");
-      }
-
-      const response = await fetch(
-        `${api_url}/chef-booking/${reservation.id}`,
+      const response = await apiClient.patch(
+        `/chef-booking/${reservation.id}`,
         {
-          method: "PATCH",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            status: newStatus,
-          }),
+          status: newStatus,
         }
       );
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
-        const errorMessage =
-          errorData && errorData.message
-            ? Array.isArray(errorData.message)
-              ? errorData.message.join(", ")
-              : errorData.message
-            : `فشل في تحديث الحالة (${response.status})`;
-
-        throw new Error(errorMessage);
-      }
-
-      const result = await response.json();
+      const result = response.data;
 
       if (onStatusUpdate) {
         onStatusUpdate(reservation.id, newStatus, result);

@@ -3,7 +3,7 @@ import { TbTrash } from "react-icons/tb";
 import { IoEyeOutline } from "react-icons/io5";
 import { LuPencilLine } from "react-icons/lu";
 import { Pagination } from "../../../components/shared/Pagination/Pagination";
-import { api_url } from "../../../utils/ApiClient";
+import apiClient from "../../../utils/ApiClient";
 import { useNavigate } from "react-router";
 import Alert from "./../../../components/shared/Alert/Alert";
 
@@ -92,83 +92,54 @@ export const StoresTable = forwardRef((props, ref) => {
       try {
         const token = localStorage.getItem("token");
 
-        // Add pagination parameters to the URL
-        const url = new URL(`${api_url}/store/user`);
-        url.searchParams.append("page", currentPage.toString());
-        url.searchParams.append("take", itemsPerPage.toString());
-
-        const response = await fetch(url.toString(), {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
+        // Use apiClient for the API call
+        const response = await apiClient.get("/store/user", {
+          params: {
+            page: currentPage.toString(),
+            take: itemsPerPage.toString(),
           },
         });
-        const result = await response.json();
-        console.log("API Response Status:", response.status);
-        console.log("API Result:", result);
-        console.log("Is response OK?", response.ok);
+        const result = response.data;
+        console.log("API Response Data:", result);
 
-        if (response.ok) {
-          let storesData = [];
+        let storesData = [];
 
-          if (result && typeof result === "object") {
-            if (Array.isArray(result.data)) {
-              console.log("Setting stores with result.data:", result.data);
-              storesData = result.data;
-            } else if (Array.isArray(result)) {
-              console.log("Setting stores with array:", result);
-              storesData = result;
-            } else {
-              console.log("Setting stores with single object:", [result]);
-              storesData = [result];
-            }
-
-            // Handle pagination data
-            if (result.pagination) {
-              setPagination(result.pagination);
-              setTotalPages(
-                result.pagination.totalPages ||
-                  Math.ceil(result.pagination.total / itemsPerPage)
-              );
-            } else if (result.meta) {
-              // Some APIs use 'meta' instead of 'pagination'
-              setPagination(result.meta);
-              setTotalPages(
-                result.meta.totalPages ||
-                  Math.ceil(result.meta.total / itemsPerPage)
-              );
-            } else {
-              // If no pagination info is provided, assume single page
-              setTotalPages(1);
-            }
+        if (result && typeof result === "object") {
+          if (Array.isArray(result.data)) {
+            console.log("Setting stores with result.data:", result.data);
+            storesData = result.data;
+          } else if (Array.isArray(result)) {
+            console.log("Setting stores with array:", result);
+            storesData = result;
+          } else {
+            console.log("Setting stores with single object:", [result]);
+            storesData = [result];
           }
 
-          setStores(storesData);
-
-          if (onStoresChange) {
-            onStoresChange(storesData.length > 0);
+          // Handle pagination data
+          if (result.pagination) {
+            setPagination(result.pagination);
+            setTotalPages(
+              result.pagination.totalPages ||
+                Math.ceil(result.pagination.total / itemsPerPage)
+            );
+          } else if (result.meta) {
+            // Some APIs use 'meta' instead of 'pagination'
+            setPagination(result.meta);
+            setTotalPages(
+              result.meta.totalPages ||
+                Math.ceil(result.meta.total / itemsPerPage)
+            );
+          } else {
+            // If no pagination info is provided, assume single page
+            setTotalPages(1);
           }
-        } else {
-          // Handle error response
-          console.error("API Error:", result);
-          setStores([]);
-          if (onStoresChange) {
-            onStoresChange(false);
-          }
+        }
 
-          // Show error message if available
-          if (result.message) {
-            const errorMessage = Array.isArray(result.message)
-              ? result.message.join(", ")
-              : result.message;
-            console.error("API Error Message:", errorMessage);
+        setStores(storesData);
 
-            // عرض رسالة الخطأ بتنبيه Alert
-            setAlertMessage("خطأ في جلب البيانات");
-            setAlertSubMessage(errorMessage);
-            setAlertType("error");
-            setAlertOpen(true);
-          }
+        if (onStoresChange) {
+          onStoresChange(storesData.length > 0);
         }
       } catch (error) {
         console.error("Error fetching stores:", error);
@@ -224,55 +195,30 @@ export const StoresTable = forwardRef((props, ref) => {
 
     setDeleteLoading(true);
     try {
-      const token = localStorage.getItem("token");
+      const response = await apiClient.delete(`/store/${storeToDelete.id}`);
 
-      const response = await fetch(`${api_url}/store/${storeToDelete.id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const updatedStores = stores.filter(
+        (store) => store.id !== storeToDelete.id
+      );
+      setStores(updatedStores);
 
-      if (response.ok) {
-        const updatedStores = stores.filter(
-          (store) => store.id !== storeToDelete.id
-        );
-        setStores(updatedStores);
-
-        if (onStoresChange) {
-          onStoresChange(updatedStores.length > 0);
-        }
-
-        setShowDeleteModal(false);
-        setStoreToDelete(null);
-
-        // If this was the last item on the current page and we're not on page 1, go back one page
-        if (updatedStores.length === 0 && currentPage > 1) {
-          setCurrentPage(currentPage - 1);
-        }
-
-        // استخدام Alert بدلاً من alert
-        setAlertMessage("تم حذف المتجر");
-        setAlertSubMessage(`تم حذف المتجر (${storeToDelete?.name}) بنجاح`);
-        setAlertType("success");
-        setAlertOpen(true);
-      } else {
-        const errorData = await response.json().catch(() => null);
-        console.error("خطأ في حذف المتجر:", errorData);
-
-        // استخدام Alert بدلاً من alert
-        setAlertMessage("خطأ في الحذف");
-        setAlertSubMessage(
-          errorData?.message || "حدث خطأ أثناء محاولة حذف المتجر"
-        );
-        setAlertType("error");
-        setAlertOpen(true);
-
-        // إغلاق نافذة تأكيد الحذف
-        setShowDeleteModal(false);
-        setStoreToDelete(null);
+      if (onStoresChange) {
+        onStoresChange(updatedStores.length > 0);
       }
+
+      setShowDeleteModal(false);
+      setStoreToDelete(null);
+
+      // If this was the last item on the current page and we're not on page 1, go back one page
+      if (updatedStores.length === 0 && currentPage > 1) {
+        setCurrentPage(currentPage - 1);
+      }
+
+      // استخدام Alert بدلاً من alert
+      setAlertMessage("تم حذف المتجر");
+      setAlertSubMessage(`تم حذف المتجر (${storeToDelete?.name}) بنجاح`);
+      setAlertType("success");
+      setAlertOpen(true);
     } catch (error) {
       console.error("خطأ في حذف المتجر:", error);
 

@@ -10,7 +10,7 @@ import { LuPencilLine } from "react-icons/lu";
 import { useNavigate } from "react-router";
 import { Pagination } from "../../../components/shared/Pagination/Pagination";
 import Alert from "../../../components/shared/Alert/Alert";
-import { api_url } from "../../../utils/ApiClient";
+import apiClient from "../../../utils/ApiClient";
 
 // Helper functions for formatting
 const formatPrice = (price) => {
@@ -96,90 +96,64 @@ const MealsTable = forwardRef((props, ref) => {
 
       for (let { endpoint, params } of parameterSets) {
         try {
-          url = new URL(`${api_url}${endpoint}`);
+          console.log(`Trying: ${endpoint} with params:`, params);
 
-          // Add parameters if any
-          Object.entries(params).forEach(([key, value]) => {
-            url.searchParams.append(key, value.toString());
-          });
-
-          console.log(`Trying: ${url.toString()}`);
-
-          const response = await fetch(url.toString(), {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          });
+          const response = await apiClient.get(endpoint, { params });
 
           console.log(
-            `Response status for ${endpoint} with params ${JSON.stringify(
-              params
-            )}:`,
-            response.status
+            `Response for ${endpoint} with params ${JSON.stringify(params)}:`,
+            response.data
           );
 
-          if (response.ok) {
-            const data = await response.json();
-            console.log("Meals response data:", data);
+          const data = response.data;
+          console.log("Meals response data:", data);
 
-            let mealsData = [];
+          let mealsData = [];
 
-            if (data && typeof data === "object") {
-              if (Array.isArray(data.data)) {
-                console.log("Setting meals with data.data:", data.data);
-                mealsData = data.data;
-              } else if (Array.isArray(data)) {
-                console.log("Setting meals with array:", data);
-                mealsData = data;
-              } else {
-                console.log("Setting meals with single object:", [data]);
-                mealsData = [data];
-              }
-
-              // Handle pagination data like StoresTable
-              if (data.pagination) {
-                setPagination(data.pagination);
-                setTotalPages(
-                  data.pagination.totalPages ||
-                    Math.ceil(data.pagination.total / itemsPerPage)
-                );
-                setCurrentPage(data.pagination.currentPage || page);
-              } else if (data.meta) {
-                // Some APIs use 'meta' instead of 'pagination'
-                setPagination(data.meta);
-                setTotalPages(
-                  data.meta.totalPages ||
-                    Math.ceil(data.meta.total / itemsPerPage)
-                );
-                setCurrentPage(data.meta.currentPage || page);
-              } else {
-                // No pagination data, disable pagination
-                setPagination(null);
-                setTotalPages(1);
-              }
-
-              setMeals(mealsData);
+          if (data && typeof data === "object") {
+            if (Array.isArray(data.data)) {
+              console.log("Setting meals with data.data:", data.data);
+              mealsData = data.data;
+            } else if (Array.isArray(data)) {
+              console.log("Setting meals with array:", data);
+              mealsData = data;
             } else {
-              console.warn("Unexpected meals data format:", data);
-              setMeals([]);
+              console.log("Setting meals with single object:", [data]);
+              mealsData = [data];
             }
 
-            console.log(
-              `Success with ${endpoint} and params ${JSON.stringify(params)}`
-            );
-            return; // Success, exit the function
+            // Handle pagination data like StoresTable
+            if (data.pagination) {
+              setPagination(data.pagination);
+              setTotalPages(
+                data.pagination.totalPages ||
+                  Math.ceil(data.pagination.total / itemsPerPage)
+              );
+              setCurrentPage(data.pagination.currentPage || page);
+            } else if (data.meta) {
+              // Some APIs use 'meta' instead of 'pagination'
+              setPagination(data.meta);
+              setTotalPages(
+                data.meta.totalPages ||
+                  Math.ceil(data.meta.total / itemsPerPage)
+              );
+              setCurrentPage(data.meta.currentPage || page);
+            } else {
+              // No pagination data, disable pagination
+              setPagination(null);
+              setTotalPages(1);
+            }
+
+            setMeals(mealsData);
           } else {
-            // Log error but continue to next combination
-            const errorText = await response.text();
-            console.error(
-              `Error response for ${endpoint} with params ${JSON.stringify(
-                params
-              )}:`,
-              errorText
-            );
+            console.warn("Unexpected meals data format:", data);
+            setMeals([]);
           }
+
+          console.log(
+            `Success with ${endpoint} and params ${JSON.stringify(params)}`
+          );
+          return; // Success, exit the function
         } catch (endpointError) {
           console.error(
             `Error with ${endpoint} and params ${JSON.stringify(params)}:`,
@@ -233,17 +207,7 @@ const MealsTable = forwardRef((props, ref) => {
     try {
       setDeleteLoading(true);
 
-      const response = await fetch(`${api_url}/meal/${mealToDelete.id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}` || "",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+      await apiClient.delete(`/meal/${mealToDelete.id}`);
 
       showAlert(
         "تم الحذف بنجاح",
