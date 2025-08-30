@@ -74,8 +74,6 @@ const AppRouter = () => {
         <Route path="/view-meal/:id" element={<ViewMeal />} />
         <Route path="/edit-meal/:id" element={<EditMeal />} />
 
-        {/* Debug route */}
-        <Route path="/debug/auth" element={<AuthDebug />} />
       </Route>
     </Routes>
   );
