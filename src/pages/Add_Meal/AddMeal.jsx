@@ -1,8 +1,7 @@
 import { TbCameraPlus } from "react-icons/tb";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
-import axios from "axios";
-import { api_url } from "../../utils/ApiClient";
+import apiClient from "../../utils/ApiClient";
 import Inputs from "../../components/shared/inputs/Inputs";
 import TextAreaInput from "../../components/shared/inputs/TextAreaInput ";
 import Button from "../../components/shared/Buttons/Button";
@@ -57,17 +56,13 @@ const AddMeal = () => {
 
   const fetchStores = async () => {
     try {
-      const token = localStorage.getItem("token");
-
       // Add pagination parameters as shown in the API documentation
       const params = new URLSearchParams({
         page: "1",
         take: "25", // Get more stores to ensure we have all available
       });
 
-      const response = await axios.get(`${api_url}/store/user?${params}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await apiClient.get(`/store/user?${params}`);
 
       // Convert stores to options format including mealTypes
       // Handle both direct array and paginated response
@@ -105,7 +100,7 @@ const AddMeal = () => {
     try {
       const token = localStorage.getItem("token");
 
-      // Check if token exists
+      // Check if token exists (optional - apiClient will handle this)
       if (!token) {
         showAlert("خطأ في المصادقة", "يرجى تسجيل الدخول أولاً", "error");
         setLoading(false);
@@ -167,9 +162,8 @@ const AddMeal = () => {
         token: token ? "Token exists" : "No token",
       });
 
-      await axios.post(`${api_url}/meal`, submitData, {
+      await apiClient.post("/meal", submitData, {
         headers: {
-          Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
       });

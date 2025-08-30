@@ -61,6 +61,7 @@ const MealCategoryStoreSelector = ({
             value={categoryValue}
             onChange={(e) => onCategoryChange(e.target.value)}
             options={mealTypes}
+            required
           />
         ) : (
           <div className="text-gray-500">
