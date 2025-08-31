@@ -96,9 +96,13 @@ const ProfileStore = () => {
 
         {/* Right Panel - Placeholder */}
         <div className="w-full lg:w-2/3">
-          <div className="p-6 border rounded-2xl text-center text-gray-500">
-            لا توجد وجبات لعرضها حالياً
-          </div>
+          {store.mealTypes && store.mealTypes.length > 0 ? (
+            <AllMeals storeId={id} mealTypes={store.mealTypes} />
+          ) : (
+            <div className="p-6 border rounded-2xl text-center text-gray-500">
+              لا توجد وجبات لعرضها حالياً
+            </div>
+          )}
 
           <StoreReview refreshTrigger={refreshReviewsTrigger} />
         </div>
