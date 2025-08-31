@@ -1,13 +1,13 @@
 import { TbCameraPlus } from "react-icons/tb";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
-import axios from "axios";
-import { api_url } from "../../../utils/ApiClient";
+import apiClient from "../../../utils/ApiClient";
 import Inputs from "../../../components/shared/inputs/Inputs";
 import SelectInput from "../../../components/shared/inputs/SelectInput";
 import TextAreaInput from "../../../components/shared/inputs/TextAreaInput ";
 import Button from "../../../components/shared/Buttons/Button";
 import Alert from "../../../components/shared/Alert/Alert";
+import MealCategoryStoreSelector from "../../../components/shared/form/MealCategoryStoreSelector";
 import allergy from "../../../assets/allergy.webp";
 
 const EditMeal = () => {
@@ -60,10 +60,7 @@ const EditMeal = () => {
 
   const fetchMealData = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(`${api_url}/meal/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await apiClient.get(`/meal/${id}`);
 
       const meal = response.data;
       setFormData({
@@ -96,24 +93,20 @@ const EditMeal = () => {
 
   const fetchStores = async () => {
     try {
-      const token = localStorage.getItem("token");
-
-      // Add pagination parameters as shown in the API documentation
-      const params = new URLSearchParams({
-        page: "1",
-        take: "25", // Get more stores to ensure we have all available
+      const response = await apiClient.get("/store/user", {
+        params: {
+          page: "1",
+          take: "25", // Get more stores to ensure we have all available
+        },
       });
 
-      const response = await axios.get(`${api_url}/store/user?${params}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      // Convert stores to options format for CheckboxSelectInput
+      // Convert stores to options format including mealTypes
       // Handle both direct array and paginated response
       const storesData = response.data.data || response.data;
       const storeOptions = storesData.map((store) => ({
         value: store.id,
         label: store.name,
+        mealTypes: store.mealTypes || [], // Include meal types for each store
       }));
       setStores(storeOptions);
     } catch (error) {
@@ -163,9 +156,8 @@ const EditMeal = () => {
         submitData.append("photo", formData.photo);
       }
 
-      await axios.patch(`${api_url}/meal/${id}`, submitData, {
+      await apiClient.patch(`/meal/${id}`, submitData, {
         headers: {
-          Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
       });
@@ -238,35 +230,16 @@ const EditMeal = () => {
           <form onSubmit={handleSubmit}>
             {/* الصف الأول: فئة الوجبة - اسم المتجر - اسم الوجبة */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-10 text-right">
-              <SelectInput
-                name="category"
-                label="فئه الوجبة"
+              <MealCategoryStoreSelector
+                categoryValue={formData.category}
+                storeValue={formData.store}
+                stores={stores}
+                onCategoryChange={(value) =>
+                  handleInputChange("category", value)
+                }
+                onStoreChange={(value) => handleInputChange("store", value)}
                 className="w-full h-12 px-6 text-xl py-4"
-                value={formData.category}
-                onChange={(e) => handleInputChange("category", e.target.value)}
-                options={[
-                  { value: "appetizer", label: "مقبلات" },
-                  { value: "main", label: "أطباق رئيسية" },
-                  { value: "dessert", label: "حلويات" },
-                  { value: "beverage", label: "مشروبات" },
-                ]}
               />
-
-              <div>
-                {stores.length > 0 ? (
-                  <SelectInput
-                    name="store"
-                    label="اسم المتجر"
-                    className="w-full h-12 px-6 text-xl py-4"
-                    value={formData.store}
-                    onChange={(e) => handleInputChange("store", e.target.value)}
-                    options={stores}
-                    required
-                  />
-                ) : (
-                  <div className="text-gray-500">جاري تحميل المتاجر...</div>
-                )}
-              </div>
 
               <Inputs
                 name="name"

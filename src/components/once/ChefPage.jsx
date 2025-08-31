@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router";
-import axios from "axios";
+import { useParams, useNavigate } from "react-router";
+import apiClient from "../../utils/ApiClient";
 import PageWrapper from "../common/PageWrapper";
-import { api_url } from "../../utils/ApiClient";
 import {
   FaHeart,
   FaShareAlt,
@@ -40,9 +39,8 @@ const ChefPage = () => {
   const fetchChefData = async (page = 1) => {
     setLoading(true);
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(`${api_url}/chef/${id}?page=${page}`, {
-        headers: { Authorization: `Bearer ${token}` },
+      const response = await apiClient.get(`/chef/${id}`, {
+        params: { page },
       });
 
       const chefData = response.data;
@@ -125,7 +123,8 @@ const ChefPage = () => {
                   setChef((prev) => ({
                     ...prev,
                     isFollowed: isNowFollowing,
-                    totalFollowers: (prev.totalFollowers || 0) + (isNowFollowing ? 1 : -1),
+                    totalFollowers:
+                      (prev.totalFollowers || 0) + (isNowFollowing ? 1 : -1),
                   }))
                 }
               />
@@ -194,7 +193,10 @@ const ChefPage = () => {
                     setChef((prev) => ({
                       ...prev,
                       isFavorited: false,
-                      favoritesCount: Math.max((prev.favoritesCount || 1) - 1, 0),
+                      favoritesCount: Math.max(
+                        (prev.favoritesCount || 1) - 1,
+                        0
+                      ),
                     }))
                   }
                 />

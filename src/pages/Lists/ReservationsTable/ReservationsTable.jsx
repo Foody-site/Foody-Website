@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { IoEyeOutline } from "react-icons/io5";
 import { Pagination } from "../../../components/shared/Pagination/Pagination";
-import { api_url } from "../../../utils/ApiClient";
+import apiClient from "../../../utils/ApiClient";
 import { useNavigate } from "react-router";
 import ReservationDetailsModal from "../../../components/shared/popup/ReservationDetailsModal";
-import { formatBookingType, formatDate } from './../../../utils/Formatters';
+import { formatBookingType, formatDate } from "./../../../utils/Formatters";
 
 const formatStatus = (status) => {
   switch (status) {
@@ -52,43 +52,14 @@ const ReservationsTable = () => {
       setError(null);
 
       try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          throw new Error("لم يتم العثور على رمز المصادقة");
-        }
-
-        const url = new URL(`${api_url}/chef-booking`);
-
-        url.searchParams.append("page", currentPage.toString());
-        url.searchParams.append("take", "10");
-
-        console.log("Requesting URL:", url.toString());
-
-        const response = await fetch(url.toString(), {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
+        const response = await apiClient.get("/chef-booking", {
+          params: {
+            page: currentPage.toString(),
+            take: "10",
           },
         });
 
-        console.log("API Response Status:", response.status);
-
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => null);
-          console.log("Error data:", errorData);
-
-          const errorMessage =
-            errorData && errorData.message
-              ? Array.isArray(errorData.message)
-                ? errorData.message.join(", ")
-                : errorData.message
-              : `فشل في جلب البيانات (${response.status})`;
-
-          throw new Error(errorMessage);
-        }
-
-        const result = await response.json();
+        const result = response.data;
         console.log("API Result:", result);
 
         if (result && result.data) {

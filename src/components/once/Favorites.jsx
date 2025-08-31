@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import apiClient from "../../utils/ApiClient";
 import PageWrapper from "../common/PageWrapper";
-import { api_url } from "../../utils/ApiClient";
 import FoodCard from "../shared/cards/FoodCard";
 import ChefCard from "../shared/cards/ChefCard";
 import RecipeCard from "../shared/cards/RecipeCard";
@@ -50,8 +49,7 @@ const Favorites = () => {
     }
 
     try {
-      const response = await axios.get(`${api_url}/favorite`, {
-        headers: { Authorization: `Bearer ${token}` },
+      const response = await apiClient.get("/favorite", {
         params: {
           page: pagination.page,
           take: pagination.take,

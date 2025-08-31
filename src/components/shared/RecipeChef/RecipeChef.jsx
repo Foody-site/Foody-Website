@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import apiClient from "../../../utils/ApiClient";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { Link, useParams } from "react-router";
-import { api_url } from "../../../utils/ApiClient";
 import FavouriteRecipe from "../Favourites/FavouriteRecipe";
 import RecipeShare from "../Share/RecipeShare";
 
@@ -27,14 +26,10 @@ const RecipeChef = () => {
   const fetchRecipes = async (page = 1) => {
     setLoading(true);
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(`${api_url}/chef/${id}/recipes`, {
+      const response = await apiClient.get(`/chef/${id}/recipes`, {
         params: {
           page,
           take,
-        },
-        headers: {
-          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -69,7 +64,7 @@ const RecipeChef = () => {
         {loading
           ? Array.from({ length: 6 }).map((_, i) => <LoadingCard key={i} />)
           : recipes.length > 0
-            ? recipes.map((recipe, i) => (
+          ? recipes.map((recipe, i) => (
               <div
                 key={i}
                 className="relative bg-white rounded-2xl overflow-hidden shadow-lg font-sans"
@@ -108,10 +103,11 @@ const RecipeChef = () => {
 
                   <div>
                     <p
-                      className={`border p-2 rounded-md text-[16px] my-2 ${recipe.isAllergenic
+                      className={`border p-2 rounded-md text-[16px] my-2 ${
+                        recipe.isAllergenic
                           ? "text-red-500 border-red-500"
                           : "text-[#969393] border-[#969393]"
-                        }`}
+                      }`}
                     >
                       {recipe.isAllergenic
                         ? "تحتوي هذه الوصفة علي احد مسببات حساسية"
@@ -134,7 +130,7 @@ const RecipeChef = () => {
                 </div>
               </div>
             ))
-            : !loading && (
+          : !loading && (
               <p className="text-center w-full mt-4">
                 لا توجد وصفات لهذا الشيف.
               </p>
@@ -146,10 +142,11 @@ const RecipeChef = () => {
           <button
             onClick={() => handlePageChange(pagination.currentPage - 1)}
             disabled={pagination.currentPage === 1}
-            className={`w-10 h-10 border rounded flex items-center justify-center ${pagination.currentPage > 1
+            className={`w-10 h-10 border rounded flex items-center justify-center ${
+              pagination.currentPage > 1
                 ? "bg-primary-1 text-white"
                 : "border-primary-1 text-primary-1 opacity-50 cursor-not-allowed"
-              }`}
+            }`}
           >
             <FaArrowLeft />
           </button>
@@ -160,10 +157,11 @@ const RecipeChef = () => {
               <button
                 key={i}
                 onClick={() => handlePageChange(page)}
-                className={`w-10 h-10 border rounded flex items-center justify-center ${pagination.currentPage === page
+                className={`w-10 h-10 border rounded flex items-center justify-center ${
+                  pagination.currentPage === page
                     ? "bg-primary-1 text-white"
                     : "border-primary-1 text-primary-1 hover:bg-primary-1 hover:text-white"
-                  }`}
+                }`}
               >
                 {String(page).padStart(2, "0")}
               </button>
@@ -173,10 +171,11 @@ const RecipeChef = () => {
           <button
             onClick={() => handlePageChange(pagination.currentPage + 1)}
             disabled={pagination.currentPage === pagination.totalPages}
-            className={`w-10 h-10 border rounded flex items-center justify-center ${pagination.currentPage < pagination.totalPages
+            className={`w-10 h-10 border rounded flex items-center justify-center ${
+              pagination.currentPage < pagination.totalPages
                 ? "bg-primary-1 text-white"
                 : "border-primary-1 text-primary-1 opacity-50 cursor-not-allowed"
-              }`}
+            }`}
           >
             <FaArrowRight />
           </button>

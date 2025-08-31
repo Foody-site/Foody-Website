@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { FaReply, FaTimes } from "react-icons/fa";
-import axios from "axios";
-import { api_url } from "../../../utils/ApiClient";
+import apiClient from "../../../utils/ApiClient";
 
 const ReplyReviewButton = ({ ratingId, onReply }) => {
   const [showPopup, setShowPopup] = useState(false);
@@ -17,14 +16,11 @@ const ReplyReviewButton = ({ ratingId, onReply }) => {
     }
 
     setLoading(true);
-    const token = localStorage.getItem("token");
 
     try {
-      const result = await axios.post(
-        `${api_url}/store/${ratingId}/rates/response`,
-        { response: response.trim() },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const result = await apiClient.post(`/store/${ratingId}/rates/response`, {
+        response: response.trim(),
+      });
 
       if (onReply) {
         onReply(ratingId, response.trim());

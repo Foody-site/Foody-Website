@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router";
-import axios from "axios";
-import { api_url } from "../../utils/ApiClient";
+import apiClient from "../../utils/ApiClient";
 import Alert from "../shared/Alert/Alert";
 
 // القيم الثابتة المطلوبة
@@ -42,7 +41,7 @@ const AuthCallback = () => {
 
       // 2. إرسال طلب POST إلى /auth/state مع قيمة state
       console.log("Sending state to /auth/state API...");
-      const response = await axios.post(`${api_url}/auth/state`, { state });
+      const response = await apiClient.post("/auth/state", { state });
 
       console.log("Response received from /auth/state:", response.data);
 
@@ -206,8 +205,6 @@ const AuthCallback = () => {
           </div>
         )}
       </div>
-
-      
     </div>
   );
 };

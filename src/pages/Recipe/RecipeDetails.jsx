@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import apiClient from "../../utils/ApiClient";
 import PageWrapper from "../../components/common/PageWrapper";
-import { api_url } from "../../utils/ApiClient";
 import { useNavigate, useParams } from "react-router";
 import FollowChef from "../../components/shared/FollowChef/FollowChef";
 
@@ -16,14 +15,8 @@ const RecipeDetails = () => {
 
   useEffect(() => {
     if (id) {
-      const token = localStorage.getItem("token");
-
-      axios
-        .get(`${api_url}/recipe/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
+      apiClient
+        .get(`/recipe/${id}`)
         .then((res) => setRecipe(res.data))
         .catch((err) => console.error(err));
     }
@@ -85,21 +78,27 @@ const RecipeDetails = () => {
               {/* Stats */}
               <div className="flex justify-between items-center text-center border-y py-3 text-sm text-gray-700">
                 <div className="flex-1">
-                  <p className="font-bold text-gray-900">{chef?.totalRecipes || 0}</p>
+                  <p className="font-bold text-gray-900">
+                    {chef?.totalRecipes || 0}
+                  </p>
                   <p>عدد الوصفات</p>
                 </div>
 
                 <div className="h-10 w-px bg-gray-300"></div>
 
                 <div className="flex-1">
-                  <p className="font-bold text-gray-900">{chef?.totalFollowers || 0}</p>
+                  <p className="font-bold text-gray-900">
+                    {chef?.totalFollowers || 0}
+                  </p>
                   <p>عدد المتابعين</p>
                 </div>
 
                 <div className="h-10 w-px bg-gray-300"></div>
 
                 <div className="flex-1">
-                  <p className="font-bold text-gray-900">{chef?.totalViews || 0}</p>
+                  <p className="font-bold text-gray-900">
+                    {chef?.totalViews || 0}
+                  </p>
                   <p>عدد الزوار</p>
                 </div>
               </div>

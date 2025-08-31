@@ -4,13 +4,12 @@ import { FaPlus, FaTrash } from "react-icons/fa";
 import { TbCameraPlus } from "react-icons/tb";
 import Inputs from "../../../components/shared/inputs/Inputs";
 import CheckboxSelectInput from "../../../components/shared/inputs/CheckboxSelectInput";
-import axios from "axios";
+import apiClient from "../../../utils/ApiClient";
 import PreparationTimePicker from "../../../components/shared/inputs/PreparationTimePicker";
 import PreparationSteps from "../../../components/shared/inputs/PreparationSteps";
 import SelectInput from "../../../components/shared/inputs/SelectInput";
 import allergy from "../../../assets/allergy.webp";
 import TextAreaInput from "../../../components/shared/inputs/TextAreaInput ";
-import { api_url } from "../../../utils/ApiClient";
 import Button from "../../../components/shared/Buttons/Button";
 import Alert from "../../../components/shared/Alert/Alert";
 
@@ -68,13 +67,7 @@ const EditRecipe = () => {
     const fetchRecipe = async () => {
       setFetchLoading(true);
       try {
-        const token = localStorage.getItem("token");
-
-        const response = await axios.get(`${api_url}/recipe/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await apiClient.get(`/recipe/${id}`);
 
         const recipeData = response.data;
         console.log("Recipe data:", recipeData);
@@ -121,7 +114,7 @@ const EditRecipe = () => {
 
     const fetchRecipeTypes = async () => {
       try {
-        const response = await axios.get(`${api_url}/chef/recipe/types`);
+        const response = await apiClient.get("/chef/recipe/types");
         const formattedData = response.data.map((item) => ({
           value: item.id || item._id,
           label: item.name.ar,
@@ -386,9 +379,8 @@ const EditRecipe = () => {
     }
 
     try {
-      const response = await axios.patch(`${api_url}/recipe/${id}`, data, {
+      const response = await apiClient.patch(`/recipe/${id}`, data, {
         headers: {
-          Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
       });

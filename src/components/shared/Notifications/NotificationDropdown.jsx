@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { api_url } from "../../../utils/ApiClient";
+import apiClient from "../../../utils/ApiClient";
 
 const NotificationDropdown = ({ isOpen, onClose }) => {
   const [notifications, setNotifications] = useState([]);
@@ -59,19 +59,8 @@ const NotificationDropdown = ({ isOpen, onClose }) => {
         return;
       }
 
-      const response = await fetch(`${api_url}/notifications`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setNotifications(data.data || data || []);
-      } else {
-        console.error("Failed to fetch notifications:", response.status);
-      }
+      const response = await apiClient.get("/notifications");
+      setNotifications(response.data.data || response.data || []);
     } catch (error) {
       console.error("Error fetching notifications:", error);
     } finally {

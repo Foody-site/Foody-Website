@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
-import axios from "axios";
-import { api_url } from "../../../utils/ApiClient";
+import apiClient from "../../../utils/ApiClient";
 import Inputs from "../../../components/shared/inputs/Inputs";
 import SelectInput from "../../../components/shared/inputs/SelectInput";
 import TextAreaInput from "../../../components/shared/inputs/TextAreaInput ";
@@ -55,10 +54,7 @@ const ViewMeal = () => {
 
   const fetchMealData = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(`${api_url}/meal/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await apiClient.get(`/meal/${id}`);
 
       const meal = response.data;
       setFormData({
@@ -91,16 +87,11 @@ const ViewMeal = () => {
 
   const fetchStores = async () => {
     try {
-      const token = localStorage.getItem("token");
-
-      // Add pagination parameters as shown in the API documentation
-      const params = new URLSearchParams({
-        page: "1",
-        take: "25", // Get more stores to ensure we have all available
-      });
-
-      const response = await axios.get(`${api_url}/store/user?${params}`, {
-        headers: { Authorization: `Bearer ${token}` },
+      const response = await apiClient.get("/store/user", {
+        params: {
+          page: "1",
+          take: "25", // Get more stores to ensure we have all available
+        },
       });
 
       // Convert stores to options format for CheckboxSelectInput
@@ -167,10 +158,21 @@ const ViewMeal = () => {
                 value={formData.category}
                 disabled={true}
                 options={[
-                  { value: "appetizer", label: "مقبلات" },
-                  { value: "main", label: "أطباق رئيسية" },
-                  { value: "dessert", label: "حلويات" },
-                  { value: "beverage", label: "مشروبات" },
+                  { value: "Offers", label: "العروض" },
+                  { value: "News", label: "جديدنا" },
+                  { value: "Main Meals", label: "الوجبات الرئيسيه" },
+                  { value: "Side Meals", label: "الوجبات الفرعيه" },
+                  { value: "Drinks", label: "مشروبات" },
+                  { value: "Oriental Sweets", label: "حلويات شرقيه" },
+                  { value: "Western Sweets", label: "حلويات غربيه" },
+                  { value: "Other", label: "اخرى" },
+                  {
+                    value: "Baked Goods and Crackers",
+                    label: "المخبوزات والمقرمشات",
+                  },
+                  { value: "Diet Meals", label: "وجبات دايت" },
+                  { value: "Juices", label: "عصائر" },
+                  { value: "Ice Cream", label: "ايس كريم" },
                 ]}
               />
 

@@ -9,8 +9,7 @@ import { TiSocialFacebook } from "react-icons/ti";
 import { IoLogoWhatsapp } from "react-icons/io";
 import { GrInstagram } from "react-icons/gr";
 import SelectInput from "../../components/shared/inputs/SelectInput";
-import { api_url } from "../../utils/ApiClient";
-import axios from "axios";
+import apiClient from "../../utils/ApiClient";
 import CheckboxSelectInput from "../../components/shared/inputs/CheckboxSelectInput";
 import countriesData from "../../assets/countries.json";
 import TextAreaInput from "../../components/shared/inputs/TextAreaInput ";
@@ -88,7 +87,7 @@ const AddChef = () => {
   useEffect(() => {
     const fetchRecipeTypes = async () => {
       try {
-        const response = await axios.get(`${api_url}/chef/recipe/types`);
+        const response = await apiClient.get("/chef/recipe/types");
         const formattedData = response.data.map((item) => ({
           value: item.id, // Make sure this is the MongoDB ID
           label: item.name.ar,
@@ -281,12 +280,7 @@ const AddChef = () => {
       });
 
       if (!coverPicture && !profilePicture) {
-        const response = await axios.post(`${api_url}/chef`, chefData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await apiClient.post("/chef", chefData);
 
         setAlertMessage("تمت إضافة الشيف");
         setAlertSubMessage("تمت إضافة الشيف بنجاح!");
@@ -342,9 +336,8 @@ const AddChef = () => {
       if (profilePicture)
         formDataToSend.append("profilePicture", profilePicture);
 
-      const response = await axios.post(`${api_url}/chef`, formDataToSend, {
+      const response = await apiClient.post("/chef", formDataToSend, {
         headers: {
-          Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
       });

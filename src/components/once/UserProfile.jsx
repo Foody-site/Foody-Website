@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import apiClient from "../../utils/ApiClient";
 import { FaUser, FaCity } from "react-icons/fa";
 import { MdDateRange } from "react-icons/md";
 import { RiUserSettingsLine } from "react-icons/ri";
 import PageWrapper from "../common/PageWrapper";
-import { api_url } from "../../utils/ApiClient";
 
 const UserProfile = () => {
   const [user, setUser] = useState({
@@ -19,9 +18,7 @@ const UserProfile = () => {
       if (!token) return;
 
       try {
-        const res = await axios.get(`${api_url}/auth/me`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await apiClient.get("/auth/me");
         setUser(
           res.data || {
             fullName: "",

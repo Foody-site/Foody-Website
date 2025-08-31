@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import apiClient from "../../../utils/ApiClient";
 import { useParams, useNavigate } from "react-router";
 import { FaSnapchatGhost, FaTiktok } from "react-icons/fa";
 import { RiTwitterXFill } from "react-icons/ri";
@@ -9,7 +9,6 @@ import { IoLogoWhatsapp } from "react-icons/io";
 import { GrInstagram } from "react-icons/gr";
 import { PiGlobeThin } from "react-icons/pi";
 import Button from "./../../../components/shared/Buttons/Button";
-import { api_url } from "../../../utils/ApiClient";
 
 const timeOptions = [
   { label: "12:00 ص", value: "2025-06-12T00:00:00.000Z" },
@@ -72,11 +71,7 @@ const ViewStore = () => {
         }
 
         // استخدام واجهة API المخصصة للمتجر الفردي
-        const response = await axios.get(`${api_url}/store/${storeId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await apiClient.get(`/store/${storeId}`);
 
         if (!response || !response.data) {
           throw new Error("لا توجد بيانات في استجابة الخادم");

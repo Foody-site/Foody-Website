@@ -3,8 +3,7 @@ import { FaPlus, FaTrash } from "react-icons/fa";
 import { TbCameraPlus } from "react-icons/tb";
 import Inputs from "../../components/shared/inputs/Inputs";
 import CheckboxSelectInput from "../../components/shared/inputs/CheckboxSelectInput";
-import { api_url } from "../../utils/ApiClient";
-import axios from "axios";
+import apiClient from "../../utils/ApiClient";
 import PreparationTimePicker from "../../components/shared/inputs/PreparationTimePicker";
 import PreparationSteps from "../../components/shared/inputs/PreparationSteps";
 import SelectInput from "../../components/shared/inputs/SelectInput";
@@ -80,7 +79,7 @@ const AddRecipe = () => {
   useEffect(() => {
     const fetchRecipeTypes = async () => {
       try {
-        const response = await axios.get(`${api_url}/chef/recipe/types`);
+        const response = await apiClient.get("/chef/recipe/types");
         const formattedData = response.data.map((item) => ({
           value: item.id, // Make sure this is the MongoDB ID
           label: item.name.ar,
@@ -356,9 +355,8 @@ const AddRecipe = () => {
     }
 
     try {
-      const response = await axios.post(`${api_url}/recipe`, data, {
+      const response = await apiClient.post("/recipe", data, {
         headers: {
-          Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
       });

@@ -6,8 +6,7 @@ import { RiTwitterXFill } from "react-icons/ri";
 import { TiSocialFacebook } from "react-icons/ti";
 import { IoLogoWhatsapp } from "react-icons/io";
 import { GrInstagram } from "react-icons/gr";
-import { api_url } from "../../../utils/ApiClient";
-import axios from "axios";
+import apiClient from "../../../utils/ApiClient";
 
 // Helper function to format phone number (remove +966 prefix if exists)
 const formatPhoneNumber = (phoneNumber) => {
@@ -33,13 +32,7 @@ const ViewChef = () => {
     const fetchChefData = async () => {
       setLoading(true);
       try {
-        const token = localStorage.getItem("token");
-
-        const response = await axios.get(`${api_url}/chef/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await apiClient.get(`/chef/${id}`);
 
         setChef(response.data);
         console.log("Chef data:", response.data);

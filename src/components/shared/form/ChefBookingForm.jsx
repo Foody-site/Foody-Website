@@ -9,8 +9,7 @@ import {
     FaPhoneAlt,
 } from "react-icons/fa";
 import { BsCalendar2Date } from "react-icons/bs";
-import axios from "axios";
-import { api_url } from "../../../utils/ApiClient";
+import apiClient from "../../../utils/ApiClient";
 
 const BookingType = {
     ROMANTIC_NIGHT: "ROMANTIC_NIGHT",
@@ -22,10 +21,26 @@ const BookingType = {
 };
 
 const occasions = [
-    { label: "ليلة رومانسية", icon: <FaHeart />, value: BookingType.ROMANTIC_NIGHT },
-    { label: "تجمع عائلي", icon: <FaUserFriends />, value: BookingType.FAMILY_GATHERING },
-    { label: "حفلة تخرج", icon: <FaGraduationCap />, value: BookingType.GRADUATION_PARTY },
-    { label: "تجمع أصدقاء", icon: <BsCalendar2Date />, value: BookingType.FRIENDS_GATHERING },
+    {
+        label: "ليلة رومانسية",
+        icon: <FaHeart />,
+        value: BookingType.ROMANTIC_NIGHT,
+    },
+    {
+        label: "تجمع عائلي",
+        icon: <FaUserFriends />,
+        value: BookingType.FAMILY_GATHERING,
+    },
+    {
+        label: "حفلة تخرج",
+        icon: <FaGraduationCap />,
+        value: BookingType.GRADUATION_PARTY,
+    },
+    {
+        label: "تجمع أصدقاء",
+        icon: <BsCalendar2Date />,
+        value: BookingType.FRIENDS_GATHERING,
+    },
     { label: "عيد ميلاد", icon: <FaBirthdayCake />, value: BookingType.BIRTHDAY },
     { label: "أخرى", icon: <FaEllipsisH />, value: BookingType.OTHER },
 ];
@@ -51,37 +66,9 @@ const ChefBookingForm = ({ chefId }) => {
         </div>
     );
 
-    const validateForm = () => {
-        if (!bookingType) return "يرجى اختيار نوع المناسبة";
-        if (!bookingDate) return "يرجى تحديد تاريخ المناسبة";
-
-        const today = new Date();
-        const selectedDate = new Date(bookingDate);
-        if (selectedDate < today.setHours(0, 0, 0, 0)) {
-            return "لا يمكن اختيار تاريخ سابق";
-        }
-
-        if (!city) return "يرجى اختيار المدينة";
-
-        if (!numOfPeople || isNaN(numOfPeople) || parseInt(numOfPeople) <= 0) {
-            return "يرجى إدخال عدد مدعوين صحيح";
-        }
-
-        if (!phoneNumber) return "يرجى إدخال رقم التواصل";
-
-        const saudiPhoneRegex = /^(?:\+9665\d{8}|05\d{8})$/;
-
-        if (!saudiPhoneRegex.test(phoneNumber)) {
-            return "يرجى إدخال رقم جوال سعودي صحيح";
-        }
-        
-        return null;
-    };
-
     const handleSubmit = async () => {
-        const validationError = validateForm();
-        if (validationError) {
-            setModal({ message: validationError, isError: true });
+        if (!bookingType || !bookingDate || !city || !numOfPeople || !phoneNumber) {
+            setModal({ message: "يرجى تعبئة جميع الحقول", isError: true });
             return;
         }
 
@@ -97,11 +84,7 @@ const ChefBookingForm = ({ chefId }) => {
                 chef: chefId,
             };
 
-            await axios.post(`${api_url}/chef-booking`, body, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            await apiClient.post("/chef-booking", body);
 
             setModal({ message: "تم إرسال الحجز بنجاح", isError: false });
             setBookingType("");
@@ -124,7 +107,9 @@ const ChefBookingForm = ({ chefId }) => {
                 {occasions.map((item, idx) => (
                     <label
                         key={idx}
-                        className={`flex flex-row-reverse items-center justify-between border rounded-md px-4 py-3 cursor-pointer text-right ${bookingType === item.value ? "border-primary-1" : "border-gray-300"
+                        className={`flex flex-row-reverse items-center justify-between border rounded-md px-4 py-3 cursor-pointer text-right ${bookingType === item.value
+                                ? "border-primary-1"
+                                : "border-gray-300"
                             }`}
                         onClick={() => setBookingType(item.value)}
                     >
@@ -143,8 +128,11 @@ const ChefBookingForm = ({ chefId }) => {
                 ))}
             </div>
 
+            {/* تاريخ المناسبة */}
             <div className="mb-4">
-                <label className="block mb-2 text-right font-medium">تاريخ المناسبة</label>
+                <label className="block mb-2 text-right font-medium">
+                    تاريخ المناسبة
+                </label>
                 <div className={inputWrapper}>
                     {iconWithDivider(<BsCalendar2Date className="text-gray-500" />)}
                     <input
@@ -156,6 +144,7 @@ const ChefBookingForm = ({ chefId }) => {
                 </div>
             </div>
 
+            {/* المدينة */}
             <div className="mb-4">
                 <label className="block mb-2 text-right font-medium">المدينة</label>
                 <div className={inputWrapper}>
@@ -173,8 +162,11 @@ const ChefBookingForm = ({ chefId }) => {
                 </div>
             </div>
 
+            {/* عدد المدعوين */}
             <div className="mb-4">
-                <label className="block mb-2 text-right font-medium">عدد المدعوين</label>
+                <label className="block mb-2 text-right font-medium">
+                    عدد المدعوين
+                </label>
                 <div className={inputWrapper}>
                     {iconWithDivider(<FaUserFriends className="text-gray-500" />)}
                     <input
@@ -187,6 +179,7 @@ const ChefBookingForm = ({ chefId }) => {
                 </div>
             </div>
 
+            {/* رقم الهاتف */}
             <div className="mb-6">
                 <label className="block mb-2 text-right font-medium">رقم التواصل</label>
                 <div className={inputWrapper}>
