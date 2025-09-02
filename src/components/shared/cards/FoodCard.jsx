@@ -4,9 +4,45 @@ import { FaMapMarkerAlt, FaStar } from "react-icons/fa";
 import { MdVerified } from "react-icons/md";
 import FavoriteButton from "../Favourites/FavouriteStore";
 import StoreShare from "../Share/StoreShare";
+import { useState, useEffect } from "react";
+import { calculateDistance, formatDistance, getUserLocation, DEFAULT_LOCATION } from "../../../utils/LocationUtils";
 
 const FoodCard = ({ store = {}, loading = false, onUnfavorite }) => {
   const navigate = useNavigate();
+  const [userLocation, setUserLocation] = useState(null);
+  const [calculatedDistance, setCalculatedDistance] = useState(null);
+
+  // جلب موقع المستخدم
+  useEffect(() => {
+    getUserLocation()
+      .then((location) => {
+        setUserLocation(location);
+      })
+      .catch((error) => {
+        console.log("Error getting user location:", error);
+        // استخدام الموقع الافتراضي
+        setUserLocation(DEFAULT_LOCATION);
+      });
+  }, []);
+
+  // حساب المسافة عندما يتوفر موقع المستخدم وموقع المتجر
+  useEffect(() => {
+    if (
+      userLocation &&
+      store.location &&
+      store.location.coordinates &&
+      store.location.coordinates.length === 2
+    ) {
+      const [storeLng, storeLat] = store.location.coordinates;
+      const distance = calculateDistance(
+        userLocation.lat,
+        userLocation.lng,
+        storeLat,
+        storeLng
+      );
+      setCalculatedDistance(distance);
+    }
+  }, [userLocation, store.location]);
 
   const handleDetails = () => {
     if (store?.id) navigate(`/store/${store.id}`);
@@ -74,7 +110,13 @@ const FoodCard = ({ store = {}, loading = false, onUnfavorite }) => {
           </div>
           <div className="flex flex-row-reverse items-center gap-1 text-[#C7C7C7] border border-[#C7C7C7] px-2 py-0.5 rounded">
             <FaMapMarkerAlt />
-            <span>{store.distance || "2Km"}</span>
+            <span>
+              {calculatedDistance !== null
+                ? formatDistance(calculatedDistance)
+                : store.distance
+                ? `${store.distance}`
+                : "..."}
+            </span>
           </div>
         </div>
 
