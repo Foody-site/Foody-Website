@@ -9,6 +9,7 @@ import { IoLogoWhatsapp } from "react-icons/io";
 import { GrInstagram } from "react-icons/gr";
 import { PiGlobeThin } from "react-icons/pi";
 import Button from "./../../../components/shared/Buttons/Button";
+import Spinner from "../../../components/shared/Loading/Spinner";
 
 const timeOptions = [
   { label: "12:00 ص", value: "2025-06-12T00:00:00.000Z" },
@@ -139,16 +140,7 @@ const ViewStore = () => {
   }, [storeId]);
 
   if (loading) {
-    return (
-      <div className="flex flex-col min-h-screen">
-        <div className="flex-grow flex flex-col justify-center items-center">
-          <div className="w-16 h-16 border-4 border-gray-200 border-t-primary-1 rounded-full animate-spin mb-6"></div>
-          <div className="text-gray-700 text-xl">
-            جاري تحميل بيانات المتجر...
-          </div>
-        </div>
-      </div>
-    );
+    return <Spinner className="min-h-screen" />;
   }
 
   if (error) {

@@ -9,6 +9,7 @@ import Button from "../../../components/shared/Buttons/Button";
 import Alert from "../../../components/shared/Alert/Alert";
 import MealCategoryStoreSelector from "../../../components/shared/form/MealCategoryStoreSelector";
 import allergy from "../../../assets/allergy.webp";
+import Spinner from "../../../components/shared/Loading/Spinner";
 
 const EditMeal = () => {
   const navigate = useNavigate();
@@ -174,11 +175,7 @@ const EditMeal = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="text-xl">جاري تحميل بيانات الوجبة...</div>
-      </div>
-    );
+    return <Spinner className="min-h-screen" />;
   }
 
   return (

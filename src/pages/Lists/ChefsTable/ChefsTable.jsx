@@ -6,6 +6,7 @@ import { Pagination } from "../../../components/shared/Pagination/Pagination";
 import apiClient from "../../../utils/ApiClient";
 import { useNavigate } from "react-router";
 import Alert from "../../../components/shared/Alert/Alert";
+import Spinner from "../../../components/shared/Loading/Spinner";
 
 export const ChefsTable = forwardRef((props, ref) => {
   const { onChefsChange, onLoadingChange } = props;
@@ -144,7 +145,7 @@ export const ChefsTable = forwardRef((props, ref) => {
   };
 
   if (loading) {
-    return <div className="text-center py-12">جاري تحميل الشيفات...</div>;
+    return <Spinner className="py-12" />;
   }
 
   if (chefs.length === 0) {
@@ -271,7 +272,7 @@ export const ChefsTable = forwardRef((props, ref) => {
               >
                 {deleteLoading ? (
                   <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <Spinner size={4} color="border-white" className="h-auto" />
                     جاري الحذف...
                   </>
                 ) : (

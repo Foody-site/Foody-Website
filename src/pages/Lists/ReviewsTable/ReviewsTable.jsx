@@ -3,6 +3,7 @@ import { AiOutlineMessage } from "react-icons/ai";
 import apiClient from "../../../utils/ApiClient";
 import ReviewCard from "../../../components/shared/cards/ReviewCard";
 import { Pagination } from "./../../../components/shared/Pagination/Pagination";
+import Spinner from "../../../components/shared/Loading/Spinner";
 
 const ReviewsTable = () => {
   const [reviews, setReviews] = useState([]);
@@ -44,7 +45,7 @@ const ReviewsTable = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-12">جاري تحميل التقييمات...</div>;
+    return <Spinner className="py-12" />;
   }
 
   if (error) {

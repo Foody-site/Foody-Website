@@ -12,6 +12,7 @@ import ReviewsTable from "./ReviewsTable/ReviewsTable";
 import ReservationsTable from "./ReservationsTable/ReservationsTable";
 import MealsTable from "./MealsTable/MealsTable";
 import { useNavigate } from "react-router";
+import Spinner from "../../components/shared/Loading/Spinner";
 
 export default function List() {
   const [activeTab, setActiveTab] = useState("المتاجر");
@@ -65,7 +66,12 @@ export default function List() {
 
   const getButtonText = () => {
     if (activeTab === "الشيفات" && chefsLoading) {
-      return "جاري التحميل...";
+      return (
+        <div className="flex items-center gap-2">
+          <Spinner size={4} className="h-auto" />
+          جاري التحميل...
+        </div>
+      );
     }
 
     if (activeTab === "الشيفات" && hasChefs) {

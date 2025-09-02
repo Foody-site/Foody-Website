@@ -11,6 +11,7 @@ import { useNavigate } from "react-router";
 import { Pagination } from "../../../components/shared/Pagination/Pagination";
 import Alert from "../../../components/shared/Alert/Alert";
 import apiClient from "../../../utils/ApiClient";
+import Spinner from "../../../components/shared/Loading/Spinner";
 
 // Helper functions for formatting
 const formatPrice = (price) => {
@@ -242,7 +243,7 @@ const MealsTable = forwardRef((props, ref) => {
   };
 
   if (loading) {
-    return <div className="text-center py-12">جاري تحميل الوجبات...</div>;
+    return <Spinner className="py-12" />;
   }
 
   if (meals.length === 0) {
@@ -376,7 +377,7 @@ const MealsTable = forwardRef((props, ref) => {
               >
                 {deleteLoading ? (
                   <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <Spinner size={4} color="border-white" className="h-auto" />
                     جاري الحذف...
                   </>
                 ) : (

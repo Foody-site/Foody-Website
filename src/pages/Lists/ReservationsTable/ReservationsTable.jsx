@@ -5,6 +5,7 @@ import apiClient from "../../../utils/ApiClient";
 import { useNavigate } from "react-router";
 import ReservationDetailsModal from "../../../components/shared/popup/ReservationDetailsModal";
 import { formatBookingType, formatDate } from "./../../../utils/Formatters";
+import Spinner from "../../../components/shared/Loading/Spinner";
 
 const formatStatus = (status) => {
   switch (status) {
@@ -114,11 +115,7 @@ const ReservationsTable = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <span className="mr-2">جاري تحميل الحجوزات...</span>
-      </div>
-    );
+    return <Spinner className="py-12" />;
   }
 
   if (error) {

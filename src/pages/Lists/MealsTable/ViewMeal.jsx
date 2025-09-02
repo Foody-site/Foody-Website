@@ -7,6 +7,7 @@ import TextAreaInput from "../../../components/shared/inputs/TextAreaInput ";
 import Button from "../../../components/shared/Buttons/Button";
 import Alert from "../../../components/shared/Alert/Alert";
 import allergy from "../../../assets/allergy.webp";
+import Spinner from "../../../components/shared/Loading/Spinner";
 
 const ViewMeal = () => {
   const navigate = useNavigate();
@@ -109,11 +110,7 @@ const ViewMeal = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="text-xl">جاري تحميل بيانات الوجبة...</div>
-      </div>
-    );
+    return <Spinner className="min-h-screen" />;
   }
 
   return (
