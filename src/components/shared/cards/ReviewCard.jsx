@@ -1,9 +1,9 @@
 import React from "react";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { FaUser, FaStore } from "react-icons/fa";
-import DeleteReviewButton from "../buttons/DeleteReviewButton";
-import ReplyReviewButton from "../buttons/ReplyReviewButton";
-import ViewReplyButton from "../buttons/ViewReplyButton";
+import DeleteReviewButton from "../Buttons/DeleteReviewButton";
+import ReplyReviewButton from "../Buttons/ReplyReviewButton";
+import ViewReplyButton from "../Buttons/ViewReplyButton";
 
 const ReviewCard = ({ review, onDelete, onReply, showActions = false }) => {
   const renderStars = (rating) => {
