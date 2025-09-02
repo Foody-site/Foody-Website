@@ -119,7 +119,7 @@ const PriceFilter = ({ minPrice = 0, maxPrice = 2000, onPriceChange }) => {
   };
 
   return (
-    <div className="bg-white p-4 rounded-lg">
+    <div className="bg-[#FDF3F3] p-4 rounded-lg">
       <h3 className="text-black text-right mb-4 font-medium">السعر</h3>
 
       {/* Dual Range Slider قابل للتفاعل */}
