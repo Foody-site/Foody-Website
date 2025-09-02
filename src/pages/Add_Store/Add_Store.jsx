@@ -475,8 +475,7 @@ const Add_Store = () => {
           formData.append("shifts[1][endTime]", shift2To);
         }
       } else {
-        formData.append("shifts[0][startTime]", "2025-04-05T00:12:43.000Z");
-        formData.append("shifts[0][endTime]", "2025-04-05T22:16:43.000Z");
+        formData.append("shifts", null);
       }
 
       // إضافة أنواع الوجبات
