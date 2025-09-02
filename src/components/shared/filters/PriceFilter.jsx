@@ -123,7 +123,7 @@ const PriceFilter = ({ minPrice = 0, maxPrice = 2000, onPriceChange }) => {
       <h3 className="text-black text-right mb-4 font-medium">السعر</h3>
 
       {/* Dual Range Slider قابل للتفاعل */}
-      <div className="relative mb-6 py-2 pb-12">
+      <div className="relative mb-6 py-2 pb-16">
         {/* المسار الخلفي */}
         <div
           ref={sliderRef}
@@ -154,19 +154,22 @@ const PriceFilter = ({ minPrice = 0, maxPrice = 2000, onPriceChange }) => {
           {/* النقطة الحمراء في المنتصف */}
           <div className="w-2 h-2 bg-red-600 rounded-full"></div>
         </div>
-        
-        {/* السعر تحت الدائرة اليسرى */}
+        {/* السعر تحت الدائرة اليسرى في مربع أحمر مع مثلث */}
         <div
-          className="absolute text-gray-700 text-xs font-medium transform -translate-x-1/2"
+          className="absolute transform -translate-x-1/2"
           style={{
             left: `${getMinPercent()}%`,
             top: "30px",
             zIndex: 20,
           }}
         >
-          ريال {priceRange.min}
+          {/* المثلث الصغير المشير للأعلى */}
+          <div className="w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-red-600 mx-auto mb-1"></div>
+          {/* المربع الأحمر مع السعر */}
+          <div className="bg-red-600 text-white text-xs font-medium px-2 py-1 rounded whitespace-nowrap">
+            ريال {priceRange.min}
+          </div>
         </div>
-
         {/* الدائرة اليمنى (الحد الأقصى) - دائرة وردية مع نقطة حمراء */}
         <div
           className={`absolute w-6 h-6 bg-pink-200 rounded-full border-2 border-pink-300 shadow-lg transform -translate-y-1 cursor-grab flex items-center justify-center ${
@@ -182,17 +185,21 @@ const PriceFilter = ({ minPrice = 0, maxPrice = 2000, onPriceChange }) => {
           {/* النقطة الحمراء في المنتصف */}
           <div className="w-2 h-2 bg-red-600 rounded-full"></div>
         </div>
-        
-        {/* السعر تحت الدائرة اليمنى */}
+        {/* السعر تحت الدائرة اليمنى في مربع أحمر مع مثلث */}
         <div
-          className="absolute text-gray-700 text-xs font-medium transform -translate-x-1/2"
+          className="absolute transform -translate-x-1/2"
           style={{
             left: `${getMaxPercent()}%`,
             top: "30px",
             zIndex: 20,
           }}
         >
-          ريال {priceRange.max}
+          {/* المثلث الصغير المشير للأعلى */}
+          <div className="w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-red-600 mx-auto mb-1"></div>
+          {/* المربع الأحمر مع السعر */}
+          <div className="bg-red-600 text-white text-xs font-medium px-2 py-1 rounded whitespace-nowrap">
+            ريال {priceRange.max}
+          </div>
         </div>{" "}
         {/* Range inputs خفية للأكسسيبيليتي */}
         <input
