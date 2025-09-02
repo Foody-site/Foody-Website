@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import apiClient from "../../../utils/ApiClient";
 import Button from "../../../components/shared/Buttons/Button";
+import Spinner from "../../../components/shared/Loading/Spinner";
 
 const ViewRecipe = () => {
   const { id } = useParams();
@@ -32,13 +33,7 @@ const ViewRecipe = () => {
   }, [id]);
 
   if (loading) {
-    return (
-      <div className="flex flex-col min-h-screen">
-        <div className="flex-grow flex justify-center items-center">
-          <div className="text-xl">جاري تحميل بيانات الوصفة...</div>
-        </div>
-      </div>
-    );
+    return <Spinner className="min-h-screen" />;
   }
 
   if (error) {

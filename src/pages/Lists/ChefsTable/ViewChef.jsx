@@ -7,6 +7,7 @@ import { TiSocialFacebook } from "react-icons/ti";
 import { IoLogoWhatsapp } from "react-icons/io";
 import { GrInstagram } from "react-icons/gr";
 import apiClient from "../../../utils/ApiClient";
+import Spinner from "../../../components/shared/Loading/Spinner";
 
 // Helper function to format phone number (remove +966 prefix if exists)
 const formatPhoneNumber = (phoneNumber) => {
@@ -50,13 +51,7 @@ const ViewChef = () => {
   }, [id]);
 
   if (loading) {
-    return (
-      <div className="flex flex-col min-h-screen">
-        <div className="flex-grow flex justify-center items-center">
-          <div className="text-xl">جاري تحميل بيانات الشيف...</div>
-        </div>
-      </div>
-    );
+    return <Spinner className="min-h-screen" />;
   }
 
   if (error) {

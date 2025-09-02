@@ -12,6 +12,7 @@ import allergy from "../../../assets/allergy.webp";
 import TextAreaInput from "../../../components/shared/inputs/TextAreaInput ";
 import Button from "../../../components/shared/Buttons/Button";
 import Alert from "../../../components/shared/Alert/Alert";
+import Spinner from "../../../components/shared/Loading/Spinner";
 
 const EditRecipe = () => {
   const { id } = useParams();
@@ -399,13 +400,7 @@ const EditRecipe = () => {
   };
 
   if (fetchLoading) {
-    return (
-      <div className="flex flex-col min-h-screen">
-        <div className="flex-grow flex justify-center items-center">
-          <div className="text-xl">جاري تحميل بيانات الوصفة...</div>
-        </div>
-      </div>
-    );
+    return <Spinner className="min-h-screen" />;
   }
 
   const getPrepTimeHours = () => Math.floor(formData.preparationTime / 60);

@@ -6,6 +6,7 @@ import ChefCard from "../shared/cards/ChefCard";
 import RecipeCard from "../shared/cards/RecipeCard";
 import MealCard from "../shared/cards/MealCard";
 import { Pagination } from "../shared/Pagination/Pagination";
+import Spinner from "../shared/Loading/Spinner";
 
 const Favorites = () => {
   const [favorites, setFavorites] = useState([]);
@@ -86,11 +87,7 @@ const Favorites = () => {
 
   const renderFavorites = () => {
     if (loading) {
-      return (
-        <div className="flex justify-center items-center h-40">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-1"></div>
-        </div>
-      );
+      return <Spinner className="h-40" />;
     }
 
     if (favorites.length === 0) {

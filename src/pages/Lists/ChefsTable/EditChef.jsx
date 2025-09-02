@@ -15,6 +15,7 @@ import countriesData from "../../../assets/countries.json";
 import TextAreaInput from "../../../components/shared/inputs/TextAreaInput ";
 import Checkbox from "../../../components/shared/inputs/Checkbox";
 import Alert from "./../../../components/shared/Alert/Alert";
+import Spinner from "../../../components/shared/Loading/Spinner";
 
 // دالة لإزالة بادئة +966 من رقم الهاتف للعرض
 const formatPhoneForDisplay = (phoneNumber) => {
@@ -421,13 +422,7 @@ const EditChef = () => {
   };
 
   if (fetchLoading) {
-    return (
-      <div className="flex flex-col min-h-screen">
-        <div className="flex-grow flex justify-center items-center">
-          <div className="text-xl">جاري تحميل بيانات الشيف...</div>
-        </div>
-      </div>
-    );
+    return <Spinner className="min-h-screen" />;
   }
 
   return (

@@ -18,6 +18,7 @@ import { useNavigate, useParams, useLocation } from "react-router";
 import DeliveryForm from "../../../components/shared/form/DeliveryForm";
 import CheckBoxWorkRange from "../../../components/shared/inputs/CheckBoxWorkRange";
 import Alert from "./../../../components/shared/Alert/Alert";
+import Spinner from "../../../components/shared/Loading/Spinner";
 
 // دالة لإزالة مقدمة +966 من رقم الهاتف للعرض
 const formatPhoneForDisplay = (phone) => {
@@ -755,19 +756,7 @@ const EditStore = () => {
 
   // عرض شاشة التحميل
   if (fetchLoading) {
-    return (
-      <div className="flex flex-col min-h-screen">
-        <div className="flex-grow flex flex-col justify-center items-center">
-          <div className="w-16 h-16 border-4 border-gray-200 border-t-primary-1 rounded-full animate-spin mb-6"></div>
-          <div className="text-gray-700 text-xl font-medium">
-            جاري تحميل بيانات المتجر
-          </div>
-          <div className="text-gray-500 text-sm mt-2">
-            يرجى الانتظار قليلاً...
-          </div>
-        </div>
-      </div>
-    );
+    return <Spinner className="min-h-screen" />;
   }
 
   // عرض شاشة الخطأ إذا لم يتم العثور على معرف المتجر
