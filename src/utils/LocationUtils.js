@@ -105,12 +105,12 @@ export const getStoreStatus = (shifts) => {
   if (shifts === null) {
     return "مفتوح الآن";
   }
-  
+
   // إذا كانت shifts غير موجودة أو فارغة، نرجع null (مش نظهر حاجة)
   if (!shifts || !Array.isArray(shifts) || shifts.length === 0) {
     return null;
   }
-  
+
   // إذا كان المتجر مفتوح، نرجع "مفتوح الآن"، وإلا نرجع null
   return isStoreOpen(shifts) ? "مفتوح الآن" : null;
 };
@@ -125,12 +125,12 @@ export const hasValidShifts = (shifts) => {
   if (shifts === null) {
     return true;
   }
-  
+
   // إذا كانت shifts غير موجودة أو فارغة، نخفي العنصر
   if (!shifts || !Array.isArray(shifts) || shifts.length === 0) {
     return false;
   }
-  
+
   // إذا كان المتجر مفتوح، نظهر العنصر
   return isStoreOpen(shifts);
 };
