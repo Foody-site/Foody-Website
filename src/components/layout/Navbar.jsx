@@ -35,9 +35,11 @@ const Navbar = () => {
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
+    console.log("Stored user data:", storedUser); // للتشخيص
     if (storedUser) {
       try {
         const parsedUser = JSON.parse(storedUser);
+        console.log("Parsed user data:", parsedUser); // للتشخيص
         setFullName(parsedUser.fullName || "");
       } catch {
         setFullName("");
@@ -52,7 +54,20 @@ const Navbar = () => {
 
         const response = await apiClient.get("/auth/me");
         const userData = response.data;
+        console.log("API user data:", userData); // للتشخيص
         setUserRole(userData.role || "");
+
+        // تحديث الاسم الكامل من الـ API أيضاً
+        if (userData.fullName || userData.name || userData.displayName) {
+          const apiFullName =
+            userData.fullName || userData.name || userData.displayName;
+          setFullName(apiFullName);
+
+          // تحديث localStorage أيضاً
+          const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+          storedUser.fullName = apiFullName;
+          localStorage.setItem("user", JSON.stringify(storedUser));
+        }
       } catch (error) {
         console.error("Error fetching user data:", error);
       }

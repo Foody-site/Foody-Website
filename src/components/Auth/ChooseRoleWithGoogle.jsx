@@ -181,8 +181,15 @@ export default function ChooseRoleWithGoogle() {
       if (response.data && response.data.id) {
         setUserId(response.data.id);
 
-        // تخزين معلومات المستخدم
-        localStorage.setItem("user", JSON.stringify(response.data));
+        // تخزين معلومات المستخدم مع التأكد من حفظ الاسم الكامل
+        const userData = {
+          ...response.data,
+          fullName:
+            response.data.fullName ||
+            response.data.name ||
+            response.data.displayName,
+        };
+        localStorage.setItem("user", JSON.stringify(userData));
       } else {
         throw new Error("لم يتم العثور على معرف المستخدم");
       }
@@ -231,6 +238,16 @@ export default function ChooseRoleWithGoogle() {
         // تحديث معلومات المستخدم المخزنة محليًا
         const userData = JSON.parse(localStorage.getItem("user") || "{}");
         userData.role = selectedRole;
+
+        // التأكد من حفظ الاسم الكامل إذا كان متوفراً في الاستجابة
+        if (response.data.fullName) {
+          userData.fullName = response.data.fullName;
+        } else if (response.data.name) {
+          userData.fullName = response.data.name;
+        } else if (response.data.displayName) {
+          userData.fullName = response.data.displayName;
+        }
+
         localStorage.setItem("user", JSON.stringify(userData));
 
         // الآن يمكننا السماح بمغادرة الصفحة

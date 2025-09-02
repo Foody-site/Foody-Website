@@ -56,7 +56,13 @@ const AuthCallback = () => {
         localStorage.setItem("refreshToken", response.data.refreshToken);
 
         // 5. تخزين بيانات المستخدم
-        const userData = { role: response.data.role };
+        const userData = {
+          role: response.data.role,
+          fullName:
+            response.data.fullName ||
+            response.data.name ||
+            response.data.displayName,
+        };
         localStorage.setItem("user", JSON.stringify(userData));
 
         console.log("Tokens and user data stored successfully");
