@@ -10,6 +10,8 @@ import {
   formatDistance,
   getUserLocation,
   getStoreStatus,
+  hasValidShifts,
+  hasValidDistance,
   DEFAULT_LOCATION,
 } from "../../../utils/LocationUtils";
 
@@ -110,20 +112,24 @@ const FoodCard = ({ store = {}, loading = false, onUnfavorite }) => {
 
         {/* Status + Distance */}
         <div className="flex justify-end items-center gap-3 mb-3 text-xs text-gray-600">
-          <div className="flex flex-row-reverse items-center gap-1 text-[#C7C7C7] border border-[#C7C7C7] px-2 py-0.5 rounded">
-            <BiSolidTimer size={16} />
-            <span>{getStoreStatus(store.shifts)}</span>
-          </div>
-          <div className="flex flex-row-reverse items-center gap-1 text-[#C7C7C7] border border-[#C7C7C7] px-2 py-0.5 rounded">
-            <FaMapMarkerAlt />
-            <span>
-              {calculatedDistance !== null
-                ? formatDistance(calculatedDistance)
-                : store.distance
-                ? `${store.distance}`
-                : "..."}
-            </span>
-          </div>
+          {hasValidShifts(store.shifts) && (
+            <div className="flex flex-row-reverse items-center gap-1 text-[#C7C7C7] border border-[#C7C7C7] px-2 py-0.5 rounded">
+              <BiSolidTimer size={16} />
+              <span>{getStoreStatus(store.shifts)}</span>
+            </div>
+          )}
+          {hasValidDistance(calculatedDistance, store.distance) && (
+            <div className="flex flex-row-reverse items-center gap-1 text-[#C7C7C7] border border-[#C7C7C7] px-2 py-0.5 rounded">
+              <FaMapMarkerAlt />
+              <span>
+                {calculatedDistance !== null
+                  ? formatDistance(calculatedDistance)
+                  : store.distance
+                  ? `${store.distance}`
+                  : "..."}
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Actions */}

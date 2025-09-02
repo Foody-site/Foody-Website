@@ -81,8 +81,8 @@ export const isStoreOpen = (shifts) => {
   }
 
   const now = new Date();
-  
-  return shifts.some(shift => {
+
+  return shifts.some((shift) => {
     if (!shift.startTime || !shift.endTime) {
       return false;
     }
@@ -105,6 +105,26 @@ export const getStoreStatus = (shifts) => {
 };
 
 /**
+ * فحص إذا كان هناك شيفتات متاحة
+ * @param {Array} shifts - مصفوفة أوقات العمل
+ * @returns {boolean} true إذا كانت هناك شيفتات صالحة
+ */
+export const hasValidShifts = (shifts) => {
+  return shifts && Array.isArray(shifts) && shifts.length > 0;
+};
+
+/**
+ * فحص إذا كان هناك مسافة محسوبة أو متاحة
+ * @param {number} calculatedDistance - المسافة المحسوبة
+ * @param {string|number} storeDistance - المسافة من بيانات المتجر
+ * @returns {boolean} true إذا كانت هناك مسافة متاحة
+ */
+export const hasValidDistance = (calculatedDistance, storeDistance) => {
+  return (calculatedDistance !== null && calculatedDistance !== undefined) || 
+         (storeDistance !== null && storeDistance !== undefined && storeDistance !== "");
+};
+
+/**
  * الموقع الافتراضي (الرياض، السعودية)
  */
 export const DEFAULT_LOCATION = {
@@ -118,5 +138,7 @@ export default {
   getUserLocation,
   isStoreOpen,
   getStoreStatus,
+  hasValidShifts,
+  hasValidDistance,
   DEFAULT_LOCATION,
 };
