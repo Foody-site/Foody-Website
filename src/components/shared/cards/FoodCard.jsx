@@ -112,7 +112,7 @@ const FoodCard = ({ store = {}, loading = false, onUnfavorite }) => {
 
         {/* Status + Distance */}
         <div className="flex justify-end items-center gap-3 mb-3 text-xs text-gray-600">
-          {hasValidShifts(store.shifts) && (
+          {hasValidShifts(store.shifts) && getStoreStatus(store.shifts) && (
             <div className="flex flex-row-reverse items-center gap-1 text-[#C7C7C7] border border-[#C7C7C7] px-2 py-0.5 rounded">
               <BiSolidTimer size={16} />
               <span>{getStoreStatus(store.shifts)}</span>
