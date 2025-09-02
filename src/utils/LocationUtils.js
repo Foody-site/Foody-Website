@@ -120,8 +120,12 @@ export const hasValidShifts = (shifts) => {
  * @returns {boolean} true إذا كانت هناك مسافة متاحة
  */
 export const hasValidDistance = (calculatedDistance, storeDistance) => {
-  return (calculatedDistance !== null && calculatedDistance !== undefined) || 
-         (storeDistance !== null && storeDistance !== undefined && storeDistance !== "");
+  return (
+    (calculatedDistance !== null && calculatedDistance !== undefined) ||
+    (storeDistance !== null &&
+      storeDistance !== undefined &&
+      storeDistance !== "")
+  );
 };
 
 /**
