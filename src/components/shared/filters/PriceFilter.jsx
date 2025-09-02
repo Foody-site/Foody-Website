@@ -123,7 +123,7 @@ const PriceFilter = ({ minPrice = 0, maxPrice = 2000, onPriceChange }) => {
       <h3 className="text-black text-right mb-4 font-medium">السعر</h3>
 
       {/* Dual Range Slider قابل للتفاعل */}
-      <div className="relative mb-6 py-2 pb-6">
+      <div className="relative mb-6 py-2 pb-12">
         {/* المسار الخلفي */}
         <div
           ref={sliderRef}
@@ -139,31 +139,58 @@ const PriceFilter = ({ minPrice = 0, maxPrice = 2000, onPriceChange }) => {
             }}
           />
         </div>
-        {/* الدائرة اليسرى (الحد الأدنى) مع السعر بداخلها */}
+        {/* الدائرة اليسرى (الحد الأدنى) - دائرة وردية مع نقطة حمراء */}
         <div
-          className={`absolute bg-red-600 rounded-lg text-white text-xs font-medium px-2 py-1 transform -translate-y-1 cursor-grab flex items-center justify-center min-w-[50px] ${
+          className={`absolute w-6 h-6 bg-pink-200 rounded-full border-2 border-pink-300 shadow-lg transform -translate-y-1 cursor-grab flex items-center justify-center ${
             isDragging === "min" ? "cursor-grabbing scale-110" : ""
           }`}
           style={{
-            left: `calc(${getMinPercent()}% - 25px)`,
-            top: "-5px",
+            left: `calc(${getMinPercent()}% - 12px)`,
+            top: "0px",
             zIndex: isDragging === "min" ? 40 : 30,
           }}
           onMouseDown={(e) => handleMouseDown("min", e)}
         >
+          {/* النقطة الحمراء في المنتصف */}
+          <div className="w-2 h-2 bg-red-600 rounded-full"></div>
+        </div>
+        
+        {/* السعر تحت الدائرة اليسرى */}
+        <div
+          className="absolute text-gray-700 text-xs font-medium transform -translate-x-1/2"
+          style={{
+            left: `${getMinPercent()}%`,
+            top: "30px",
+            zIndex: 20,
+          }}
+        >
           ريال {priceRange.min}
         </div>
-        {/* الدائرة اليمنى (الحد الأقصى) مع السعر بداخلها */}
+
+        {/* الدائرة اليمنى (الحد الأقصى) - دائرة وردية مع نقطة حمراء */}
         <div
-          className={`absolute bg-red-600 rounded-lg text-white text-xs font-medium px-2 py-1 transform -translate-y-1 cursor-grab flex items-center justify-center min-w-[50px] ${
+          className={`absolute w-6 h-6 bg-pink-200 rounded-full border-2 border-pink-300 shadow-lg transform -translate-y-1 cursor-grab flex items-center justify-center ${
             isDragging === "max" ? "cursor-grabbing scale-110" : ""
           }`}
           style={{
-            left: `calc(${getMaxPercent()}% - 25px)`,
-            top: "-5px",
+            left: `calc(${getMaxPercent()}% - 12px)`,
+            top: "0px",
             zIndex: isDragging === "max" ? 40 : 30,
           }}
           onMouseDown={(e) => handleMouseDown("max", e)}
+        >
+          {/* النقطة الحمراء في المنتصف */}
+          <div className="w-2 h-2 bg-red-600 rounded-full"></div>
+        </div>
+        
+        {/* السعر تحت الدائرة اليمنى */}
+        <div
+          className="absolute text-gray-700 text-xs font-medium transform -translate-x-1/2"
+          style={{
+            left: `${getMaxPercent()}%`,
+            top: "30px",
+            zIndex: 20,
+          }}
         >
           ريال {priceRange.max}
         </div>{" "}
