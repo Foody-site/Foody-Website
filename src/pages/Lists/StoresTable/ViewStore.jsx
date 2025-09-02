@@ -106,7 +106,9 @@ const ViewStore = () => {
         }
 
         // Set work time type
-        if (storeData.shifts && Array.isArray(storeData.shifts)) {
+        if (storeData.shifts === null) {
+          setWorkTimeType("open");
+        } else if (storeData.shifts && Array.isArray(storeData.shifts)) {
           if (storeData.shifts.length === 0) {
             setWorkTimeType("open");
           } else if (storeData.shifts.length === 1) {
@@ -659,7 +661,7 @@ const ViewStore = () => {
               <div className="mb-6 text-right">
                 <div className="bg-gray-100 text-gray-700 px-4 py-2 rounded-md inline-block">
                   {workTimeType === "open"
-                    ? "مفتوح 7 / 24"
+                    ? "مفتوح 24/7"
                     : workTimeType === "double"
                     ? "دوامين"
                     : workTimeType === "single"
