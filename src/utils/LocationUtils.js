@@ -97,19 +97,29 @@ export const isStoreOpen = (shifts) => {
 
 /**
  * الحصول على نص حالة المتجر
- * @param {Array} shifts - مصفوفة أوقات العمل
+ * @param {Array|null} shifts - مصفوفة أوقات العمل أو null
  * @returns {string} نص حالة المتجر
  */
 export const getStoreStatus = (shifts) => {
+  // إذا كانت shifts = null، فالمتجر مفتوح
+  if (shifts === null) {
+    return "مفتوح الآن";
+  }
+  
   return isStoreOpen(shifts) ? "مفتوح الآن" : "مغلق الآن";
 };
 
 /**
- * فحص إذا كان هناك شيفتات متاحة
- * @param {Array} shifts - مصفوفة أوقات العمل
- * @returns {boolean} true إذا كانت هناك شيفتات صالحة
+ * فحص إذا كان هناك شيفتات متاحة أو null (مفتوح دائماً)
+ * @param {Array|null} shifts - مصفوفة أوقات العمل أو null
+ * @returns {boolean} true إذا كانت هناك شيفتات صالحة أو null
  */
 export const hasValidShifts = (shifts) => {
+  // إذا كانت shifts = null، نعتبرها صالحة (مفتوح دائماً)
+  if (shifts === null) {
+    return true;
+  }
+  
   return shifts && Array.isArray(shifts) && shifts.length > 0;
 };
 
