@@ -5,7 +5,13 @@ import { MdVerified } from "react-icons/md";
 import FavoriteButton from "../Favourites/FavouriteStore";
 import StoreShare from "../Share/StoreShare";
 import { useState, useEffect } from "react";
-import { calculateDistance, formatDistance, getUserLocation, DEFAULT_LOCATION } from "../../../utils/LocationUtils";
+import {
+  calculateDistance,
+  formatDistance,
+  getUserLocation,
+  getStoreStatus,
+  DEFAULT_LOCATION,
+} from "../../../utils/LocationUtils";
 
 const FoodCard = ({ store = {}, loading = false, onUnfavorite }) => {
   const navigate = useNavigate();
@@ -106,7 +112,7 @@ const FoodCard = ({ store = {}, loading = false, onUnfavorite }) => {
         <div className="flex justify-end items-center gap-3 mb-3 text-xs text-gray-600">
           <div className="flex flex-row-reverse items-center gap-1 text-[#C7C7C7] border border-[#C7C7C7] px-2 py-0.5 rounded">
             <BiSolidTimer size={16} />
-            <span>مفتوح الآن</span>
+            <span>{getStoreStatus(store.shifts)}</span>
           </div>
           <div className="flex flex-row-reverse items-center gap-1 text-[#C7C7C7] border border-[#C7C7C7] px-2 py-0.5 rounded">
             <FaMapMarkerAlt />

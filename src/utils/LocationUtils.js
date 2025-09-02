@@ -45,12 +45,12 @@ export const getUserLocation = (options = {}) => {
     enableHighAccuracy: true,
     timeout: 10000,
     maximumAge: 300000, // 5 دقائق
-    ...options
+    ...options,
   };
 
   return new Promise((resolve, reject) => {
     if (!navigator.geolocation) {
-      reject(new Error('Geolocation is not supported'));
+      reject(new Error("Geolocation is not supported"));
       return;
     }
 
@@ -59,7 +59,7 @@ export const getUserLocation = (options = {}) => {
         resolve({
           lat: position.coords.latitude,
           lng: position.coords.longitude,
-          accuracy: position.coords.accuracy
+          accuracy: position.coords.accuracy,
         });
       },
       (error) => {
@@ -71,16 +71,52 @@ export const getUserLocation = (options = {}) => {
 };
 
 /**
+ * فحص إذا كان المتجر مفتوح الآن بناءً على shifts
+ * @param {Array} shifts - مصفوفة أوقات العمل
+ * @returns {boolean} true إذا كان المتجر مفتوح الآن
+ */
+export const isStoreOpen = (shifts) => {
+  if (!shifts || !Array.isArray(shifts) || shifts.length === 0) {
+    return false;
+  }
+
+  const now = new Date();
+  
+  return shifts.some(shift => {
+    if (!shift.startTime || !shift.endTime) {
+      return false;
+    }
+
+    const startTime = new Date(shift.startTime);
+    const endTime = new Date(shift.endTime);
+
+    // التحقق من أن الوقت الحالي بين وقت البداية والنهاية
+    return now >= startTime && now <= endTime;
+  });
+};
+
+/**
+ * الحصول على نص حالة المتجر
+ * @param {Array} shifts - مصفوفة أوقات العمل
+ * @returns {string} نص حالة المتجر
+ */
+export const getStoreStatus = (shifts) => {
+  return isStoreOpen(shifts) ? "مفتوح الآن" : "مغلق الآن";
+};
+
+/**
  * الموقع الافتراضي (الرياض، السعودية)
  */
 export const DEFAULT_LOCATION = {
   lat: 24.7136,
-  lng: 46.6753
+  lng: 46.6753,
 };
 
 export default {
   calculateDistance,
   formatDistance,
   getUserLocation,
-  DEFAULT_LOCATION
+  isStoreOpen,
+  getStoreStatus,
+  DEFAULT_LOCATION,
 };
