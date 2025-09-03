@@ -4,6 +4,7 @@ import { Link } from "react-router";
 import FavouriteRecipe from "../shared/Favourites/FavouriteRecipe";
 import RecipeShare from "../shared/Share/RecipeShare";
 import Pagination2 from "../common/Pagination2";
+import NoData from "../shared/NoData/NoData";
 
 const LoadingCard = () => (
   <div className="bg-white rounded-lg shadow-md overflow-hidden flex justify-center items-center h-72">
@@ -138,7 +139,14 @@ const AllRecipes = ({ searchParams = {} }) => {
             </div>
           ))
         ) : (
-          <p className="text-center w-full mt-4">لا توجد وصفات متاحة حاليًا.</p>
+          <div className="col-span-full">
+            <NoData
+              message="لا توجد وصفات متاحة حالياً"
+              description="جرب البحث عن وصفات أخرى أو تصفح الفئات المختلفة"
+              icon="utensils"
+              size="large"
+            />
+          </div>
         )}
       </div>
 

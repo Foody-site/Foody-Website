@@ -12,6 +12,7 @@ import apiClient from "../../../utils/ApiClient";
 import { useNavigate } from "react-router";
 import Alert from "./../../../components/shared/Alert/Alert";
 import Spinner from "../../../components/shared/Loading/Spinner";
+import NoData from "../../../components/shared/NoData/NoData";
 
 export const RecipesTable = forwardRef((props, ref) => {
   const { onRecipesChange, onLoadingChange } = props;
@@ -200,7 +201,13 @@ export const RecipesTable = forwardRef((props, ref) => {
   }
 
   if (recipes.length === 0) {
-    return <div className="text-center py-12">لا توجد وصفات متاحة</div>;
+    return (
+      <NoData
+        message="لا توجد وصفات متاحة"
+        description="لم يتم إضافة أي وصفات من قبل الشيفات حتى الآن"
+        icon="utensils"
+      />
+    );
   }
 
   console.log("Current recipes state:", recipes);
@@ -276,7 +283,15 @@ export const RecipesTable = forwardRef((props, ref) => {
 
                   {/* Description */}
                   <td className="px-4 py-3 text-gray-700 text-sm text-right border border-gray-300">
-                    {recipe?.description || "لا يوجد وصف"}
+                    <div className="max-w-xs">
+                      {recipe?.description ? (
+                        <span className="truncate">{recipe.description}</span>
+                      ) : (
+                        <span className="text-gray-400 text-xs">
+                          لا يوجد وصف
+                        </span>
+                      )}
+                    </div>
                   </td>
 
                   {/* Recipe Types */}

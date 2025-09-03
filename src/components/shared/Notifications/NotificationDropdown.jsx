@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import apiClient from "../../../utils/ApiClient";
+import NoData from "../NoData/NoData";
 
 const NotificationDropdown = ({ isOpen, onClose }) => {
   const [notifications, setNotifications] = useState([]);
@@ -143,8 +144,13 @@ const NotificationDropdown = ({ isOpen, onClose }) => {
           ))}
         </div>
       ) : (
-        <div className="p-8 text-center">
-          <p className="text-gray-500">لا توجد إشعارات جديدة</p>
+        <div className="p-4">
+          <NoData
+            message="لا توجد إشعارات جديدة"
+            description="ستصلك الإشعارات هنا عند وجود تحديثات جديدة"
+            icon="restaurant"
+            size="small"
+          />
         </div>
       )}
     </div>

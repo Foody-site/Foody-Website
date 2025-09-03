@@ -4,6 +4,7 @@ import apiClient from "../../../utils/ApiClient";
 import ReviewCard from "../../../components/shared/cards/ReviewCard";
 import { Pagination } from "./../../../components/shared/Pagination/Pagination";
 import Spinner from "../../../components/shared/Loading/Spinner";
+import NoData from "../../../components/shared/NoData/NoData";
 
 const ReviewsTable = () => {
   const [reviews, setReviews] = useState([]);
@@ -67,14 +68,13 @@ const ReviewsTable = () => {
       {/* Reviews Grid - 4 كاردات في الصف الواحد، 8 في الصفحة */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
         {reviews.length === 0 ? (
-          <div className="col-span-full text-center py-12">
-            <AiOutlineMessage className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              لا توجد تقييمات
-            </h3>
-            <p className="text-gray-600">
-              لم يتم العثور على أي تقييمات حتى الآن
-            </p>
+          <div className="col-span-full">
+            <NoData
+              message="لا توجد تقييمات"
+              description="لم يتم العثور على أي تقييمات حتى الآن"
+              icon="restaurant"
+              size="medium"
+            />
           </div>
         ) : (
           reviews.map((review) => (

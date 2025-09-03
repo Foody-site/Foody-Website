@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import apiClient from "../../utils/ApiClient";
 import FoodCard from "../shared/cards/FoodCard";
 import Pagination2 from "../common/Pagination2";
+import NoData from "../shared/NoData/NoData";
 
 const Store = ({ searchTerm, categoryType = "restaurant" }) => {
   const [stores, setStores] = useState([]);
@@ -138,7 +139,14 @@ const Store = ({ searchTerm, categoryType = "restaurant" }) => {
             />
           ))
         ) : (
-          <p className="text-center w-full mt-4">لا توجد متاجر متاحة حاليًا.</p>
+          <div className="col-span-full">
+            <NoData
+              message="لا توجد متاجر متاحة حالياً"
+              description="جرب البحث عن متاجر أخرى أو تغيير الفئة"
+              icon="restaurant"
+              size="large"
+            />
+          </div>
         )}
       </div>
 

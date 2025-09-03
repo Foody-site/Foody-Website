@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router";
 import apiClient from "../../../utils/ApiClient";
 import Button from "../../../components/shared/Buttons/Button";
 import Spinner from "../../../components/shared/Loading/Spinner";
+import NoData from "../../../components/shared/NoData/NoData";
 
 const ViewRecipe = () => {
   const { id } = useParams();
@@ -87,7 +88,11 @@ const ViewRecipe = () => {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="text-gray-500">لا توجد صورة للوصفة</div>
+              <NoData
+                message="لا توجد صورة للوصفة"
+                size="medium"
+                icon="utensils"
+              />
             )}
           </div>
 
@@ -229,8 +234,13 @@ const ViewRecipe = () => {
                     </div>
                   ))
                 ) : (
-                  <div className="text-gray-500 text-center p-4">
-                    لا توجد خطوات تحضير مسجلة
+                  <div className="p-4">
+                    <NoData
+                      message="لا توجد خطوات تحضير مسجلة"
+                      description="لم يتم إضافة خطوات تحضير لهذه الوصفة"
+                      icon="utensils"
+                      size="small"
+                    />
                   </div>
                 )}
               </div>
@@ -290,8 +300,13 @@ const ViewRecipe = () => {
                     </div>
                   ))
                 ) : (
-                  <div className="text-gray-500 text-center p-4">
-                    لا توجد مكونات مسجلة
+                  <div className="p-4">
+                    <NoData
+                      message="لا توجد مكونات مسجلة"
+                      description="لم يتم إضافة مكونات لهذه الوصفة"
+                      icon="utensils"
+                      size="small"
+                    />
                   </div>
                 )}
               </div>

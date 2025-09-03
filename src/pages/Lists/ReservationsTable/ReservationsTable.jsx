@@ -6,6 +6,7 @@ import { useNavigate } from "react-router";
 import ReservationDetailsModal from "../../../components/shared/popup/ReservationDetailsModal";
 import { formatBookingType, formatDate } from "./../../../utils/Formatters";
 import Spinner from "../../../components/shared/Loading/Spinner";
+import NoData from "../../../components/shared/NoData/NoData";
 
 const formatStatus = (status) => {
   switch (status) {
@@ -120,21 +121,23 @@ const ReservationsTable = () => {
 
   if (error) {
     return (
-      <div className="text-center py-12">
-        <p className="mb-4 text-lg text-gray-700">لا يمكن جلب البيانات</p>
-        <p className="mb-4 text-sm text-red-500">{error}</p>
-        <button
-          onClick={handleRetry}
-          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-        >
-          إعادة المحاولة
-        </button>
-      </div>
+      <NoData
+        message="لا يمكن جلب البيانات"
+        description="حدث خطأ أثناء تحميل الحجوزات. يرجى المحاولة مرة أخرى"
+        icon="restaurant"
+        size="large"
+      />
     );
   }
 
   if (reservations.length === 0) {
-    return <div className="text-center py-12">لا توجد حجوزات متاحة</div>;
+    return (
+      <NoData
+        message="لا توجد حجوزات متاحة"
+        description="لم يتم حجز أي مواعيد مع الشيفات حتى الآن"
+        icon="restaurant"
+      />
+    );
   }
 
   return (

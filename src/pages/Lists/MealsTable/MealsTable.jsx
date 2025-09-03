@@ -12,6 +12,7 @@ import { Pagination } from "../../../components/shared/Pagination/Pagination";
 import Alert from "../../../components/shared/Alert/Alert";
 import apiClient from "../../../utils/ApiClient";
 import Spinner from "../../../components/shared/Loading/Spinner";
+import NoData from "../../../components/shared/NoData/NoData";
 
 // Helper functions for formatting
 const formatPrice = (price) => {
@@ -247,7 +248,13 @@ const MealsTable = forwardRef((props, ref) => {
   }
 
   if (meals.length === 0) {
-    return <div className="text-center py-12">لا توجد وجبات متاحة</div>;
+    return (
+      <NoData
+        message="لا توجد وجبات متاحة"
+        description="لم يتم إضافة أي وجبات للمطعم حتى الآن. ابدأ بإضافة الوجبات"
+        icon="utensils"
+      />
+    );
   }
 
   console.log("Current meals state:", meals);
