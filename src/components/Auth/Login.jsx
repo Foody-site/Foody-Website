@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import apiClient, { api_url } from "../../utils/ApiClient";
 import { setAuthData } from "../../utils/AuthHelpers";
 import Button from "../shared/Buttons/Button";
@@ -8,10 +8,6 @@ import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router";
 import TestimonialCard from "../shared/Testimonials/TestimonialCard";
 import Alert from "../shared/Alert/Alert";
-
-// القيم الثابتة المطلوبة
-const CURRENT_DATE_TIME = "2025-06-19 18:52:23";
-const CURRENT_USER_LOGIN = "Amr3011";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -27,21 +23,11 @@ const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // طباعة المعلومات الثابتة في وحدة التحكم
-    console.log(
-      `Current Date and Time (UTC - YYYY-MM-DD HH:MM:SS formatted): ${CURRENT_DATE_TIME}`
-    );
-    console.log(`Current User's Login: ${CURRENT_USER_LOGIN}`);
-  }, []);
-
   const handleGoogleLogin = () => {
     setGoogleLoading(true);
 
     try {
       console.log("Initiating Google login");
-      console.log(`Current Date and Time: ${CURRENT_DATE_TIME}`);
-      console.log(`Current User Login: ${CURRENT_USER_LOGIN}`);
 
       // إعادة توجيه المستخدم إلى نقطة نهاية مصادقة Google
       window.location.href = `${api_url}/auth/google`;
@@ -180,16 +166,14 @@ const Login = () => {
                 />
               </div>
 
-              <div className="flex justify-between items-center mb-3 text-sm text-gray-600">
-                <label className="flex items-center gap-2">
-                  <input type="checkbox" className="w-4 h-4 accent-primary-1" />
-                  تذكرني
-                </label>
-                <a href="#" className="text-primary-1 hover:underline">
+              <div className="flex justify-end items-center mb-3 text-sm text-gray-600">
+                <a
+                  href="#"
+                  className="text-primary-1 hover:underline text-right justify-end"
+                >
                   نسيت كلمة المرور؟
                 </a>
               </div>
-
               <Button
                 label={loading ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}
                 className="w-full bg-primary-1 hover:bg-hover_primary-1 text-white"
@@ -222,7 +206,7 @@ const Login = () => {
                   disabled={googleLoading || loading}
                   type="button"
                   aria-label="تسجيل الدخول باستخدام Google"
-                  title={`تسجيل الدخول باستخدام Google (${CURRENT_USER_LOGIN} - ${CURRENT_DATE_TIME})`}
+                  title="تسجيل الدخول باستخدام Google"
                 >
                   {googleLoading ? (
                     <div className="absolute inset-0 flex items-center justify-center">
@@ -233,10 +217,7 @@ const Login = () => {
                     size={24}
                     className={`w-6 h-6 ${googleLoading ? "opacity-30" : ""}`}
                   />
-                  <span className="sr-only">
-                    تسجيل الدخول باستخدام Google (التاريخ: {CURRENT_DATE_TIME},
-                    المستخدم: {CURRENT_USER_LOGIN})
-                  </span>
+                  <span className="sr-only">تسجيل الدخول باستخدام Google</span>
                 </button>
               </div>
             </div>
