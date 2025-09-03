@@ -3,10 +3,6 @@ import { useNavigate, useLocation } from "react-router";
 import apiClient from "../../utils/ApiClient";
 import Alert from "../shared/Alert/Alert";
 
-// القيم الثابتة المطلوبة
-const CURRENT_DATE_TIME = "2025-06-19 18:14:13";
-const CURRENT_USER_LOGIN = "Amr3011";
-
 const AuthCallback = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -18,11 +14,6 @@ const AuthCallback = () => {
   const [alertSubMessage, setAlertSubMessage] = useState("");
 
   useEffect(() => {
-    console.log(
-      `Current Date and Time (UTC - YYYY-MM-DD HH:MM:SS formatted): ${CURRENT_DATE_TIME}`
-    );
-    console.log(`Current User's Login: ${CURRENT_USER_LOGIN}`);
-
     handleCallback();
   }, []);
 
