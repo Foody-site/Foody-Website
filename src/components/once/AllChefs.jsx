@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import apiClient from "../../utils/ApiClient";
 import Pagination2 from "../common/Pagination2";
 import ChefCard from "../shared/cards/ChefCard";
+import NoData from "../shared/NoData/NoData";
 
 const LoadingCard = () => (
   <div className="bg-white p-4 rounded-lg shadow-md border h-72 flex justify-center items-center">
@@ -70,7 +71,14 @@ const AllChefs = ({ searchParams = {} }) => {
         ) : chefs.length > 0 ? (
           chefs.map((chef) => <ChefCard key={chef.id} chef={chef} />)
         ) : (
-          <p className="text-center w-full mt-4">لا توجد نتائج حالياً</p>
+          <div className="col-span-full">
+            <NoData
+              message="لا توجد شيفات متاحة حالياً"
+              description="جرب البحث عن شيفات آخرين أو تصفح الفئات المختلفة"
+              icon="utensils"
+              size="large"
+            />
+          </div>
         )}
       </div>
 

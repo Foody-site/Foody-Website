@@ -7,6 +7,7 @@ import RecipeCard from "../shared/cards/RecipeCard";
 import MealCard from "../shared/cards/MealCard";
 import { Pagination } from "../shared/Pagination/Pagination";
 import Spinner from "../shared/Loading/Spinner";
+import NoData from "../shared/NoData/NoData";
 
 const Favorites = () => {
   const [favorites, setFavorites] = useState([]);
@@ -92,8 +93,13 @@ const Favorites = () => {
 
     if (favorites.length === 0) {
       return (
-        <div className="text-center py-8 text-gray-500">
-          <p className="text-lg">لا توجد عناصر مفضلة</p>
+        <div className="py-8">
+          <NoData
+            message="لا توجد عناصر مفضلة"
+            description="أضف بعض الوجبات أو الوصفات أو المطاعم إلى المفضلة لتظهر هنا"
+            icon="utensils"
+            size="large"
+          />
         </div>
       );
     }

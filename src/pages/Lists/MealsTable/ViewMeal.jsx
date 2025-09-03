@@ -8,6 +8,7 @@ import Button from "../../../components/shared/Buttons/Button";
 import Alert from "../../../components/shared/Alert/Alert";
 import allergy from "../../../assets/allergy.webp";
 import Spinner from "../../../components/shared/Loading/Spinner";
+import NoData from "../../../components/shared/NoData/NoData";
 
 const ViewMeal = () => {
   const navigate = useNavigate();
@@ -301,7 +302,12 @@ const ViewMeal = () => {
                       />
                     ) : (
                       <div className="w-[80%] h-40 bg-gray-200 mx-auto rounded-md flex items-center justify-center">
-                        <span className="text-gray-500">لا توجد صورة</span>
+                        <NoData
+                          message="لا توجد صورة"
+                          description=""
+                          icon="utensils"
+                          size="small"
+                        />
                       </div>
                     )}
                     <p className="text-gray-600 mt-4">

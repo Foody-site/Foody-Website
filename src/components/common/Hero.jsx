@@ -4,6 +4,7 @@ import { Link } from "react-router";
 import PageWrapper from "./PageWrapper";
 import Slider from "./Slider";
 import MealCard from "../shared/cards/MealCard";
+import NoData from "../shared/NoData/NoData";
 
 const Hero = () => {
   const [discountMeals, setDiscountMeals] = useState([]);
@@ -97,8 +98,13 @@ const Hero = () => {
                     ))
                 ) : (
                   // No data state
-                  <div className="col-span-2 text-center py-8 text-gray-500">
-                    لا توجد عروض متاحة حالياً
+                  <div className="col-span-2">
+                    <NoData
+                      message="لا توجد عروض متاحة حالياً"
+                      description="لا توجد وجبات بخصومات متاحة في الوقت الحالي، تحقق مرة أخرى لاحقاً"
+                      icon="utensils"
+                      size="medium"
+                    />
                   </div>
                 )}
               </div>

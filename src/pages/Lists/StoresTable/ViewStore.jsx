@@ -10,6 +10,7 @@ import { GrInstagram } from "react-icons/gr";
 import { PiGlobeThin } from "react-icons/pi";
 import Button from "./../../../components/shared/Buttons/Button";
 import Spinner from "../../../components/shared/Loading/Spinner";
+import NoData from "../../../components/shared/NoData/NoData";
 
 const timeOptions = [
   { label: "12:00 ص", value: "2025-06-12T00:00:00.000Z" },
@@ -255,7 +256,12 @@ const ViewStore = () => {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="text-gray-500">لا توجد صورة غلاف</div>
+                <NoData
+                  message="لا توجد صورة غلاف"
+                  description=""
+                  icon="restaurant"
+                  size="small"
+                />
               )}
             </div>
 
@@ -267,8 +273,13 @@ const ViewStore = () => {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="text-gray-500 text-sm text-center">
-                  لا توجد صورة شخصية
+                <div className="text-center">
+                  <NoData
+                    message="لا توجد صورة شخصية"
+                    description=""
+                    icon="restaurant"
+                    size="small"
+                  />
                 </div>
               )}
             </div>

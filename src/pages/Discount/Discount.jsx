@@ -4,6 +4,7 @@ import CategoryTabsDiscount from "../../components/shared/category/CategoryTabsD
 import MealCard from "../../components/shared/cards/MealCard";
 import Alert from "../../components/shared/Alert/Alert";
 import { Pagination } from "../../components/shared/Pagination/Pagination";
+import NoData from "../../components/shared/NoData/NoData";
 
 const Discount = () => {
   const [selectedCategory, setSelectedCategory] = useState("restaurant");
@@ -161,20 +162,20 @@ const Discount = () => {
             )}
           </>
         ) : (
-          <div className="text-center py-16">
-            <div className="text-gray-400 text-6xl mb-4">🍽️</div>
-            <h3 className="text-xl font-semibold text-gray-600 mb-2">
-              لا توجد عروض متاحة حالياً
-            </h3>
-            <p className="text-gray-500">
-              عذراً، لا توجد وجبات بخصومات متاحة في هذه الفئة حالياً
-            </p>
-            <button
-              onClick={fetchDiscountMeals}
-              className="mt-4 bg-primary-1 text-white px-6 py-2 rounded-lg hover:bg-hover_primary-1 transition-colors"
-            >
-              إعادة التحديث
-            </button>
+          <div className="py-8">
+            <NoData
+              message="لا توجد عروض متاحة حالياً"
+              description="عذراً، لا توجد وجبات بخصومات متاحة في هذه الفئة حالياً"
+              icon="utensils"
+            />
+            <div className="text-center mt-6">
+              <button
+                onClick={fetchDiscountMeals}
+                className="bg-primary-1 text-white px-6 py-2 rounded-lg hover:bg-hover_primary-1 transition-colors"
+              >
+                إعادة التحديث
+              </button>
+            </div>
           </div>
         )}
       </div>

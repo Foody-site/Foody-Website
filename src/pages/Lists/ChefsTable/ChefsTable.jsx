@@ -7,6 +7,7 @@ import apiClient from "../../../utils/ApiClient";
 import { useNavigate } from "react-router";
 import Alert from "../../../components/shared/Alert/Alert";
 import Spinner from "../../../components/shared/Loading/Spinner";
+import NoData from "../../../components/shared/NoData/NoData";
 
 export const ChefsTable = forwardRef((props, ref) => {
   const { onChefsChange, onLoadingChange } = props;
@@ -149,7 +150,13 @@ export const ChefsTable = forwardRef((props, ref) => {
   }
 
   if (chefs.length === 0) {
-    return <div className="text-center py-12">لا توجد شيفات متاحة</div>;
+    return (
+      <NoData
+        message="لا توجد شيفات متاحة"
+        description="لم يتم إضافة أي شيفات حتى الآن. ابدأ بإضافة شيف جديد"
+        icon="utensils"
+      />
+    );
   }
 
   console.log("Current chefs state:", chefs);

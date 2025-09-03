@@ -7,6 +7,7 @@ import TextAreaInput from "../../components/shared/inputs/TextAreaInput ";
 import Button from "../../components/shared/Buttons/Button";
 import Alert from "../../components/shared/Alert/Alert";
 import MealCategoryStoreSelector from "../../components/shared/form/MealCategoryStoreSelector";
+import NoData from "../../components/shared/NoData/NoData";
 import allergy from "../../assets/allergy.webp";
 
 const AddMeal = () => {
@@ -364,8 +365,12 @@ const AddMeal = () => {
                         className="w-[80%] h-auto mx-auto rounded-md"
                       />
                     ) : (
-                      <div className="w-[80%] h-40 bg-gray-200 mx-auto rounded-md flex items-center justify-center">
-                        <span className="text-gray-500">لا توجد صورة</span>
+                      <div className="w-[80%] h-40 mx-auto rounded-md">
+                        <NoData
+                          message="لا توجد صورة"
+                          size="small"
+                          icon="utensils"
+                        />
                       </div>
                     )}
                     <p className="text-gray-600 mt-4">

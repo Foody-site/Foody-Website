@@ -13,6 +13,7 @@ import {
 } from "react-icons/fa";
 import { SiTiktok } from "react-icons/si";
 import { MdVerified } from "react-icons/md";
+import NoData from "../shared/NoData/NoData";
 import FavoriteButton from "../shared/Favourites/FavouriteStore";
 import StoreShare from "../shared/Share/StoreShare";
 import careem from "/assets/store/careem.webp";
@@ -93,14 +94,18 @@ const ProfileStore = () => {
   return (
     <PageWrapper>
       <div className="flex flex-col lg:flex-row gap-6 mt-6">
-
         {/* Right Panel - Placeholder */}
         <div className="w-full lg:w-2/3">
           {store.mealTypes && store.mealTypes.length > 0 ? (
             <AllMeals storeId={id} mealTypes={store.mealTypes} />
           ) : (
-            <div className="p-6 border rounded-2xl text-center text-gray-500">
-              لا توجد وجبات لعرضها حالياً
+            <div className="p-6 border rounded-2xl">
+              <NoData
+                message="لا توجد وجبات لعرضها حالياً"
+                description="لم يتم إضافة أي وجبات لهذا المتجر بعد"
+                icon="utensils"
+                size="medium"
+              />
             </div>
           )}
 

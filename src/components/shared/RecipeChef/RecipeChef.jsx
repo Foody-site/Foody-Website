@@ -4,6 +4,7 @@ import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { Link, useParams } from "react-router";
 import FavouriteRecipe from "../Favourites/FavouriteRecipe";
 import RecipeShare from "../Share/RecipeShare";
+import NoData from "../NoData/NoData";
 
 const LoadingCard = () => (
   <div className="bg-white rounded-2xl shadow-lg h-[390px] flex justify-center items-center">
@@ -131,9 +132,14 @@ const RecipeChef = () => {
               </div>
             ))
           : !loading && (
-              <p className="text-center w-full mt-4">
-                لا توجد وصفات لهذا الشيف.
-              </p>
+              <div className="w-full mt-4">
+                <NoData
+                  message="لا توجد وصفات لهذا الشيف"
+                  description="لم يقم هذا الشيف بإضافة أي وصفات حتى الآن"
+                  icon="utensils"
+                  size="medium"
+                />
+              </div>
             )}
       </div>
 

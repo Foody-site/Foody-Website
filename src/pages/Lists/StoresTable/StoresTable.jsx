@@ -7,6 +7,7 @@ import apiClient from "../../../utils/ApiClient";
 import { useNavigate } from "react-router";
 import Alert from "./../../../components/shared/Alert/Alert";
 import Spinner from "../../../components/shared/Loading/Spinner";
+import NoData from "../../../components/shared/NoData/NoData";
 
 // Helper function to format phone number (remove +966 prefix if exists)
 const formatPhoneNumber = (phoneNumber) => {
@@ -249,7 +250,13 @@ export const StoresTable = forwardRef((props, ref) => {
   }
 
   if (stores.length === 0) {
-    return <div className="text-center py-12">لا توجد متاجر متاحة</div>;
+    return (
+      <NoData
+        message="لا توجد متاجر متاحة"
+        description="لم يتم إضافة أي متاجر حتى الآن. ابدأ بإضافة متجر جديد"
+        icon="restaurant"
+      />
+    );
   }
 
   console.log("Current stores state:", stores);

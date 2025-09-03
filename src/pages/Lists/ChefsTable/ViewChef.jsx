@@ -8,6 +8,7 @@ import { IoLogoWhatsapp } from "react-icons/io";
 import { GrInstagram } from "react-icons/gr";
 import apiClient from "../../../utils/ApiClient";
 import Spinner from "../../../components/shared/Loading/Spinner";
+import NoData from "../../../components/shared/NoData/NoData";
 
 // Helper function to format phone number (remove +966 prefix if exists)
 const formatPhoneNumber = (phoneNumber) => {
@@ -99,7 +100,12 @@ const ViewChef = () => {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="text-gray-500">لا توجد صورة غلاف</div>
+                <NoData
+                  message="لا توجد صورة غلاف"
+                  description=""
+                  icon="utensils"
+                  size="small"
+                />
               )}
             </div>
 
@@ -111,8 +117,13 @@ const ViewChef = () => {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="text-gray-500 text-sm text-center">
-                  لا توجد صورة شخصية
+                <div className="text-center">
+                  <NoData
+                    message="لا توجد صورة شخصية"
+                    description=""
+                    icon="utensils"
+                    size="small"
+                  />
                 </div>
               )}
             </div>

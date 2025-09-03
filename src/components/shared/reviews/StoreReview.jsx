@@ -3,6 +3,7 @@ import { useParams } from "react-router";
 import apiClient from "../../../utils/ApiClient";
 import { FaStar, FaRegStar } from "react-icons/fa";
 import Pagination2 from "../../common/Pagination2";
+import NoData from "../NoData/NoData";
 
 const StoreReview = ({ refreshTrigger }) => {
   const { id } = useParams();
@@ -66,9 +67,12 @@ const StoreReview = ({ refreshTrigger }) => {
       <h2 className="text-xl font-bold mb-4 text-right">التقييمات</h2>
 
       {paginatedReviews.length === 0 ? (
-        <p className="text-center text-sm text-gray-500">
-          لا توجد تقييمات حالياً
-        </p>
+        <NoData
+          message="لا توجد تقييمات حالياً"
+          description="لم يقم أي عميل بتقييم هذا المتجر بعد"
+          icon="restaurant"
+          size="small"
+        />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {paginatedReviews.map((review) => (
