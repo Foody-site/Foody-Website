@@ -70,10 +70,10 @@ const ReviewCard = ({ review, onDelete, onReply, showActions = false }) => {
       {/* Store Info - اسم المتجر وصورته */}
       <div className="flex items-center gap-4 mb-6">
         <div className="w-14 h-14 bg-gray-200 rounded-full flex items-center justify-center shadow-sm">
-          {review.store.profilePicture ? (
+          {review.store?.profilePicture ? (
             <img
-              src={review.store.profilePicture}
-              alt={review.store.name}
+              src={review.store?.profilePicture}
+              alt={review.store?.name || "المتجر"}
               className="w-14 h-14 rounded-full object-cover"
             />
           ) : (
@@ -82,7 +82,7 @@ const ReviewCard = ({ review, onDelete, onReply, showActions = false }) => {
         </div>
         <div className="flex-1">
           <h3 className="font-bold text-gray-900 text-lg">
-            {review.store.name}
+            {review.store?.name || "متجر غير محدد"}
           </h3>
         </div>
       </div>
