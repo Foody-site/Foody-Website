@@ -108,6 +108,11 @@ const AddMeal = () => {
       }
 
       // Validate required fields
+      if (!formData.photo) {
+        showAlert("خطأ في البيانات", "يرجى اختيار صورة للوجبة", "error");
+        setLoading(false);
+        return;
+      }
       if (!formData.name) {
         showAlert("خطأ في البيانات", "يرجى إدخال اسم الوجبة", "error");
         setLoading(false);
@@ -227,6 +232,7 @@ const AddMeal = () => {
               onChange={handlePhotoChange}
               className="hidden"
               id="photo"
+              required
             />
             <label
               htmlFor="photo"
