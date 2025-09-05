@@ -166,14 +166,16 @@ const Login = () => {
                 />
               </div>
 
-              <div className="flex justify-end items-center mb-3 text-sm text-gray-600">
-                <a
-                  href="#"
-                  className="text-primary-1 hover:underline text-right justify-end"
-                >
+              <div className="flex justify-between items-center mb-3 text-sm text-gray-600">
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" className="w-4 h-4 accent-primary-1" />
+                  تذكرني
+                </label>
+                <a href="#" className="text-primary-1 hover:underline">
                   نسيت كلمة المرور؟
                 </a>
               </div>
+
               <Button
                 label={loading ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}
                 className="w-full bg-primary-1 hover:bg-hover_primary-1 text-white"
@@ -217,7 +219,9 @@ const Login = () => {
                     size={24}
                     className={`w-6 h-6 ${googleLoading ? "opacity-30" : ""}`}
                   />
-                  <span className="sr-only">تسجيل الدخول باستخدام Google</span>
+                  <span className="sr-only">
+                    تسجيل الدخول باستخدام Google
+                  </span>
                 </button>
               </div>
             </div>

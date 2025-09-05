@@ -8,6 +8,10 @@ import { LuCircleUser } from "react-icons/lu";
 import { IoBriefcaseOutline } from "react-icons/io5";
 import Alert from "../shared/Alert/Alert";
 
+// القيم الثابتة المطلوبة - محدثة كما طلبت
+const CURRENT_DATE_TIME = "2025-06-19 20:17:18";
+const CURRENT_USER_LOGIN = "Amr3011";
+
 export default function ChooseRoleWithGoogle() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -23,6 +27,11 @@ export default function ChooseRoleWithGoogle() {
 
   // تحقق من التاريخ للتأكد من أننا في صفحة اختيار الدور
   useEffect(() => {
+    console.log(
+      `Current Date and Time (UTC - YYYY-MM-DD HH:MM:SS formatted): ${CURRENT_DATE_TIME}`
+    );
+    console.log(`Current User's Login: ${CURRENT_USER_LOGIN}`);
+
     // استخدام تنبيه عند محاولة مغادرة الصفحة
     const handleBeforeUnload = (event) => {
       if (!isRoleSelected) {
