@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { api_url } from "../../utils/ApiClient";
+import apiClient from "../../utils/ApiClient";
 import Pagination2 from "../common/Pagination2";
 import MealCard2 from "../shared/cards/MealCard2";
 import NoData from "../shared/NoData/NoData";
@@ -45,9 +44,7 @@ const AllMeals = ({ storeId, mealTypes }) => {
     const fetchMeals = async () => {
       setLoading(true);
       try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(`${api_url}/meal/store/${storeId}`, {
-          headers: { Authorization: `Bearer ${token}` },
+        const response = await apiClient.get(`/meal/store/${storeId}`, {
           params: { page, take: pageSize, category },
         });
 
