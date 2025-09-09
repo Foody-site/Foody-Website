@@ -283,9 +283,11 @@ export const RecipesTable = forwardRef((props, ref) => {
 
                   {/* Description */}
                   <td className="px-4 py-3 text-gray-700 text-sm text-right border border-gray-300">
-                    <div className="max-w-xs">
+                    <div className="max-w-xs overflow-hidden">
                       {recipe?.description ? (
-                        <span className="truncate">{recipe.description}</span>
+                        <span className="block truncate">
+                          {recipe.description}
+                        </span>
                       ) : (
                         <span className="text-gray-400 text-xs">
                           لا يوجد وصف
