@@ -14,11 +14,11 @@ const FoodFilter = ({ onSearch }) => {
     breakfast: false,
     lateBreakfast: false,
     lunch: false,
-    dinner: true,
+    dinner: false,
   });
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedOptions, setSelectedOptions] = useState(["أضيف حديثاً"]);
+  const [selectedOptions, setSelectedOptions] = useState([""]);
   const [ratingRange, setRatingRange] = useState(null);
   const [selectedRegion, setSelectedRegion] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
