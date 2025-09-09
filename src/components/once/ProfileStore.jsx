@@ -33,6 +33,7 @@ import noon from "/assets/store/noon.webp";
 import shgardi from "/assets/store/shgardi.webp";
 import toYou from "/assets/store/toYou.webp";
 import uber from "/assets/store/uber.webp";
+import StoreImg from "/assets/home/StoreImg.webp";
 import StoreReview from "../shared/reviews/StoreReview";
 import MakeReview from "../shared/reviews/MakeReview";
 import AllMeals from "./AllMeals";
@@ -134,15 +135,13 @@ const ProfileStore = () => {
   return (
     <PageWrapper>
       {/* Cover Picture */}
-      {store.coverPicture && (
-        <div className="w-full h-48 md:h-64 lg:h-80 rounded-2xl overflow-hidden mb-6">
-          <img
-            src={store.coverPicture}
-            alt="صورة الغلاف"
-            className="w-full h-full object-cover"
-          />
-        </div>
-      )}
+      <div className="w-full h-48 md:h-64 lg:h-80 rounded-2xl overflow-hidden mb-6">
+        <img
+          src={store.coverPicture || StoreImg}
+          alt="صورة الغلاف"
+          className="w-full h-full object-cover"
+        />
+      </div>
       <div className="flex flex-col lg:flex-row gap-6 mt-6">
         {/* Right Panel - Placeholder */}
         <div className="w-full lg:w-2/3">
