@@ -198,9 +198,11 @@ const EditRecipe = () => {
     const updatedIngredients = [...formData.ingredients];
 
     if (field === "quantity") {
-      const numValue = parseInt(value, 10);
+      // استخدم parseFloat بدلاً من parseInt للسماح بالأرقام العشرية
+      const numValue = parseFloat(value);
 
-      updatedIngredients[index][field] = !isNaN(numValue) ? numValue : "";
+      updatedIngredients[index][field] =
+        !isNaN(numValue) && value !== "" ? numValue : value;
     } else {
       updatedIngredients[index][field] = value;
     }
@@ -615,19 +617,19 @@ const EditRecipe = () => {
                     ]}
                     error={errors.ingredients?.[index]?.unit}
                   />
-                  <SelectInput
+                  <Inputs
                     name={`ingredients[${index}].quantity`}
                     label="الكميه"
+                    type="number"
+                    step="0.1"
+                    min="0"
                     className="w-full px-6 text-xl py-4"
                     value={ingredient.quantity}
                     onChange={(e) =>
                       handleIngredientChange(index, "quantity", e.target.value)
                     }
-                    options={Array.from({ length: 1024 }, (_, i) => ({
-                      value: (i + 1).toString(),
-                      label: (i + 1).toString(),
-                    }))}
                     error={errors.ingredients?.[index]?.quantity}
+                    placeholder="أدخل الكمية"
                   />
 
                   {formData.ingredients.length > 1 && (
