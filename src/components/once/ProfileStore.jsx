@@ -133,6 +133,16 @@ const ProfileStore = () => {
 
   return (
     <PageWrapper>
+      {/* Cover Picture */}
+      {store.coverPicture && (
+        <div className="w-full h-48 md:h-64 lg:h-80 rounded-2xl overflow-hidden mb-6">
+          <img
+            src={store.coverPicture}
+            alt="صورة الغلاف"
+            className="w-full h-full object-cover"
+          />
+        </div>
+      )}
       <div className="flex flex-col lg:flex-row gap-6 mt-6">
         {/* Right Panel - Placeholder */}
         <div className="w-full lg:w-2/3">
