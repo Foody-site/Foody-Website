@@ -83,6 +83,16 @@ const ChefPage = () => {
 
   return (
     <PageWrapper>
+      {/* Cover Picture */}
+      {chef.coverPicture && (
+        <div className="w-full h-48 md:h-64 lg:h-80 rounded-2xl overflow-hidden mb-6">
+          <img
+            src={chef.coverPicture}
+            alt="صورة الغلاف"
+            className="w-full h-full object-cover"
+          />
+        </div>
+      )}
       <div className="flex flex-col lg:flex-row gap-6 mt-6">
         {/* Left Section - Recipes */}
         <div className="w-full lg:w-2/3">
