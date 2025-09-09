@@ -3,6 +3,12 @@ import { useParams } from "react-router";
 import apiClient from "../../utils/ApiClient";
 import PageWrapper from "../common/PageWrapper";
 import {
+  calculateDistance,
+  formatDistance,
+  getUserLocation,
+  DEFAULT_LOCATION,
+} from "../../utils/LocationUtils";
+import {
   FaFacebook,
   FaInstagram,
   FaSnapchatGhost,
@@ -51,6 +57,40 @@ const ProfileStore = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [refreshReviewsTrigger, setRefreshReviewsTrigger] = useState(0);
+  const [userLocation, setUserLocation] = useState(null);
+  const [calculatedDistance, setCalculatedDistance] = useState(null);
+
+  // جلب موقع المستخدم
+  useEffect(() => {
+    getUserLocation()
+      .then((location) => {
+        setUserLocation(location);
+      })
+      .catch((error) => {
+        console.log("Error getting user location:", error);
+        // استخدام الموقع الافتراضي
+        setUserLocation(DEFAULT_LOCATION);
+      });
+  }, []);
+
+  // حساب المسافة عندما يتوفر موقع المستخدم وموقع المتجر
+  useEffect(() => {
+    if (
+      userLocation &&
+      store?.location &&
+      store.location.coordinates &&
+      store.location.coordinates.length === 2
+    ) {
+      const [storeLng, storeLat] = store.location.coordinates;
+      const distance = calculateDistance(
+        userLocation.lat,
+        userLocation.lng,
+        storeLat,
+        storeLng
+      );
+      setCalculatedDistance(distance);
+    }
+  }, [userLocation, store]);
 
   useEffect(() => {
     const fetchStore = async () => {
@@ -226,7 +266,13 @@ const ProfileStore = () => {
               </div>
               <div className="p-3 rounded border border-[#C7C7C7]">
                 <p className="text-[#808080] text-sm">المسافة</p>
-                <p className="font-bold text-lg text-[#030303]">12Km</p>
+                <p className="font-bold text-lg text-[#030303]">
+                  {calculatedDistance !== null
+                    ? formatDistance(calculatedDistance)
+                    : store.distance
+                    ? `${store.distance} كم`
+                    : "..."}
+                </p>
               </div>
               <div className="p-3 rounded border border-[#C7C7C7]">
                 <p className="text-[#808080] text-sm">معلومات أخرى</p>
