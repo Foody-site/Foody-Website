@@ -17,6 +17,21 @@ const AllMeals = ({ storeId, mealTypes }) => {
   const [error, setError] = useState("");
   const [page, setPage] = useState(1);
   const [category, setCategory] = useState(mealTypes[0] || "Main Meals");
+
+  const translations = {
+    Offers: "العروض",
+    News: "جديدنا",
+    "Main Meals": "الوجبات الرئيسيه",
+    "Side Meals": "الوجبات الفرعيه",
+    Drinks: "مشروبات",
+    "Oriental Sweets": "حلويات شرقيه",
+    "Western Sweets": "حلويات غربيه",
+    Other: "اخرى",
+    "Baked Goods and Crackers": "المخبوزات والمقرمشات",
+    "Diet Meals": "وجبات دايت",
+    Juices: "عصائر",
+    "Ice Cream": "ايس كريم",
+  };
   const [pagination, setPagination] = useState({
     hasNextPage: false,
     hasPreviousPage: false,
@@ -73,7 +88,7 @@ const AllMeals = ({ storeId, mealTypes }) => {
                 : "text-black border-[#808080]"
             }`}
           >
-            {type}
+            {translations[type] || type}
           </button>
         ))}
       </div>
