@@ -217,7 +217,11 @@ const ProfileStore = () => {
               <div className="p-3 rounded border border-[#C7C7C7]">
                 <p className="text-[#808080] text-sm">رقم التواصل للطلبات</p>
                 <p className="font-bold text-lg text-[#030303]">
-                  {store.deliveryPhone || "—"}
+                  {store.deliveryPhone
+                    ? store.deliveryPhone.startsWith("+966")
+                      ? store.deliveryPhone.replace("+966", "")
+                      : store.deliveryPhone
+                    : "—"}
                 </p>
               </div>
               <div className="p-3 rounded border border-[#C7C7C7]">
