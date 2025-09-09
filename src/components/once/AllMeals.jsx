@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { api_url } from "../../utils/ApiClient";
+import apiClient from "../../utils/ApiClient";
 import Pagination2 from "../common/Pagination2";
 import MealCard2 from "../shared/cards/MealCard2";
 import NoData from "../shared/NoData/NoData";
@@ -17,6 +16,21 @@ const AllMeals = ({ storeId, mealTypes }) => {
   const [error, setError] = useState("");
   const [page, setPage] = useState(1);
   const [category, setCategory] = useState(mealTypes[0] || "Main Meals");
+
+  const translations = {
+    Offers: "العروض",
+    News: "جديدنا",
+    "Main Meals": "الوجبات الرئيسيه",
+    "Side Meals": "الوجبات الفرعيه",
+    Drinks: "مشروبات",
+    "Oriental Sweets": "حلويات شرقيه",
+    "Western Sweets": "حلويات غربيه",
+    Other: "اخرى",
+    "Baked Goods and Crackers": "المخبوزات والمقرمشات",
+    "Diet Meals": "وجبات دايت",
+    Juices: "عصائر",
+    "Ice Cream": "ايس كريم",
+  };
   const [pagination, setPagination] = useState({
     hasNextPage: false,
     hasPreviousPage: false,
@@ -30,9 +44,7 @@ const AllMeals = ({ storeId, mealTypes }) => {
     const fetchMeals = async () => {
       setLoading(true);
       try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(`${api_url}/meal/store/${storeId}`, {
-          headers: { Authorization: `Bearer ${token}` },
+        const response = await apiClient.get(`/meal/store/${storeId}`, {
           params: { page, take: pageSize, category },
         });
 
@@ -73,7 +85,7 @@ const AllMeals = ({ storeId, mealTypes }) => {
                 : "text-black border-[#808080]"
             }`}
           >
-            {type}
+            {translations[type] || type}
           </button>
         ))}
       </div>
