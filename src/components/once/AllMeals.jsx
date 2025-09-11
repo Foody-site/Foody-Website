@@ -72,7 +72,7 @@ const AllMeals = ({ storeId, mealTypes }) => {
     <div>
       {/* Dynamic Meal Types Tabs */}
       <div className="w-full flex flex-wrap p-2 rounded-xl border border-[#808080]">
-        {mealTypes.map((type) => (
+        {[...mealTypes].reverse().map((type) => (
           <button
             key={type}
             onClick={() => {

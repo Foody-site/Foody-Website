@@ -3,18 +3,18 @@ import { FaBiking } from "react-icons/fa";
 import { IoIosArrowDown } from "react-icons/io";
 
 const DELIVERY_APPS = [
-  { key: "keeta", label: "Keeta" },
-  { key: "hungerStation", label: "HungerStation" },
-  { key: "toyou", label: "ToYou" },
-  { key: "mrsool", label: "Mrsool" },
-  { key: "theChefz", label: "The Chefz" },
-  { key: "mrMandoob", label: "Mr Mandoob" },
-  { key: "shgardi", label: "Shgardi" },
-  { key: "uber", label: "Uber" },
-  { key: "careem", label: "Careem" },
-  { key: "noon", label: "Noon" },
-  { key: "jahez", label: "Jahez" },
-  { key: "other", label: "Other" },
+  { key: "keeta", label: "كيتا" },
+  { key: "hungerStation", label: "هنقرستيشن" },
+  { key: "toyou", label: "تويو" },
+  { key: "mrsool", label: "مرسول" },
+  { key: "theChefz", label: "ذا شيفز" },
+  { key: "mrMandoob", label: "مستر مندوب" },
+  { key: "shgardi", label: "شقر دي" },
+  { key: "uber", label: "اوبر" },
+  { key: "careem", label: "كريم" },
+  { key: "noon", label: "نون" },
+  { key: "jahez", label: "جاهز" },
+  { key: "other", label: "أخرى" },
 ];
 
 const DeliveryApps = ({ selectedApps, setSelectedApps }) => {
