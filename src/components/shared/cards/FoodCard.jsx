@@ -76,11 +76,13 @@ const FoodCard = ({ store = {}, loading = false, onUnfavorite }) => {
           alt="Food Banner"
           className="w-full h-48 object-cover"
         />
-        {/*<div className="absolute top-4 left-4 flex flex-col gap-2">
-          <button className="text-white p-2 rounded-md shadow bg-primary-1">
-            <BiSolidOffer />
-          </button>
-        </div>*/}
+        {store.hasOffer && (
+          <div className="absolute top-4 left-4 flex flex-col gap-2">
+            <button className="text-white p-2 rounded-md shadow bg-primary-1">
+              <BiSolidOffer />
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Content */}
