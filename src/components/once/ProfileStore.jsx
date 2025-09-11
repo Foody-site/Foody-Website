@@ -137,9 +137,18 @@ const ProfileStore = () => {
       {/* Cover Picture */}
       <div className="w-full h-48 md:h-64 lg:h-80 rounded-2xl overflow-hidden mb-6">
         <img
-          src={store.coverPicture || StoreImg}
+          src={
+            store.coverPicture &&
+            store.coverPicture !== null &&
+            store.coverPicture.trim() !== ""
+              ? store.coverPicture
+              : StoreImg
+          }
           alt="صورة الغلاف"
           className="w-full h-full object-cover"
+          onError={(e) => {
+            e.target.src = StoreImg;
+          }}
         />
       </div>
       <div className="flex flex-col lg:flex-row gap-6 mt-6">
