@@ -14,17 +14,17 @@ const PlaceSearch = ({
   const regionOptions = [
     { value: "", label: "قم بإختيار المنطقة" },
     { value: "Riyadh", label: "الرياض" },
-    { value: "Qasim", label: "القصيم" },
+    { value: "Al-Qassim", label: "القصيم" },
   ];
 
   const cityOptionsMap = {
     Riyadh: [
       { value: "", label: "قم بإختيار المدينة" },
-      { value: "El-kharg", label: "محافظة الخرج" },
+      { value: "Al-Kharj", label: "محافظة الخرج" },
     ],
-    Qasim: [
+    "Al-Qassim": [
       { value: "", label: "قم بإختيار المدينة" },
-      { value: "El-Bdaea", label: "محافظة البدائع" },
+      { value: "Al-Badayea", label: "محافظة البدائع" },
     ],
   };
 
@@ -50,10 +50,8 @@ const PlaceSearch = ({
               !selectedRegion ? "text-gray-500" : "text-black"
             }`}
           >
-            {
-              regionOptions.find((opt) => opt.value === selectedRegion)
-                ?.label || "قم بإختيار المنطقة"
-            }
+            {regionOptions.find((opt) => opt.value === selectedRegion)?.label ||
+              "قم بإختيار المنطقة"}
           </span>
           <div className="flex items-center gap-2 text-gray-500">
             <span className="border-l h-4 border-gray-300"></span>
@@ -98,10 +96,8 @@ const PlaceSearch = ({
               !selectedCity ? "text-gray-500" : "text-black"
             }`}
           >
-            {
-              currentCityOptions.find((opt) => opt.value === selectedCity)
-                ?.label || "قم بإختيار المدينة"
-            }
+            {currentCityOptions.find((opt) => opt.value === selectedCity)
+              ?.label || "قم بإختيار المدينة"}
           </span>
           <div className="flex items-center gap-2 text-gray-500">
             <span className="border-l h-4 border-gray-300"></span>
